@@ -1,0 +1,5 @@
+# Ignora file temporanei SQLite
+*.sqlite-journal
+*.sqlite-shm
+*.sqlite-wal
+test.sqlite

@@ -1,54 +1,119 @@
 #!/usr/bin/env python3
 """
-Genera il sito web statico delle ricette da un file .paprikarecipes.
+Genera il sito web statico delle ricette leggendo direttamente dal database Paprika 3.
 Output nella cartella docs/ pronta per GitHub Pages.
+Esegue anche un backup del database Paprika nella cartella "Backup Paprika/".
 
 Uso:
-  python3 aggiorna_sito.py                        # usa MacGourmet_Ricette.paprikarecipes
-  python3 aggiorna_sito.py mia_esportazione.paprikarecipes
+  python3 aggiorna_sito.py
 """
 
-import zipfile, gzip, json, base64, os, sys, re
+import sqlite3, json, os, sys, re, shutil
 from pathlib import Path
 from datetime import datetime
 
-SCRIPT_DIR  = Path(__file__).parent
-INPUT_FILE  = SCRIPT_DIR / (sys.argv[1] if len(sys.argv) > 1 else "MacGourmet_Ricette.paprikarecipes")
-DOCS_DIR    = SCRIPT_DIR / "docs"
-PHOTOS_DIR  = DOCS_DIR / "photos"
+SCRIPT_DIR = Path(__file__).parent
+DOCS_DIR   = SCRIPT_DIR / 'docs'
+PHOTOS_DIR = DOCS_DIR / 'photos'
+BACKUP_DIR = SCRIPT_DIR / 'Backup Paprika'
+
+_paprika_override = os.environ.get('PAPRIKA_BASE_OVERRIDE')
+PAPRIKA_BASE   = Path(_paprika_override) if _paprika_override else \
+                 Path.home() / 'Library' / 'Group Containers' / '72KVKW69K8.com.hindsightlabs.paprika.mac.v3' / 'Data'
+PAPRIKA_DB     = PAPRIKA_BASE / 'Database' / 'Paprika.sqlite'
+PAPRIKA_PHOTOS = PAPRIKA_BASE / 'Photos'
 
 DOCS_DIR.mkdir(exist_ok=True)
 PHOTOS_DIR.mkdir(exist_ok=True)
+BACKUP_DIR.mkdir(exist_ok=True)
 
-# ── 1. Lettura file Paprika ───────────────────────────────────────────────────
-print(f"📖 Lettura {INPUT_FILE.name}...")
-raw_recipes = []
-with zipfile.ZipFile(INPUT_FILE) as zf:
-    for name in zf.namelist():
-        try:
-            data = json.loads(gzip.decompress(zf.read(name)))
-            if data.get('name'):
-                raw_recipes.append(data)
-        except Exception:
-            pass
+# ── 1. Backup database Paprika ────────────────────────────────────────────────
+print("💾 Backup database Paprika...")
+backup_name = f"Paprika_{datetime.now().strftime('%Y-%m-%d_%H-%M')}.sqlite"
+backup_path = BACKUP_DIR / backup_name
+
+try:
+    src_con = sqlite3.connect(f'file:{PAPRIKA_DB}?mode=ro', uri=True)
+    dst_con = sqlite3.connect(str(backup_path))
+    src_con.backup(dst_con)
+    dst_con.close()
+    src_con.close()
+except Exception:
+    # Fallback: copia diretta del file
+    try: dst_con.close()
+    except Exception: pass
+    shutil.copy2(str(PAPRIKA_DB), str(backup_path))
+
+# Rimuovi file journal/shm/wal lasciati da sqlite accanto ai backup
+for junk in BACKUP_DIR.glob('*.sqlite-*'):
+    try: junk.unlink()
+    except Exception: pass
+
+# Mantieni solo gli ultimi 10 backup
+backups = sorted(BACKUP_DIR.glob('Paprika_*.sqlite'))
+for old in backups[:-10]:
+    try:
+        old.unlink()
+    except Exception:
+        pass
+
+print(f"   ✅ {backup_name} ({backup_path.stat().st_size // 1024} KB)")
+
+# ── 2. Lettura database Paprika ───────────────────────────────────────────────
+print("📖 Lettura database Paprika...")
+con = sqlite3.connect(f'file:{PAPRIKA_DB}?mode=ro', uri=True)
+con.row_factory = sqlite3.Row
+cur = con.cursor()
+
+cur.execute('''
+    SELECT r.*, GROUP_CONCAT(c.ZNAME, '|||') AS categories
+    FROM ZRECIPE r
+    LEFT JOIN Z_12CATEGORIES j ON j.Z_12RECIPES = r.Z_PK
+    LEFT JOIN ZRECIPECATEGORY c ON c.Z_PK = j.Z_13CATEGORIES
+    WHERE r.ZINTRASH = 0 OR r.ZINTRASH IS NULL
+    GROUP BY r.Z_PK
+    ORDER BY r.ZNAME COLLATE NOCASE
+''')
+raw_recipes = cur.fetchall()
+con.close()
 print(f"   {len(raw_recipes)} ricette trovate")
 
-# ── 2. Estrazione foto ────────────────────────────────────────────────────────
-print("🖼  Estrazione foto...")
-photos_new = 0
-for r in raw_recipes:
-    uid = r.get('uid', '')
-    pd  = r.get('photo_data')
-    if pd and uid:
-        p = PHOTOS_DIR / f"{uid}.jpg"
-        if not p.exists():
-            p.write_bytes(base64.b64decode(pd))
-            photos_new += 1
-print(f"   {photos_new} nuove foto estratte")
+# ── 3. Copia foto ─────────────────────────────────────────────────────────────
+print("🖼  Copia foto...")
+try:
+    from PIL import Image
+    HAS_PIL = True
+except ImportError:
+    HAS_PIL = False
+    print("   ⚠️  Pillow non trovato — foto copiate senza ridimensionamento")
 
-# ── 3. Preparazione dati JSON per il sito ────────────────────────────────────
+photos_copied = 0
+for r in raw_recipes:
+    uid = r['ZUID']
+    photo_file = r['ZPHOTO']
+    if not photo_file or not uid:
+        continue
+    src = PAPRIKA_PHOTOS / uid / photo_file
+    dst = PHOTOS_DIR / f"{uid}.jpg"
+    if dst.exists() or not src.exists():
+        continue
+    if HAS_PIL:
+        try:
+            img = Image.open(src)
+            img.thumbnail((600, 600))
+            img.save(dst, 'JPEG', quality=85)
+        except Exception:
+            shutil.copy2(src, dst)
+    else:
+        shutil.copy2(src, dst)
+    photos_copied += 1
+
+print(f"   {photos_copied} nuove foto copiate")
+
+# ── 4. Preparazione dati JSON ─────────────────────────────────────────────────
+CATS_ESCLUSE = {'Test'}
+
 def fmt_ingredients(text):
-    """Formatta gli ingredienti: == Titolo == diventa <h4>, gli altri <li>."""
     lines = (text or '').strip().splitlines()
     out = []
     for line in lines:
@@ -64,34 +129,39 @@ def fmt_ingredients(text):
 
 recipes_for_js = []
 for r in raw_recipes:
-    uid = r.get('uid', '')
+    uid = r['ZUID'] or ''
+    cats_raw = r['categories'] or ''
+    categories = [c.strip() for c in cats_raw.split('|||')
+                  if c.strip() and c.strip() not in CATS_ESCLUSE]
+
+    has_photo = bool(r['ZPHOTO']) and (PHOTOS_DIR / f"{uid}.jpg").exists()
+
     recipes_for_js.append({
-        'uid':        uid,
-        'name':       r.get('name', '').strip(),
-        'categories': r.get('categories', []),
-        'servings':   r.get('servings', ''),
-        'prep_time':  r.get('prep_time', ''),
-        'cook_time':  r.get('cook_time', ''),
-        'total_time': r.get('total_time', ''),
-        'description':r.get('description', ''),
-        'ingredients':fmt_ingredients(r.get('ingredients', '')),
-        'directions': (r.get('directions', '') or '').strip(),
-        'notes':      (r.get('notes', '') or '').strip(),
-        'rating':     round(int(r.get('rating') or 0) / 5),  # MacGourmet usa scala 0-25, normalizziamo a 0-5
-        'source':     r.get('source', ''),
-        'source_url': r.get('source_url', ''),
-        'has_photo':  bool(r.get('photo_data')),
-        'favorites':  bool(r.get('on_favorites')),
+        'uid':         uid,
+        'name':        (r['ZNAME'] or '').strip(),
+        'categories':  categories,
+        'servings':    (r['ZSERVINGS'] or '').strip(),
+        'prep_time':   (r['ZPREPTIME'] or '').strip(),
+        'cook_time':   (r['ZCOOKTIME'] or '').strip(),
+        'total_time':  (r['ZTOTALTIME'] or '').strip(),
+        'description': (r['ZDESCRIPTIONTEXT'] or '').strip(),
+        'ingredients': fmt_ingredients(r['ZINGREDIENTS']),
+        'directions':  (r['ZDIRECTIONS'] or '').strip(),
+        'notes':       (r['ZNOTES'] or '').strip(),
+        'rating':      round(int(r['ZRATING'] or 0) / 5),  # Paprika scala 0-25 → 0-5
+        'source':      (r['ZSOURCE'] or '').strip(),
+        'source_url':  (r['ZSOURCEURL'] or '').strip(),
+        'has_photo':   has_photo,
+        'favorites':   bool(r['ZONFAVORITES']),
     })
 
-recipes_for_js.sort(key=lambda r: r['name'].lower())
-all_cats = sorted(set(c for r in recipes_for_js for c in r['categories'] if c))
-recipes_json = json.dumps(recipes_for_js, ensure_ascii=False, separators=(',',':'))
-cats_json    = json.dumps(all_cats, ensure_ascii=False, separators=(',',':'))
+all_cats     = sorted(set(c for r in recipes_for_js for c in r['categories'] if c))
+recipes_json = json.dumps(recipes_for_js, ensure_ascii=False, separators=(',', ':'))
+cats_json    = json.dumps(all_cats, ensure_ascii=False, separators=(',', ':'))
 updated      = datetime.now().strftime('%d/%m/%Y %H:%M')
 n_recipes    = len(recipes_for_js)
 
-# ── 4. Generazione HTML ───────────────────────────────────────────────────────
+# ── 5. Generazione HTML ───────────────────────────────────────────────────────
 print("🌐 Generazione docs/index.html...")
 
 HTML = f"""<!DOCTYPE html>
@@ -119,13 +189,11 @@ header h1{{font-size:1.5rem;font-weight:700;letter-spacing:.02em;margin-bottom:.
 header h1 span{{font-size:.9rem;opacity:.75;font-weight:400;margin-left:.5rem}}
 .search-bar{{display:flex;gap:.5rem;align-items:center}}
 .search-bar input{{flex:1;padding:.55rem .9rem;border:none;border-radius:99px;
-  font-size:.95rem;background:rgba(255,255,255,.18);color:#fff;outline:none;
-  placeholder-color:rgba(255,255,255,.6)}}
+  font-size:.95rem;background:rgba(255,255,255,.18);color:#fff;outline:none}}
 .search-bar input::placeholder{{color:rgba(255,255,255,.65)}}
 .search-bar input:focus{{background:rgba(255,255,255,.28)}}
 #btn-favs{{background:rgba(255,255,255,.18);border:none;border-radius:99px;
-  padding:.5rem .85rem;color:#fff;cursor:pointer;font-size:.9rem;white-space:nowrap;
-  transition:.2s}}
+  padding:.5rem .85rem;color:#fff;cursor:pointer;font-size:.9rem;white-space:nowrap;transition:.2s}}
 #btn-favs.active,#btn-favs:hover{{background:rgba(255,255,255,.35)}}
 
 /* ── Categorie ── */
@@ -159,8 +227,7 @@ main{{padding:1.25rem;max-width:1400px;margin:0 auto}}
 .card-name{{font-size:.88rem;font-weight:600;line-height:1.3;margin-bottom:.4rem;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}}
 .card-tags{{display:flex;flex-wrap:wrap;gap:.3rem}}
-.tag{{font-size:.72rem;background:var(--tag-bg);color:var(--tag-color);
-  border-radius:99px;padding:.15rem .55rem}}
+.tag{{font-size:.72rem;background:var(--tag-bg);color:var(--tag-color);border-radius:99px;padding:.15rem .55rem}}
 .card-stars{{font-size:.75rem;color:#d4a017;margin-bottom:.25rem}}
 .fav-badge{{float:right;font-size:.9rem}}
 
@@ -171,8 +238,7 @@ main{{padding:1.25rem;max-width:1400px;margin:0 auto}}
 .overlay.open{{opacity:1;pointer-events:all}}
 .modal{{background:var(--surface);border-radius:var(--radius) var(--radius) 0 0;
   width:100%;max-width:680px;max-height:92vh;overflow-y:auto;
-  transform:translateY(100%);transition:.3s cubic-bezier(.4,0,.2,1);
-  padding:0 0 2rem}}
+  transform:translateY(100%);transition:.3s cubic-bezier(.4,0,.2,1);padding:0 0 2rem}}
 .overlay.open .modal{{transform:translateY(0)}}
 @media(min-width:600px){{
   .overlay{{align-items:center}}
@@ -194,7 +260,7 @@ main{{padding:1.25rem;max-width:1400px;margin:0 auto}}
   padding-bottom:.3rem;border-bottom:2px solid var(--tag-bg)}}
 .ing-header{{font-size:.85rem;font-weight:700;color:var(--muted);
   margin:.6rem 0 .25rem;text-transform:uppercase;letter-spacing:.05em}}
-.ing-list{{list-style:none;}}
+.ing-list{{list-style:none}}
 .ing-list li{{font-size:.9rem;padding:.2rem 0;border-bottom:1px solid var(--border);line-height:1.4}}
 .ing-list li:last-child{{border-bottom:none}}
 .directions-text{{font-size:.92rem;line-height:1.7;white-space:pre-wrap}}
@@ -238,7 +304,6 @@ main{{padding:1.25rem;max-width:1400px;margin:0 auto}}
   </div>
 </main>
 
-<!-- Modale dettaglio ricetta -->
 <div class="overlay" id="overlay" role="dialog" aria-modal="true">
   <div class="modal" id="modal">
     <div class="modal-close"><button id="btn-close" aria-label="Chiudi">✕</button></div>
@@ -251,10 +316,8 @@ const RECIPES={recipes_json};
 const CATS={cats_json};
 const UPDATED="{updated}";
 
-// ── Stato ────────────────────────────────────────────────────────────────────
 let filterCat='', filterText='', filterFavs=false;
 
-// ── Categorie ────────────────────────────────────────────────────────────────
 const catsBar=document.getElementById('cats-bar');
 CATS.forEach(cat=>{{
   const btn=document.createElement('button');
@@ -269,7 +332,6 @@ function setCat(cat){{
   render();
 }}
 
-// ── Ricerca ──────────────────────────────────────────────────────────────────
 document.getElementById('search').addEventListener('input',e=>{{
   filterText=e.target.value.toLowerCase().trim(); render();
 }});
@@ -280,13 +342,12 @@ document.getElementById('btn-favs').addEventListener('click',()=>{{
   render();
 }});
 
-// ── Stars ────────────────────────────────────────────────────────────────────
 function stars(n){{
   if(!n) return '';
-  return '★'.repeat(n)+'☆'.repeat(5-n);
+  const s=Math.min(5,Math.max(0,Math.round(n)));
+  return '★'.repeat(s)+'☆'.repeat(5-s);
 }}
 
-// ── Render griglia ───────────────────────────────────────────────────────────
 function filtered(){{
   return RECIPES.filter(r=>{{
     if(filterFavs && !r.favorites) return false;
@@ -331,7 +392,6 @@ function render(){{
   }}).join('');
 }}
 
-// ── Modale ───────────────────────────────────────────────────────────────────
 const overlay=document.getElementById('overlay');
 const modal=document.getElementById('modal');
 
@@ -353,7 +413,6 @@ function openModal(uid){{
   const tags=r.categories.map(c=>`<span class="tag">${{esc(c)}}</span>`).join('');
   const fav=r.favorites?' ⭐':'';
 
-  // Ingredienti
   let ingHtml='';
   if(r.ingredients && r.ingredients.length){{
     ingHtml='<div class="modal-section"><h3>Ingredienti</h3><ul class="ing-list">';
@@ -364,21 +423,18 @@ function openModal(uid){{
     ingHtml+='</ul></div>';
   }}
 
-  // Procedimento
   let dirHtml='';
   if(r.directions){{
     dirHtml=`<div class="modal-section"><h3>Procedimento</h3>
       <div class="directions-text">${{esc(r.directions)}}</div></div>`;
   }}
 
-  // Note
   let notesHtml='';
   if(r.notes){{
     notesHtml=`<div class="modal-section"><h3>Note</h3>
       <div class="notes-text">${{esc(r.notes)}}</div></div>`;
   }}
 
-  // Fonte
   let srcHtml='';
   if(r.source_url){{
     srcHtml=`<a class="source-link" href="${{r.source_url}}" target="_blank" rel="noopener">
@@ -411,12 +467,10 @@ document.getElementById('btn-close').onclick=closeModal;
 overlay.addEventListener('click',e=>{{ if(e.target===overlay) closeModal(); }});
 document.addEventListener('keydown',e=>{{ if(e.key==='Escape') closeModal(); }});
 
-// ── Utilità ──────────────────────────────────────────────────────────────────
 function esc(s){{
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }}
 
-// ── Avvio ────────────────────────────────────────────────────────────────────
 render();
 </script>
 </body>
@@ -426,21 +480,7 @@ render();
 (DOCS_DIR / "index.html").write_text(HTML, encoding='utf-8')
 print(f"   ✅ {n_recipes} ricette, {len(all_cats)} categorie")
 
-# ── 5. .nojekyll per GitHub Pages ────────────────────────────────────────────
+# ── 6. .nojekyll per GitHub Pages ─────────────────────────────────────────────
 (DOCS_DIR / ".nojekyll").write_text("")
 
-print(f"""
-✅ Sito generato in docs/
-
-Prossimi passi (prima volta):
-  git init
-  git add .
-  git commit -m "Primo sito ricette"
-  git remote add origin https://github.com/TUO-UTENTE/ricette.git
-  git push -u origin main
-  → Poi su GitHub: Settings → Pages → Source: main /docs
-
-Per aggiornare dopo ogni esportazione da Paprika:
-  python3 aggiorna_sito.py
-  git add docs/ && git commit -m "Aggiorna ricette" && git push
-""")
+print(f"\n✅ Fatto! {n_recipes} ricette · backup in 'Backup Paprika/{backup_name}'")

@@ -17,7 +17,7 @@ fi
 
 # Push su GitHub
 if git rev-parse --git-dir > /dev/null 2>&1; then
-    git add docs/
+    git add docs/ "Backup Paprika/"
     if git diff --cached --quiet; then
         echo "ℹ️  Nessuna modifica da pubblicare."
     else
