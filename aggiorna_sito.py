@@ -77,7 +77,7 @@ for r in raw_recipes:
         'ingredients':fmt_ingredients(r.get('ingredients', '')),
         'directions': (r.get('directions', '') or '').strip(),
         'notes':      (r.get('notes', '') or '').strip(),
-        'rating':     int(r.get('rating') or 0),
+        'rating':     round(int(r.get('rating') or 0) / 5),  # MacGourmet usa scala 0-25, normalizziamo a 0-5
         'source':     r.get('source', ''),
         'source_url': r.get('source_url', ''),
         'has_photo':  bool(r.get('photo_data')),
@@ -225,7 +225,7 @@ main{{padding:1.25rem;max-width:1400px;margin:0 auto}}
 </header>
 
 <div class="cats-bar" id="cats-bar">
-  <button class="cat-chip active" data-cat="">Tutte</button>
+  <button class="cat-chip active" data-cat="" onclick="setCat('')">Tutte</button>
 </div>
 
 <div class="stats-bar" id="stats-bar"></div>
@@ -306,7 +306,7 @@ function render(){{
   const counter=document.getElementById('counter');
   const stats=document.getElementById('stats-bar');
 
-  counter.textContent='('+{n_recipes}+' ricette)';
+  counter.textContent='('+(list.length==={n_recipes}?{n_recipes}:list.length+' / '+{n_recipes})+' ricette)';
   stats.textContent=list.length==={n_recipes}
     ? `Tutte le ${{list.length}} ricette · aggiornato ${{UPDATED}}`
     : `${{list.length}} di {n_recipes} ricette`;
@@ -394,7 +394,7 @@ function openModal(uid){{
       <div class="modal-meta">${{meta.join('')}}</div>
       <div class="modal-tags">${{tags}}</div>
       ${{r.description?`<div class="modal-desc">${{esc(r.description)}}</div>`:''}}
-      ${{ingHtml}}${{dirHtml}}${{notesHtml}}${{srcHtml}}
+      ${{dirHtml}}${{ingHtml}}${{notesHtml}}${{srcHtml}}
     </div>`;
 
   overlay.classList.add('open');
