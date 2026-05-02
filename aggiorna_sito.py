@@ -269,6 +269,8 @@ main{{padding:1.25rem;max-width:1400px;margin:0 auto}}
 .source-link{{font-size:.8rem;color:var(--accent);text-decoration:none;
   display:inline-flex;align-items:center;gap:.25rem;margin-top:.5rem}}
 .source-link:hover{{text-decoration:underline}}
+.recipe-link{{color:var(--accent);font-weight:600;text-decoration:none;cursor:pointer}}
+.recipe-link:hover{{text-decoration:underline}}
 .modal-close{{position:sticky;top:0;z-index:10;width:100%;display:flex;
   justify-content:flex-end;padding:.75rem 1rem .5rem;background:var(--surface)}}
 .modal-close button{{background:var(--tag-bg);border:none;border-radius:99px;
@@ -417,8 +419,13 @@ function openModal(uid){{
   if(r.ingredients && r.ingredients.length){{
     ingHtml='<div class="modal-section"><h3>Ingredienti</h3><ul class="ing-list">';
     r.ingredients.forEach(item=>{{
-      if(item.type==='header') ingHtml+=`</ul><div class="ing-header">${{esc(item.text)}}</div><ul class="ing-list">`;
-      else ingHtml+=`<li>${{esc(item.text)}}</li>`;
+      if(item.type==='header'){{
+        ingHtml+=`</ul><div class="ing-header">${{esc(item.text)}}</div><ul class="ing-list">`;
+      }} else {{
+        const fb=item.text.match(/^\*\*(.+)\*\*$/);
+        if(fb) ingHtml+=`</ul><div class="ing-header" style="color:var(--accent2)">${{esc(fb[1])}}</div><ul class="ing-list">`;
+        else ingHtml+=`<li>${{renderIngText(item.text)}}</li>`;
+      }}
     }});
     ingHtml+='</ul></div>';
   }}
@@ -426,7 +433,7 @@ function openModal(uid){{
   let dirHtml='';
   if(r.directions){{
     dirHtml=`<div class="modal-section"><h3>Procedimento</h3>
-      <div class="directions-text">${{esc(r.directions)}}</div></div>`;
+      <div class="directions-text">${{md(r.directions)}}</div></div>`;
   }}
 
   let notesHtml='';
@@ -469,6 +476,30 @@ document.addEventListener('keydown',e=>{{ if(e.key==='Escape') closeModal(); }})
 
 function esc(s){{
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}}
+
+// Render **bold** markdown
+function md(text){{
+  return esc(text).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+}}
+
+// Index recipes by name for [recipe:...] links
+const recipeByName={{}};
+RECIPES.forEach(r=>{{ recipeByName[r.name]=r.uid; }});
+
+// Render ingredient text: handles [recipe:Name] links and **bold**
+function renderIngText(text){{
+  const rm=text.match(/^\[recipe:(.+?)\](.*)/);
+  if(rm){{
+    const name=rm[1].trim();
+    const rest=(rm[2]||'').trim();
+    const uid=recipeByName[name];
+    const link=uid
+      ?`<a href="#" class="recipe-link" onclick="openModal('${{uid}}');return false;">${{esc(name)}}</a>`
+      :`<em>${{esc(name)}}</em>`;
+    return rest?link+' '+esc(rest):link;
+  }}
+  return esc(text).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
 }}
 
 render();
