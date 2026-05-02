@@ -8,7 +8,7 @@ Uso:
   python3 aggiorna_sito.py
 """
 
-import sqlite3, json, os, sys, re, shutil
+import sqlite3, json, os, sys, re, shutil, io, base64, gzip, zipfile as _zipfile, uuid as _uuid
 from pathlib import Path
 from datetime import datetime
 
@@ -514,4 +514,75 @@ print(f"   ✅ {n_recipes} ricette, {len(all_cats)} categorie")
 # ── 6. .nojekyll per GitHub Pages ─────────────────────────────────────────────
 (DOCS_DIR / ".nojekyll").write_text("")
 
-print(f"\n✅ Fatto! {n_recipes} ricette · backup in 'Backup Paprika/{backup_name}'")
+# ── 7. Export completo .paprikarecipes ────────────────────────────────────────
+print("📦 Export Paprika → .paprikarecipes...")
+
+def _photo_b64(uid, photo_file):
+    """Legge la foto originale da Paprika e la restituisce come JPEG base64."""
+    src = PAPRIKA_PHOTOS / uid / photo_file
+    if not src.exists():
+        return None
+    try:
+        img = Image.open(src).convert('RGB')
+        buf = io.BytesIO()
+        img.save(buf, format='JPEG', quality=85)
+        return base64.b64encode(buf.getvalue()).decode('utf-8')
+    except Exception:
+        return None
+
+# Rileggi ricette con tutti i campi (incluso ZPHOTO)
+con2 = sqlite3.connect(f'file:{PAPRIKA_DB}?mode=ro', uri=True)
+con2.row_factory = sqlite3.Row
+cur2 = con2.cursor()
+cur2.execute('''
+    SELECT r.*, GROUP_CONCAT(c.ZNAME, '|||') AS categories
+    FROM ZRECIPE r
+    LEFT JOIN Z_12CATEGORIES j ON j.Z_12RECIPES = r.Z_PK
+    LEFT JOIN ZRECIPECATEGORY c ON c.Z_PK = j.Z_13CATEGORIES
+    WHERE r.ZINTRASH = 0 OR r.ZINTRASH IS NULL
+    GROUP BY r.Z_PK
+    ORDER BY r.ZNAME COLLATE NOCASE
+''')
+all_rows = cur2.fetchall()
+con2.close()
+
+export_file = SCRIPT_DIR / "paprika_export_complete.paprikarecipes"
+n_with_photo = 0
+
+with _zipfile.ZipFile(str(export_file), 'w', _zipfile.ZIP_DEFLATED) as zf:
+    for r in all_rows:
+        uid       = r['ZUID'] or str(_uuid.uuid4())
+        cats_raw  = r['categories'] or ''
+        cats      = [c.strip() for c in cats_raw.split('|||') if c.strip()]
+        photo_b64 = None
+        if r['ZPHOTO'] and r['ZUID']:
+            photo_b64 = _photo_b64(r['ZUID'], r['ZPHOTO'])
+            if photo_b64:
+                n_with_photo += 1
+
+        recipe_dict = {
+            'uid':         uid,
+            'name':        (r['ZNAME'] or '').strip(),
+            'ingredients': (r['ZINGREDIENTS'] or '').strip(),
+            'directions':  (r['ZDIRECTIONS'] or '').strip(),
+            'notes':       (r['ZNOTES'] or '').strip(),
+            'description': (r['ZDESCRIPTIONTEXT'] or '').strip(),
+            'servings':    (r['ZSERVINGS'] or '').strip(),
+            'prep_time':   (r['ZPREPTIME'] or '').strip(),
+            'cook_time':   (r['ZCOOKTIME'] or '').strip(),
+            'total_time':  (r['ZTOTALTIME'] or '').strip(),
+            'source':      (r['ZSOURCE'] or '').strip(),
+            'source_url':  (r['ZSOURCEURL'] or '').strip(),
+            'categories':  cats,
+            'rating':      int(r['ZRATING'] or 0),
+            'difficulty':  (r['ZDIFFICULTY'] or '').strip(),
+            'photo_data':  photo_b64,
+            'hash':        uid,
+        }
+        payload = json.dumps(recipe_dict, ensure_ascii=False)
+        gz_data = gzip.compress(payload.encode('utf-8'))
+        zf.writestr(f"{uid}.paprikarecipe", gz_data)
+
+print(f"   ✅ {len(all_rows)} ricette esportate ({n_with_photo} con foto) → {export_file.name}")
+
+print(f"\n✅ Fatto! {n_recipes} ricette · backup DB in 'Backup Paprika/{backup_name}' · export in '{export_file.name}'")

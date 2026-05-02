@@ -156,7 +156,7 @@ def find_base64_images(obj):
 - **DB**: `menu_pizzerie.json` — struttura `{pizzerie: [{nome, citta, maestro, stile, note_menu, pizze: [...]}]}`
 - **Sito locale**: `menu_pizzerie.html` — generato da `outputs/genera_menu_files.py`
 - **Sito GitHub Pages**: `docs/pizze-che-raccontano-una-storia.html` → https://simonblaster.github.io/Ricette/pizze-che-raccontano-una-storia.html
-- **Script generazione**: `outputs/genera_menu_files.py` — genera sia MD che HTML; dopo ogni modifica al JSON: rieseguire lo script, copiare in `docs/`, commit + push via Desktop Commander
+- **Script generazione**: `aggiorna_sito.py` (nella root del progetto) — legge direttamente dal DB Paprika, genera `docs/index.html` + copia foto, esegue backup DB. Dopo ogni sessione: `python3 aggiorna_sito.py` → `git add -A && git commit && git push`
 - **Regola contenuto**: includere SOLO pizze e simili (calzoni, fritte, montanare). MAI antipasti, dolci, bevande, snack.
 - **fonte**: `"Maestro — Pizzeria, Città"` (es. `"Antonio Starita — Pizzeria Starita, Napoli"`)
 - **tipo emoji**: 🍅 rossa · 🤍 bianca · 🥙 calzone · 🔥 fritta
