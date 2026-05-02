@@ -6,51 +6,65 @@
 <title>Pizze che raccontano una storia</title>
 <style>
   :root {
-    --bg: #f5f3ef; --surface: #ffffff; --surface2: #f0ede8;
+    --bg: #f5f3ef; --surface: #fff; --surface2: #f0ede8;
     --border: #ddd; --accent: #c0392b; --accent-light: #fdf0ef;
-    --text: #1a1a1a; --muted: #777; --tag-bg: #f0ede8;
-    --tag-active-bg: #c0392b; --radius: 10px;
+    --text: #1a1a1a; --muted: #777; --radius: 10px;
     --shadow: 0 1px 4px rgba(0,0,0,0.08);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; }
 
-  header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 18px 24px; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow); }
-  .header-top { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 12px; }
-  h1 { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.3px; }
+  /* ── HEADER ── */
+  header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 16px; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow); }
+  .header-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  h1 { font-size: 1.2rem; font-weight: 700; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   h1 span { color: var(--accent); }
-  #count { color: var(--muted); font-size: 0.82rem; }
+  #count { color: var(--muted); font-size: 0.78rem; white-space: nowrap; }
 
-  .filters { display: flex; flex-direction: column; gap: 8px; }
-  .filter-row { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
-  .filter-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); min-width: 56px; }
-
-  .btn { display: inline-flex; align-items: center; gap: 3px; padding: 3px 10px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); color: #444; font-size: 0.78rem; cursor: pointer; transition: all 0.12s; user-select: none; white-space: nowrap; }
-  .btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
-  .btn.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
-  .btn-clear { background: transparent; border-color: #ccc; color: var(--muted); }
-  .btn-clear:hover { border-color: #999; color: var(--text); background: transparent; }
-
-  .search-wrap { position: relative; }
-  .search-wrap input { background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; color: var(--text); font-size: 0.82rem; padding: 4px 12px 4px 30px; width: 210px; outline: none; }
+  /* Search + toggle row */
+  .toolbar { display: flex; gap: 8px; margin-top: 10px; align-items: center; }
+  .search-wrap { position: relative; flex: 1; }
+  .search-wrap input { background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; color: var(--text); font-size: 0.85rem; padding: 7px 12px 7px 32px; width: 100%; outline: none; -webkit-appearance: none; }
   .search-wrap input:focus { border-color: var(--accent); background: #fff; }
-  .search-icon { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); font-size: 0.72rem; pointer-events: none; }
+  .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 0.75rem; pointer-events: none; }
+  .btn-filter-toggle { background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; color: var(--text); font-size: 0.82rem; padding: 7px 14px; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 5px; }
+  .btn-filter-toggle.has-active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn-clear { background: transparent; border: 1px solid #ccc; border-radius: 20px; color: var(--muted); font-size: 0.82rem; padding: 7px 12px; cursor: pointer; white-space: nowrap; }
 
-  .main { padding: 18px 24px; max-width: 1600px; margin: 0 auto; }
-  .section-header { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin: 22px 0 10px; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 12px; }
+  /* Filter panel */
+  .filter-panel { overflow: hidden; max-height: 0; transition: max-height 0.25s ease; }
+  .filter-panel.open { max-height: 600px; }
+  .filters { padding-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+  .filter-row { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
+  .filter-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); min-width: 52px; }
+  .btn { display: inline-flex; align-items: center; gap: 3px; padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); color: #444; font-size: 0.78rem; cursor: pointer; transition: all 0.12s; user-select: none; white-space: nowrap; -webkit-tap-highlight-color: transparent; }
+  .btn:active, .btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+  .btn.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
 
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; box-shadow: var(--shadow); transition: border-color 0.12s, box-shadow 0.12s; }
-  .card:hover { border-color: #bbb; box-shadow: 0 3px 10px rgba(0,0,0,0.1); }
+  /* ── MAIN ── */
+  .main { padding: 14px 16px; max-width: 1600px; margin: 0 auto; }
+  .section-header { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin: 20px 0 10px; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 10px; }
 
-  .card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 6px; margin-bottom: 6px; }
-  .card-name { font-size: 0.95rem; font-weight: 600; line-height: 1.3; color: var(--text); }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; box-shadow: var(--shadow); }
+  .card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 6px; margin-bottom: 5px; }
+  .card-name { font-size: 0.95rem; font-weight: 600; line-height: 1.3; }
   .tipo-badge { font-size: 1.1rem; flex-shrink: 0; }
-  .card-meta { font-size: 0.68rem; color: var(--muted); margin-bottom: 8px; display: flex; gap: 5px; flex-wrap: wrap; align-items: center; }
-  .cat-badge { background: var(--surface2); border-radius: 4px; padding: 1px 6px; border: 1px solid var(--border); }
-  .ingredienti { font-size: 0.78rem; color: #555; line-height: 1.55; }
+  .card-meta { font-size: 0.67rem; color: var(--muted); margin-bottom: 7px; display: flex; gap: 5px; flex-wrap: wrap; align-items: center; }
+  .cat-badge { background: var(--surface2); border-radius: 4px; padding: 1px 5px; border: 1px solid var(--border); }
+  .ingredienti { font-size: 0.8rem; color: #555; line-height: 1.55; }
   .note { font-size: 0.71rem; color: var(--muted); font-style: italic; border-top: 1px solid var(--border); padding-top: 6px; margin-top: 8px; }
-  .empty { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 1.1rem; }
+  .empty { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 1rem; }
+
+  @media (min-width: 640px) {
+    header { padding: 16px 24px; }
+    h1 { font-size: 1.4rem; }
+    .filter-panel { max-height: none !important; overflow: visible; }
+    .btn-filter-toggle, .btn-clear { display: none; }
+    .toolbar { margin-top: 0; }
+    .filters { padding-top: 0; margin-top: 10px; }
+    .main { padding: 18px 24px; }
+  }
 </style>
 </head>
 <body>
@@ -59,32 +73,33 @@
     <h1>🍕 <span>Pizze che raccontano</span> una storia</h1>
     <span id="count">132 pizze &middot; 4 pizzerie</span>
   </div>
-  <div class="filters">
-    <div class="filter-row">
-      <span class="filter-label">Cerca</span>
-      <div class="search-wrap">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="search" placeholder="nome, ingrediente…" oninput="applyFilters()">
-      </div>
-      <button class="btn btn-clear" onclick="clearAll()">✕ Reset</button>
+  <div class="toolbar">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search" placeholder="cerca nome, ingrediente…" oninput="applyFilters()">
     </div>
-    <div class="filter-row">
-      <span class="filter-label">Tipo</span>
-      <button class="btn tipo-btn" data-tipo="rossa" onclick="toggleFilter(this,'tipo')">🍅 rossa</button>
+    <button class="btn-filter-toggle" id="filterToggle" onclick="togglePanel()">Filtri ▾</button>
+    <button class="btn-clear" onclick="clearAll()">✕</button>
+  </div>
+  <div class="filter-panel" id="filterPanel">
+    <div class="filters">
+      <div class="filter-row">
+        <span class="filter-label">Tipo</span>
+        <button class="btn tipo-btn" data-tipo="rossa" onclick="toggleFilter(this,'tipo')">🍅 rossa</button>
 <button class="btn tipo-btn" data-tipo="bianca" onclick="toggleFilter(this,'tipo')">🤍 bianca</button>
 <button class="btn tipo-btn" data-tipo="calzone" onclick="toggleFilter(this,'tipo')">🥙 calzone</button>
 <button class="btn tipo-btn" data-tipo="fritta" onclick="toggleFilter(this,'tipo')">🔥 fritta</button>
-    </div>
-    <div class="filter-row">
-      <span class="filter-label">Pizzeria</span>
-      <button class="btn piz-btn" data-piz="O' Sarracin" onclick="toggleFilter(this,'piz')">O' Sarracin</button>
+      </div>
+      <div class="filter-row">
+        <span class="filter-label">Pizzeria</span>
+        <button class="btn piz-btn" data-piz="O' Sarracin" onclick="toggleFilter(this,'piz')">O' Sarracin</button>
 <button class="btn piz-btn" data-piz="Carmnella" onclick="toggleFilter(this,'piz')">Carmnella</button>
 <button class="btn piz-btn" data-piz="Pizzeria Starita a Materdei" onclick="toggleFilter(this,'piz')">Pizzeria Starita a Materdei</button>
 <button class="btn piz-btn" data-piz="Factory" onclick="toggleFilter(this,'piz')">Factory</button>
-    </div>
-    <div class="filter-row">
-      <span class="filter-label">Tag</span>
-      <button class="btn tag-btn" data-tag="agrodolce" onclick="toggleFilter(this,'tag')">agrodolce</button>
+      </div>
+      <div class="filter-row">
+        <span class="filter-label">Tag</span>
+        <button class="btn tag-btn" data-tag="agrodolce" onclick="toggleFilter(this,'tag')">agrodolce</button>
 <button class="btn tag-btn" data-tag="alici" onclick="toggleFilter(this,'tag')">alici</button>
 <button class="btn tag-btn" data-tag="bufala" onclick="toggleFilter(this,'tag')">bufala</button>
 <button class="btn tag-btn" data-tag="burrata" onclick="toggleFilter(this,'tag')">burrata</button>
@@ -150,6 +165,7 @@
 <button class="btn tag-btn" data-tag="vegetariana-opzione" onclick="toggleFilter(this,'tag')">vegetariana-opzione</button>
 <button class="btn tag-btn" data-tag="verdure" onclick="toggleFilter(this,'tag')">verdure</button>
 <button class="btn tag-btn" data-tag="zucchine" onclick="toggleFilter(this,'tag')">zucchine</button>
+      </div>
     </div>
   </div>
 </header>
@@ -159,16 +175,28 @@ const PIZZE = [{"nome": "Cosacca", "pizzeria": "O' Sarracin", "citta": "Milano",
 const EMOJI = {"rossa": "🍅", "bianca": "🤍", "calzone": "🥙", "fritta": "🔥"};
 let AF = { tipo: new Set(), piz: new Set(), tag: new Set() };
 
+function togglePanel() {
+  const p = document.getElementById('filterPanel');
+  const t = document.getElementById('filterToggle');
+  p.classList.toggle('open');
+  t.textContent = p.classList.contains('open') ? 'Filtri ▴' : 'Filtri ▾';
+}
 function toggleFilter(btn, kind) {
   const val = btn.dataset.tipo || btn.dataset.piz || btn.dataset.tag;
   if (AF[kind].has(val)) { AF[kind].delete(val); btn.classList.remove('active'); }
   else { AF[kind].add(val); btn.classList.add('active'); }
+  updateToggleStyle();
   applyFilters();
+}
+function updateToggleStyle() {
+  const any = AF.tipo.size || AF.piz.size || AF.tag.size;
+  document.getElementById('filterToggle').classList.toggle('has-active', !!any);
 }
 function clearAll() {
   AF = { tipo: new Set(), piz: new Set(), tag: new Set() };
   document.querySelectorAll('.btn.active').forEach(b => b.classList.remove('active'));
   document.getElementById('search').value = '';
+  updateToggleStyle();
   applyFilters();
 }
 function applyFilters() {
