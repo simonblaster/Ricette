@@ -34,17 +34,18 @@ function DesktopShell({ children, active, go, store, activeCat = null, onCat = (
             })}
           </div>
           <Eyebrow size={8}>· Categorie</Eyebrow>
-          <div style={{ display: 'flex', flexDirection: 'column', marginTop: 6 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', marginTop: 6, flex: 1, overflowY: 'auto', minHeight: 0 }}>
             {window.CATEGORIES.slice(1).map((c) => (
               <button key={c} className="rcp-btn" onClick={() => onCat(activeCat === c ? null : c)}
                 style={{ padding: '6px 10px', borderRadius: 6, fontFamily: T.serif, fontSize: 13, fontStyle: 'italic', textAlign: 'left',
                   color: activeCat === c ? T.accent : T.inkSoft,
                   background: activeCat === c ? T.accentSoft : 'transparent',
                   fontWeight: activeCat === c ? 600 : 400,
+                  flexShrink: 0,
                 }}>{c}</button>
             ))}
           </div>
-          <div style={{ marginTop: 'auto', padding: '12px 10px', display: 'flex', alignItems: 'center', gap: 10, borderTop: `1px solid ${T.ruleSoft}` }}>
+          <div style={{ paddingTop: 12, marginTop: 8, display: 'flex', alignItems: 'center', gap: 10, borderTop: `1px solid ${T.ruleSoft}` }}>
             <div style={{ width: 28, height: 28, borderRadius: 14, background: T.bgDeep, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: T.serif, fontSize: 14, fontStyle: 'italic', color: T.accent, fontWeight: 500 }}>S</div>
             <div>
               <div style={{ fontSize: 12, fontWeight: 600 }}>Simone</div>
@@ -143,6 +144,19 @@ function DesktopDetail({ recipe, go, back }) {
   const store = useStore();
   const { servings, setS, fmtIng } = useServings(recipe.porzioni);
   const [checked, setChecked] = React.useState(() => recipe.ingredienti.map(() => false));
+  const [addedToCart, setAddedToCart] = React.useState(false);
+  const addToShopping = () => {
+    const items = recipe.ingredienti
+      .filter(ing => !ing.header)
+      .map(ing => {
+        if (ing.qb) return ing.n;
+        const parts = [ing.q, ing.u, ing.n].filter(Boolean);
+        return parts.join(' ').trim();
+      });
+    Store.addToShopping(items);
+    setAddedToCart(true);
+    setTimeout(() => setAddedToCart(false), 2000);
+  };
   const isFav = store.favorites.has(recipe.id);
 
   return (
@@ -167,11 +181,15 @@ function DesktopDetail({ recipe, go, back }) {
                 style={{ width: 44, height: 44, borderRadius: 10, border: `1px solid ${T.ruleSoft}`, background: T.card, color: isFav ? T.accent : T.ink, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <II.heart size={14} fill={isFav ? T.accent : 'none'} />
               </button>
-              <button className="rcp-btn"
+              <button onClick={() => window.print()} className="rcp-btn"
                 style={{ width: 44, height: 44, borderRadius: 10, border: `1px solid ${T.ruleSoft}`, background: T.card, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <II.printer size={14} />
               </button>
-              <button className="rcp-btn"
+              <button onClick={() => {
+                  const url = window.location.href;
+                  if (navigator.share) { navigator.share({ title: recipe.nome, url }); }
+                  else { navigator.clipboard.writeText(url).then(() => alert('Link copiato negli appunti!')); }
+                }} className="rcp-btn"
                 style={{ width: 44, height: 44, borderRadius: 10, border: `1px solid ${T.ruleSoft}`, background: T.card, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <II.share size={14} />
               </button>
@@ -205,26 +223,38 @@ function DesktopDetail({ recipe, go, back }) {
             </div>
 
             {/* ingredienti */}
-            <div style={{ marginTop: 28, display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+            <div style={{ marginTop: 28, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <h2 style={{ fontFamily: T.serif, fontSize: 22, fontWeight: 500, letterSpacing: -0.4, margin: 0, fontStyle: 'italic' }}>Ingredienti</h2>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: T.card, border: `1px solid ${T.ruleSoft}`, borderRadius: 999, padding: 2 }}>
-                <button onClick={() => setS(Math.max(1, servings - 1))} className="rcp-btn" style={{ width: 24, height: 24, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><II.minus size={11} /></button>
-                <span style={{ fontFamily: T.mono, fontSize: 11, fontWeight: 600, minWidth: 56, textAlign: 'center' }}>{servings} pers</span>
-                <button onClick={() => setS(servings + 1)} className="rcp-btn" style={{ width: 24, height: 24, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><II.plus size={11} /></button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <button onClick={addToShopping} className="rcp-btn"
+                  style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 11px', border: `1px solid ${addedToCart ? T.accent : T.ruleSoft}`, borderRadius: 999, fontSize: 11, color: addedToCart ? T.accent : T.inkSoft, background: addedToCart ? T.accentSoft : 'transparent', transition: 'all .2s' }}>
+                  <II.cart size={11} color={addedToCart ? T.accent : T.inkSoft} />{addedToCart ? 'Aggiunto!' : 'Lista spesa'}
+                </button>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: T.card, border: `1px solid ${T.ruleSoft}`, borderRadius: 999, padding: 2 }}>
+                  <button onClick={() => setS(Math.max(1, servings - 1))} className="rcp-btn" style={{ width: 24, height: 24, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><II.minus size={11} /></button>
+                  <span style={{ fontFamily: T.mono, fontSize: 11, fontWeight: 600, minWidth: 56, textAlign: 'center' }}>{servings} pers</span>
+                  <button onClick={() => setS(servings + 1)} className="rcp-btn" style={{ width: 24, height: 24, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><II.plus size={11} /></button>
+                </div>
               </div>
             </div>
             <div style={{ marginTop: 10 }}>
-              {recipe.ingredienti.map((ing, i) => (
-                <button key={i} onClick={() => setChecked((c) => c.map((v, j) => j === i ? !v : v))} className="rcp-btn"
-                  style={{ display: 'grid', gridTemplateColumns: '20px 70px 1fr', gap: 12, width: '100%', padding: '8px 0', borderBottom: `1px dotted ${T.ruleSoft}`, alignItems: 'center', textAlign: 'left',
-                    opacity: checked[i] ? 0.4 : 1, textDecoration: checked[i] ? 'line-through' : 'none' }}>
-                  <span style={{ width: 16, height: 16, borderRadius: 8, border: checked[i] ? 'none' : `1.5px solid ${T.faint}`, background: checked[i] ? T.accent : 'transparent', color: T.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    {checked[i] && <II.check size={9} color={T.bg} strokeWidth={2} />}
-                  </span>
-                  {(() => { const f = fmtIng(ing); return <span style={{ fontFamily: T.mono, fontSize: 11, fontVariantNumeric: 'tabular-nums', color: f.hasQty ? T.inkSoft : T.muted, fontStyle: f.hasQty ? 'normal' : 'italic' }}>{f.qty}</span>; })()}
-                  <span style={{ fontSize: 13 }}>{ing.n}</span>
-                </button>
-              ))}
+              {recipe.ingredienti.map((ing, i) => {
+                if (ing.header) return (
+                  <div key={i} style={{ fontFamily: T.serif, fontSize: 13, fontWeight: 600, fontStyle: 'italic', color: T.ink, padding: '10px 0 4px', marginTop: 4 }}>{ing.n}</div>
+                );
+                const f = fmtIng(ing);
+                return (
+                  <button key={i} onClick={() => setChecked((c) => c.map((v, j) => j === i ? !v : v))} className="rcp-btn"
+                    style={{ display: 'grid', gridTemplateColumns: '20px 70px 1fr', gap: 12, width: '100%', padding: '8px 0', borderBottom: `1px dotted ${T.ruleSoft}`, alignItems: 'center', textAlign: 'left',
+                      opacity: checked[i] ? 0.4 : 1, textDecoration: checked[i] ? 'line-through' : 'none' }}>
+                    <span style={{ width: 16, height: 16, borderRadius: 8, border: checked[i] ? 'none' : `1.5px solid ${T.faint}`, background: checked[i] ? T.accent : 'transparent', color: T.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {checked[i] && <II.check size={9} color={T.bg} strokeWidth={2} />}
+                    </span>
+                    <span style={{ fontFamily: T.mono, fontSize: 11, fontVariantNumeric: 'tabular-nums', color: f.hasQty ? T.inkSoft : T.muted, fontStyle: f.hasQty ? 'normal' : 'italic' }}>{f.qty}</span>
+                    <span style={{ fontSize: 13 }}>{ing.n}</span>
+                  </button>
+                );
+              })}
             </div>
 
             {/* passi */}

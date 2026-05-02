@@ -47,6 +47,7 @@
   }
 
   // Parser di un ingrediente "1 kg lacerto" / "500 g cipolle" / "olio evo" / "Sale q.b."
+  // Gestisce anche formato invertito "Farina 00, 500 g" e senza spazio "50g cheddar"
   // Ritorna {q, u, n, qb}
   function parseIngredient(text) {
     const t = String(text || '').trim();
@@ -57,10 +58,11 @@
     if (qbMatch) return { q: '', u: '', n: qbMatch[1].trim(), qb: true };
     if (/^q\.?\s*b\.?$/i.test(t)) return { q: '', u: '', n: t, qb: true };
 
-    // "200 g cipolle" / "1.5 kg pasta" / "1/2 cucchiaino sale"
-    // unità note: g, kg, ml, cl, l, dl, mg, oz, lb, cucchiaio/i, cucchiaino/i,
-    //            bicchiere/i, tazza/e, pizzico/hi, mazzetto, manciata, spicchio/i, foglia/e, fetta/e, filetto/i
-    const unitRe = /^(\d+(?:[\.,]\d+)?(?:\s*\/\s*\d+)?|\d+\s+\d+\/\d+)\s+(kg|g|ml|cl|dl|l|mg|oz|lb|cucchiain[oi]|cucchia[ioy]|bicchier[ie]|tazz[ae]|pizzich[io]|mazzett[oi]|manciat[ae]|spicch[ioi]|fogli[ae]|fett[ae]|filett[oi]|panett[oi])\b\.?\s*(.*)$/i;
+    // unità riconosciute (riusato in più regex)
+    const U = 'kg|g|ml|cl|dl|l|mg|oz|lb|cucchiain[oi]|cucchia[ioy]|bicchier[ie]|tazz[ae]|pizzich[io]|mazzett[oi]|manciat[ae]|spicch[ioi]|fogli[ae]|fett[ae]|filett[oi]|panett[oi]';
+
+    // "200 g cipolle" / "1.5 kg pasta" / "50g cheddar" (senza spazio tra numero e unità)
+    const unitRe = new RegExp('^(\\d+(?:[\\.,]\\d+)?(?:\\s*/\\s*\\d+)?|\\d+\\s+\\d+/\\d+)\\s*(' + U + ')\\b\\.?\\s*(.*)$', 'i');
     const um = t.match(unitRe);
     if (um) return { q: um[1].replace(',', '.'), u: um[2], n: (um[3] || '').trim(), qb: false };
 
@@ -68,6 +70,11 @@
     const numRe = /^(\d+(?:[\.,]\d+)?|\d+\/\d+)\s+(.+)$/;
     const nm = t.match(numRe);
     if (nm) return { q: nm[1].replace(',', '.'), u: '', n: nm[2].trim(), qb: false };
+
+    // "Farina 00 W350, 500 g" / "Sale, 22 g" — formato invertito Nome, quantità [unità]
+    const revRe = new RegExp('^(.+?),\\s*(\\d+(?:[\\.,]\\d+)?(?:\\s*/\\s*\\d+)?)\\s*(' + U + ')?\\s*$', 'i');
+    const rm = t.match(revRe);
+    if (rm) return { q: rm[2].replace(',', '.'), u: (rm[3] || '').trim(), n: rm[1].trim(), qb: false };
 
     // "Olio evo" — solo nome → q.b.
     return { q: '', u: '', n: t, qb: true };
