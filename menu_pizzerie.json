@@ -1,0 +1,2731 @@
+{
+  "pizzerie": [
+    {
+      "nome": "O' Sarracin",
+      "citta": "Milano",
+      "maestro": "Angelo Tramontano",
+      "stile": "Napoletana / Ruota di carro",
+      "note_menu": "Servite 'a rot' 'e carrett'. Modifiche non ammesse.",
+      "pizze": [
+        {
+          "nome": "Cosacca",
+          "categoria": "La Tradizione",
+          "ingredienti": [
+            "pomodoro",
+            "pecorino romano",
+            "basilico"
+          ],
+          "tipo": "rossa",
+          "fonte": "Angelo Tramontano — O' Sarracin, Milano",
+          "tags": [
+            "vegetariana",
+            "senza-mozzarella",
+            "classica"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Marinara",
+          "categoria": "La Tradizione",
+          "ingredienti": [
+            "pomodoro",
+            "pesto di aglio orsino",
+            "origano"
+          ],
+          "tipo": "rossa",
+          "fonte": "Angelo Tramontano — O' Sarracin, Milano",
+          "tags": [
+            "vegetariana",
+            "vegana",
+            "senza-mozzarella",
+            "classica"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Margherita",
+          "categoria": "La Tradizione",
+          "ingredienti": [
+            "fiordilatte della Penisola Sorrentina",
+            "pomodoro",
+            "Parmigiano",
+            "basilico"
+          ],
+          "tipo": "rossa",
+          "fonte": "Angelo Tramontano — O' Sarracin, Milano",
+          "tags": [
+            "vegetariana",
+            "classica"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Bufalina",
+          "categoria": "I Grandi Classici",
+          "ingredienti": [
+            "mozzarella di bufala DOP",
+            "pomodoro",
+            "basilico",
+            "olio EVO"
+          ],
+          "tipo": "rossa",
+          "fonte": "Angelo Tramontano — O' Sarracin, Milano",
+          "tags": [
+            "bufala",
+            "dop",
+            "vegetariana",
+            "classica"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Diavola",
+          "categoria": "I Grandi Classici",
+          "ingredienti": [
+            "pomodoro",
+            "fiordilatte della Penisola Sorrentina",
+            "spianata piccante"
+          ],
+          "tipo": "rossa",
+          "fonte": "Angelo Tramontano — O' Sarracin, Milano",
+          "tags": [
+            "piccante",
+            "salumi",
+            "classica"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Primavera",
+          "categoria": "I Grandi Classici",
+          "ingredienti": [
+            "fiordilatte della Penisola Sorrentina",
+            "culatta irpina",
+            "pomodorini ciliegini",
+            "rucola",
+            "scaglie di Parmigiano"
+          ],
+          "tipo": "bianca",
+          "fonte": "Angelo Tramontano — O' Sarracin, Milano",
+          "tags": [
+            "crudo",
+            "salumi",
+            "verdure",
+            "classica"
+          ],
+          "note": "culatta a crudo in uscita"
+        },
+        {
+          "nome": "Salsiccia e friarielli",
+          "categoria": "I Grandi Classici",
+          "ingredienti": [
+            "fiordilatte della Penisola Sorrentina",
+            "friarielli",
+            "salsiccia di suino"
+          ],
+          "tipo": "bianca",
+          "fonte": "Angelo Tramontano — O' Sarracin, Milano",
+          "tags": [
+            "salsiccia",
+            "verdure",
+            "classica",
+            "napoletana-doc"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "1870",
+          "categoria": "Le Pizze di Angioletto",
+          "ingredienti": [
+            "pomodoro",
+            "salsiccia di suino",
+            "scaglie di Parmigiano",
+            "ciliegine di bufala DOP"
+          ],
+          "tipo": "rossa",
+          "fonte": "Angelo Tramontano — O' Sarracin, Milano",
+          "tags": [
+            "bufala",
+            "salsiccia",
+            "dop"
+          ],
+          "note": "Parmigiano e bufala in uscita"
+        },
+        {
+          "nome": "Antico Borgo",
+          "categoria": "Le Pizze di Angioletto",
+          "ingredienti": [
+            "fiordilatte della Penisola Sorrentina",
+            "pancetta pepata",
+            "melanzane arrostite e marinate",
+            "scaglie di Parmigiano",
+            "ciliegine di bufala DOP"
+          ],
+          "tipo": "bianca",
+          "fonte": "Angelo Tramontano — O' Sarracin, Milano",
+          "tags": [
+            "bufala",
+            "salumi",
+            "verdure",
+            "melanzane"
+          ],
+          "note": "melanzane, Parmigiano e bufala in uscita"
+        },
+        {
+          "nome": "Bufala e Crudo",
+          "categoria": "Le Pizze di Angioletto",
+          "ingredienti": [
+            "fiordilatte della Penisola Sorrentina",
+            "culatta irpina",
+            "ciliegine di bufala DOP",
+            "olio EVO"
+          ],
+          "tipo": "bianca",
+          "fonte": "Angelo Tramontano — O' Sarracin, Milano",
+          "tags": [
+            "bufala",
+            "crudo",
+            "salumi"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Capriccio di Angioletto",
+          "categoria": "Le Pizze di Angioletto",
+          "ingredienti": [
+            "fiordilatte della Penisola Sorrentina",
+            "crema di carciofi",
+            "pomodorini semidried",
+            "prosciutto cotto affumicato",
+            "polvere di olive"
+          ],
+          "tipo": "bianca",
+          "fonte": "Angelo Tramontano — O' Sarracin, Milano",
+          "tags": [
+            "carciofi",
+            "verdure",
+            "salumi",
+            "tecnica"
+          ],
+          "note": "polvere di olive = tecnica interessante"
+        },
+        {
+          "nome": "Donna Laura",
+          "categoria": "Le Pizze di Angioletto",
+          "ingredienti": [
+            "fiordilatte della Penisola Sorrentina",
+            "mortadella Bologna IGP",
+            "pesto di pistacchio",
+            "granella di pistacchio"
+          ],
+          "tipo": "bianca",
+          "fonte": "Angelo Tramontano — O' Sarracin, Milano",
+          "tags": [
+            "mortadella",
+            "pistacchio",
+            "salumi",
+            "igp"
+          ],
+          "note": "mortadella a crudo in uscita"
+        },
+        {
+          "nome": "La Riccia",
+          "categoria": "Le Pizze di Angioletto",
+          "ingredienti": [
+            "fiordilatte della Penisola Sorrentina",
+            "porchetta di Ariccia IGP",
+            "Parmigiano",
+            "patate schiacciate"
+          ],
+          "tipo": "bianca",
+          "fonte": "Angelo Tramontano — O' Sarracin, Milano",
+          "tags": [
+            "porchetta",
+            "patate",
+            "salumi",
+            "igp"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Mediterranea",
+          "categoria": "Le Pizze di Angioletto",
+          "ingredienti": [
+            "pomodoro",
+            "filetti di pomodoro San Marzano DOP",
+            "olive taggiasche",
+            "filetti di alici",
+            "origano"
+          ],
+          "tipo": "rossa",
+          "fonte": "Angelo Tramontano — O' Sarracin, Milano",
+          "tags": [
+            "pesce",
+            "alici",
+            "dop",
+            "doppio-pomodoro",
+            "vegetariana-opzione"
+          ],
+          "note": "doppio pomodoro: salsa + San Marzano filetti"
+        },
+        {
+          "nome": "Monti Lattari",
+          "categoria": "Le Pizze di Angioletto",
+          "ingredienti": [
+            "fiordilatte della Penisola Sorrentina",
+            "macchiata di pomodoro",
+            "funghi chiodini",
+            "salsiccia di suino",
+            "provolone del Monaco"
+          ],
+          "tipo": "rossa",
+          "fonte": "Angelo Tramontano — O' Sarracin, Milano",
+          "tags": [
+            "funghi",
+            "salsiccia",
+            "formaggi-campani"
+          ],
+          "note": "provolone del Monaco in uscita"
+        },
+        {
+          "nome": "Principessa Margherita",
+          "categoria": "Le Pizze di Angioletto",
+          "ingredienti": [
+            "mozzarella di bufala DOP",
+            "pesto alla genovese",
+            "filetti di pomodoro San Marzano DOP"
+          ],
+          "tipo": "bianca",
+          "fonte": "Angelo Tramontano — O' Sarracin, Milano",
+          "tags": [
+            "bufala",
+            "pesto",
+            "dop",
+            "vegetariana"
+          ],
+          "note": "base pesto; San Marzano come topping"
+        },
+        {
+          "nome": "Ragù di Mammà",
+          "categoria": "Le Pizze di Angioletto",
+          "ingredienti": [
+            "fiordilatte della Penisola Sorrentina",
+            "ragù di manzo",
+            "scaglie di provolone del Monaco"
+          ],
+          "tipo": "rossa",
+          "fonte": "Angelo Tramontano — O' Sarracin, Milano",
+          "tags": [
+            "ragù",
+            "manzo",
+            "formaggi-campani",
+            "napoletana-doc"
+          ],
+          "note": "provolone del Monaco in uscita"
+        },
+        {
+          "nome": "Rossa di Castelpoto",
+          "categoria": "Le Pizze di Angioletto",
+          "ingredienti": [
+            "mozzarella di bufala DOP",
+            "scarpariello",
+            "salsiccia rossa di Castelpoto presidio Slow Food",
+            "melanzane a funghetto"
+          ],
+          "tipo": "rossa",
+          "fonte": "Angelo Tramontano — O' Sarracin, Milano",
+          "tags": [
+            "bufala",
+            "salsiccia",
+            "piccante",
+            "slow-food",
+            "melanzane",
+            "presidio"
+          ],
+          "note": "scarpariello = sugo di pomodorini piccanti; salsiccia presidio Slow Food"
+        },
+        {
+          "nome": "San Marzano",
+          "categoria": "Le Pizze di Angioletto",
+          "ingredienti": [
+            "fiordilatte della Penisola Sorrentina",
+            "filetti di pomodoro San Marzano DOP",
+            "ciliegine di bufala DOP"
+          ],
+          "tipo": "rossa",
+          "fonte": "Angelo Tramontano — O' Sarracin, Milano",
+          "tags": [
+            "bufala",
+            "dop",
+            "vegetariana"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Via Falcone 79",
+          "categoria": "Le Pizze di Angioletto",
+          "ingredienti": [
+            "fiordilatte della Penisola Sorrentina",
+            "pancetta pepata",
+            "pomodorini gialli semidried",
+            "scaglie di cacioricotta"
+          ],
+          "tipo": "rossa",
+          "fonte": "Angelo Tramontano — O' Sarracin, Milano",
+          "tags": [
+            "salumi",
+            "formaggi-campani",
+            "pomodorini-gialli"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Calzone nocerino",
+          "categoria": "Calzoni",
+          "ingredienti": [
+            "pomodoro",
+            "fiordilatte della Penisola Sorrentina",
+            "salame dolce",
+            "pepe",
+            "ricotta"
+          ],
+          "tipo": "calzone",
+          "fonte": "Angelo Tramontano — O' Sarracin, Milano",
+          "tags": [
+            "calzone",
+            "salumi",
+            "ricotta"
+          ],
+          "note": "disponibile lun-gio"
+        },
+        {
+          "nome": "Pizza fritta",
+          "categoria": "Calzoni",
+          "ingredienti": [
+            "pomodoro",
+            "fiordilatte della Penisola Sorrentina",
+            "ciccioli",
+            "pepe",
+            "ricotta"
+          ],
+          "tipo": "fritta",
+          "fonte": "Angelo Tramontano — O' Sarracin, Milano",
+          "tags": [
+            "fritta",
+            "ciccioli",
+            "ricotta",
+            "napoletana-doc"
+          ],
+          "note": "disponibile lun-gio"
+        }
+      ]
+    },
+    {
+      "nome": "Carmnella",
+      "citta": "Napoli",
+      "maestro": "Vincenzo Esposito",
+      "stile": "Napoletana storica",
+      "note_menu": "Pizzeria storica napoletana fondata nel 1892. Menu organizzato per epoche: 1892-1992, 1991-2021, 2022.",
+      "pizze": [
+        {
+          "nome": "Reginella",
+          "categoria": "Carmnella 2022",
+          "ingredienti": [
+            "crema di zucchine",
+            "burrata",
+            "pomodoro datterino",
+            "basilico",
+            "prosciutto crudo",
+            "grattatina di caciocavallo"
+          ],
+          "tipo": "bianca",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "burrata",
+            "crudo",
+            "salumi",
+            "verdure",
+            "zucchine",
+            "tecnica"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Marenna 'a sarachiello",
+          "categoria": "Carmnella 2022",
+          "ingredienti": [
+            "friarielli",
+            "provola affumicata di Agerola",
+            "alici di Cetara",
+            "olive nere di Gaeta"
+          ],
+          "tipo": "bianca",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "alici",
+            "pesce",
+            "verdure",
+            "friarielli",
+            "napoletana-doc",
+            "provola-agerola"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Bucce di margherita",
+          "categoria": "Carmnella 2022",
+          "ingredienti": [
+            "salsa di piennolo del Vesuvio",
+            "fior di latte",
+            "basilico",
+            "olio EVO",
+            "pecorino romano",
+            "bocconcini di bufala DOP"
+          ],
+          "tipo": "rossa",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "bufala",
+            "piennolo",
+            "vegetariana",
+            "dop"
+          ],
+          "note": "bufala in uscita"
+        },
+        {
+          "nome": "Popolana verace",
+          "categoria": "Carmnella 1991-2021",
+          "ingredienti": [
+            "passato di pomodoro italiano",
+            "cicoli di maiale",
+            "provola di Agerola",
+            "formaggio",
+            "basilico riccio napoletano",
+            "olio EVO",
+            "pepe di Rimbas"
+          ],
+          "tipo": "rossa",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "ciccioli",
+            "provola-agerola",
+            "napoletana-doc"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Elena Ferrante",
+          "categoria": "Carmnella 1991-2021",
+          "ingredienti": [
+            "ragù napoletano di lunga cottura",
+            "ricotta di cestino",
+            "fior di latte di Agerola",
+            "polpettine",
+            "formaggio",
+            "basilico riccio napoletano",
+            "olio EVO",
+            "pepe di Rimbas"
+          ],
+          "tipo": "rossa",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "ragù",
+            "ricotta",
+            "polpette",
+            "napoletana-doc",
+            "lunga-cottura"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Elisabetta Farnese",
+          "categoria": "Carmnella 1991-2021",
+          "ingredienti": [
+            "melanzane",
+            "Parmigiano Reggiano in doppia consistenza",
+            "pomodoro datterino",
+            "burrata",
+            "basilico",
+            "olio EVO"
+          ],
+          "tipo": "rossa",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "burrata",
+            "melanzane",
+            "verdure",
+            "vegetariana",
+            "tecnica"
+          ],
+          "note": "Parmigiano in doppia consistenza (crema + scaglie)"
+        },
+        {
+          "nome": "Carmen 2004",
+          "categoria": "Dedicate ad Amici ed Eventi",
+          "ingredienti": [
+            "provola affumicata di Agerola",
+            "ricotta di cestino",
+            "prosciutto crudo di Parma 3 corone",
+            "formaggio",
+            "basilico riccio napoletano",
+            "olio EVO"
+          ],
+          "tipo": "bianca",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "crudo",
+            "ricotta",
+            "salumi",
+            "provola-agerola"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Supertoca 2009",
+          "categoria": "Dedicate ad Amici ed Eventi",
+          "ingredienti": [
+            "provola affumicata di Agerola",
+            "pancetta paesana",
+            "funghi misti trifolati",
+            "rucola",
+            "noci di Sorrento",
+            "formaggio",
+            "scaglie di Parmigiano Reggiano 36 mesi",
+            "basilico riccio napoletano",
+            "olio EVO"
+          ],
+          "tipo": "bianca",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "funghi",
+            "salumi",
+            "noci",
+            "provola-agerola"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Umberto 2014",
+          "categoria": "Dedicate ad Amici ed Eventi",
+          "ingredienti": [
+            "pomodoro del piennolo rosso",
+            "provola affumicata di Agerola",
+            "pancetta paesana",
+            "formaggio",
+            "basilico riccio napoletano",
+            "olio EVO",
+            "pepe di Rimbas"
+          ],
+          "tipo": "rossa",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "piennolo",
+            "salumi",
+            "provola-agerola"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Ottava 2014",
+          "categoria": "Dedicate ad Amici ed Eventi",
+          "ingredienti": [
+            "scarola napoletana stufata",
+            "olive di Gaeta",
+            "capperi",
+            "pinoli",
+            "uva sultanina",
+            "peperoncino",
+            "mozzarella di bufala campana DOP",
+            "ciccioli di Casavatore",
+            "formaggio",
+            "olio EVO"
+          ],
+          "tipo": "bianca",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "bufala",
+            "scarola",
+            "ciccioli",
+            "agrodolce",
+            "napoletana-doc",
+            "dop"
+          ],
+          "note": "scarola alla napoletana con ciccioli"
+        },
+        {
+          "nome": "Vittoria 2014",
+          "categoria": "Dedicate ad Amici ed Eventi",
+          "ingredienti": [
+            "pomodorini",
+            "scarola napoletana",
+            "mozzarella di bufala DOP",
+            "basilico riccio napoletano",
+            "formaggio",
+            "olio EVO"
+          ],
+          "tipo": "rossa",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "bufala",
+            "scarola",
+            "verdure",
+            "dop"
+          ],
+          "note": "bufala in uscita"
+        },
+        {
+          "nome": "La dama di Peppe Guida 2016",
+          "categoria": "Dedicate ad Amici ed Eventi",
+          "ingredienti": [
+            "pomodoro lampadina cotto al profumo d'aglio e basilico",
+            "scaglie di Parmigiano Reggiano 36 mesi",
+            "basilico",
+            "olio EVO"
+          ],
+          "tipo": "rossa",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "vegetariana",
+            "stella-michelin",
+            "tecnica",
+            "lunga-cottura"
+          ],
+          "note": "elaborata da Peppe Guida (1 Stella Michelin)"
+        },
+        {
+          "nome": "Casa Cupiello 2016",
+          "categoria": "Dedicate ad Amici ed Eventi",
+          "ingredienti": [
+            "scarola napoletana stufata",
+            "olive di Gaeta",
+            "capperi",
+            "pinoli",
+            "uva sultanina",
+            "fiordilatte di Agerola",
+            "pomodorino del piennolo rosso",
+            "salame napoletano",
+            "formaggio",
+            "basilico riccio napoletano",
+            "olio EVO"
+          ],
+          "tipo": "rossa",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "scarola",
+            "agrodolce",
+            "salumi",
+            "piennolo",
+            "napoletana-doc"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Carmnella 2014",
+          "categoria": "Dedicate ad Amici ed Eventi",
+          "ingredienti": [
+            "pomodori datterino fresco",
+            "aglio paesano",
+            "origano di montagna",
+            "olive nere di Gaeta",
+            "capperi di Salina",
+            "alici di Cetara",
+            "basilico riccio napoletano",
+            "olio EVO"
+          ],
+          "tipo": "rossa",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "alici",
+            "pesce",
+            "tutto-a-crudo",
+            "vegetariana-opzione",
+            "tecnica"
+          ],
+          "note": "tutto a crudo — focaccia base"
+        },
+        {
+          "nome": "Cocumella 2020",
+          "categoria": "Dedicate ad Amici ed Eventi",
+          "ingredienti": [
+            "pomodoro da insalata a fette",
+            "cipollotto",
+            "mozzarella di bufala",
+            "olive nere di Gaeta",
+            "origano",
+            "alici di Cetara",
+            "grattatina di limone"
+          ],
+          "tipo": "rossa",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "bufala",
+            "alici",
+            "pesce",
+            "limone"
+          ],
+          "note": "alici e limone in uscita"
+        },
+        {
+          "nome": "Donna Lucia",
+          "categoria": "Dedicate ad Amici ed Eventi",
+          "ingredienti": [
+            "pomodoro ciliegina in salsa",
+            "aglio",
+            "basilico",
+            "alici di Cetara",
+            "stracciatella di bufala",
+            "zest di limone",
+            "origano"
+          ],
+          "tipo": "rossa",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "alici",
+            "pesce",
+            "bufala",
+            "limone",
+            "stracciatella"
+          ],
+          "note": "alici, stracciatella e limone in uscita"
+        },
+        {
+          "nome": "Filetto di pomodoro",
+          "categoria": "Per Mano Mia — 30 Anni di Banco",
+          "ingredienti": [
+            "pomodorini datterini a filetto",
+            "provola affumicata di Agerola",
+            "formaggio",
+            "basilico riccio napoletano",
+            "olio EVO"
+          ],
+          "tipo": "rossa",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "provola-agerola",
+            "vegetariana",
+            "classica"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Filumè",
+          "categoria": "Per Mano Mia — 30 Anni di Banco",
+          "ingredienti": [
+            "pomodoro del piennolo in salsa ed intero",
+            "provola di Agerola",
+            "formaggio",
+            "basilico riccio napoletano",
+            "olio EVO",
+            "pepe di Rimbas"
+          ],
+          "tipo": "rossa",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "piennolo",
+            "provola-agerola",
+            "vegetariana"
+          ],
+          "note": "doppio piennolo: salsa + intero"
+        },
+        {
+          "nome": "Patanella",
+          "categoria": "Per Mano Mia — 30 Anni di Banco",
+          "ingredienti": [
+            "fior di latte di Agerola",
+            "prosciutto cotto",
+            "patate al forno",
+            "formaggio",
+            "basilico riccio napoletano",
+            "olio EVO"
+          ],
+          "tipo": "bianca",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "patate",
+            "salumi"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Nerano",
+          "categoria": "Per Mano Mia — 30 Anni di Banco",
+          "ingredienti": [
+            "provola affumicata di Agerola",
+            "zucchine fritte",
+            "Provolone del Monaco DOP",
+            "basilico riccio napoletano",
+            "pepe nero di Rimbas",
+            "olio EVO"
+          ],
+          "tipo": "bianca",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "zucchine",
+            "verdure",
+            "dop",
+            "provola-agerola",
+            "vegetariana",
+            "napoletana-doc"
+          ],
+          "note": "ispirata alla pasta alla Nerano"
+        },
+        {
+          "nome": "Marinaresca",
+          "categoria": "Per Mano Mia — 30 Anni di Banco",
+          "ingredienti": [
+            "antico pomodoro di Napoli",
+            "filetto di tonno",
+            "capperi di Salina",
+            "olive nere di Gaeta",
+            "aglio paesano",
+            "origano di montagna",
+            "grattata di limone",
+            "olio EVO"
+          ],
+          "tipo": "rossa",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "tonno",
+            "pesce",
+            "limone",
+            "capperi"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Pummarulella",
+          "categoria": "Per Mano Mia — 30 Anni di Banco",
+          "ingredienti": [
+            "pomodoro del piennolo rosso",
+            "pomodoro San Marzano DOP",
+            "pomodoro datterino",
+            "pecorino romano",
+            "aglio paesano",
+            "basilico riccio napoletano",
+            "olio EVO",
+            "pepe di Rimbas"
+          ],
+          "tipo": "rossa",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "triplo-pomodoro",
+            "vegetariana",
+            "vegana",
+            "dop",
+            "piennolo",
+            "tecnica"
+          ],
+          "note": "triplo pomodoro"
+        },
+        {
+          "nome": "DOC",
+          "categoria": "Per Mano Mia — 30 Anni di Banco",
+          "ingredienti": [
+            "pomodorini datterini a filetto",
+            "mozzarella di bufala DOP",
+            "Parmigiano Reggiano 36 mesi",
+            "basilico riccio napoletano",
+            "olio EVO"
+          ],
+          "tipo": "rossa",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "bufala",
+            "dop",
+            "vegetariana"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Ortolana",
+          "categoria": "Per Mano Mia — 30 Anni di Banco",
+          "ingredienti": [
+            "melanzane a funghetto",
+            "peperoni fritti",
+            "fior di latte di Agerola",
+            "formaggio",
+            "basilico riccio napoletano",
+            "olio EVO"
+          ],
+          "tipo": "bianca",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "melanzane",
+            "peperoni",
+            "verdure",
+            "vegetariana"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Fresca fresca",
+          "categoria": "Per Mano Mia — 30 Anni di Banco",
+          "ingredienti": [
+            "pomodorini datterino",
+            "fiordilatte di Agerola",
+            "scaglie di Parmigiano Reggiano 36 mesi",
+            "rucola",
+            "prosciutto crudo di Parma 3 corone",
+            "basilico riccio napoletano",
+            "olio EVO"
+          ],
+          "tipo": "rossa",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "crudo",
+            "salumi"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Orgoglio napoletano",
+          "categoria": "Per Mano Mia — 30 Anni di Banco",
+          "ingredienti": [
+            "pomodori del piennolo gialli",
+            "pomodori del piennolo rossi",
+            "fiordilatte di Agerola",
+            "formaggio",
+            "basilico riccio napoletano",
+            "olio EVO"
+          ],
+          "tipo": "rossa",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "piennolo",
+            "doppio-piennolo",
+            "vegetariana",
+            "napoletana-doc"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Margherita sbagliata 2008",
+          "categoria": "Per Mano Mia — 30 Anni di Banco",
+          "ingredienti": [
+            "San Marzano DOP",
+            "provola affumicata di Agerola",
+            "formaggio",
+            "basilico riccio napoletano",
+            "olio EVO",
+            "pepe di Rimbas"
+          ],
+          "tipo": "rossa",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "provola-agerola",
+            "dop",
+            "vegetariana",
+            "classica"
+          ],
+          "note": "provola al posto di fior di latte"
+        },
+        {
+          "nome": "Don Alberto",
+          "categoria": "Per Mano Mia — 30 Anni di Banco",
+          "ingredienti": [
+            "pomodori del piennolo gialli",
+            "salame napoletano",
+            "aglio",
+            "origano",
+            "basilico riccio napoletano",
+            "olio EVO"
+          ],
+          "tipo": "rossa",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "piennolo",
+            "salumi",
+            "pomodorini-gialli"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Contadino in trasferta",
+          "categoria": "Per Mano Mia — 30 Anni di Banco",
+          "ingredienti": [
+            "pesto di basilico genovese",
+            "salsiccia di maiale a punta di coltello",
+            "provola affumicata di Agerola",
+            "formaggio"
+          ],
+          "tipo": "bianca",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "pesto",
+            "salsiccia",
+            "provola-agerola"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Cafona",
+          "categoria": "Per Mano Mia — 30 Anni di Banco",
+          "ingredienti": [
+            "pomodoro del piennolo rosso",
+            "burrata di Putignano",
+            "formaggio",
+            "basilico",
+            "olio EVO",
+            "origano di montagna"
+          ],
+          "tipo": "rossa",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "burrata",
+            "piennolo",
+            "vegetariana"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Angela 2017",
+          "categoria": "Dedicate ad Amici ed Eventi",
+          "ingredienti": [
+            "scarola napoletana stufata",
+            "olive di Gaeta",
+            "capperi",
+            "pinoli",
+            "uva sultanina",
+            "peperoncino",
+            "provola affumicata di Agerola",
+            "scorzette di Parmigiano Reggiano",
+            "olio EVO"
+          ],
+          "tipo": "bianca",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "scarola",
+            "agrodolce",
+            "provola-agerola",
+            "napoletana-doc"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Marinara con salame",
+          "categoria": "Carmnella 1892-1992",
+          "ingredienti": [
+            "passato di pomodoro italiano",
+            "salame Napoli",
+            "aglio paesano",
+            "basilico riccio napoletano",
+            "olio EVO"
+          ],
+          "tipo": "rossa",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "salumi",
+            "classica",
+            "napoletana-doc"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Popolana",
+          "categoria": "Carmnella 1892-1992",
+          "ingredienti": [
+            "passato di pomodoro italiano",
+            "provola di Agerola",
+            "formaggio",
+            "basilico riccio napoletano",
+            "olio EVO",
+            "pepe di Rimbas"
+          ],
+          "tipo": "rossa",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "provola-agerola",
+            "vegetariana",
+            "classica"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Diavola",
+          "categoria": "Carmnella 1892-1992",
+          "ingredienti": [
+            "passato di pomodoro italiano",
+            "fiordilatte di Agerola",
+            "salame Napoli",
+            "formaggio",
+            "basilico riccio napoletano",
+            "peperoncino",
+            "olio EVO"
+          ],
+          "tipo": "rossa",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "piccante",
+            "salumi",
+            "classica"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Siciliana",
+          "categoria": "Carmnella 1892-1992",
+          "ingredienti": [
+            "passato di pomodoro italiano",
+            "fiordilatte di Agerola",
+            "melanzane a funghetto",
+            "formaggio",
+            "basilico riccio napoletano",
+            "olio EVO"
+          ],
+          "tipo": "rossa",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "melanzane",
+            "verdure",
+            "vegetariana",
+            "classica"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Salsiccia e friarielli",
+          "categoria": "Carmnella 1892-1992",
+          "ingredienti": [
+            "salsiccia di maiale a punta di coltello",
+            "friarielli napoletani",
+            "provola affumicata di Agerola",
+            "formaggio",
+            "olio EVO"
+          ],
+          "tipo": "bianca",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "salsiccia",
+            "friarielli",
+            "verdure",
+            "napoletana-doc",
+            "provola-agerola"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Capricciosa",
+          "categoria": "Carmnella 1892-1992",
+          "ingredienti": [
+            "passato di pomodoro italiano",
+            "fior di latte di Agerola",
+            "prosciutto cotto",
+            "funghi misti",
+            "olive nere di Gaeta",
+            "formaggio",
+            "basilico riccio napoletano",
+            "olio EVO"
+          ],
+          "tipo": "rossa",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "funghi",
+            "salumi",
+            "classica"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Classico (ripieno)",
+          "categoria": "Le Pizze Ripiene",
+          "ingredienti": [
+            "fiordilatte di Agerola",
+            "prosciutto cotto",
+            "ricotta di cestino",
+            "pomodoro San Marzano DOP",
+            "formaggio",
+            "basilico riccio napoletano",
+            "olio EVO"
+          ],
+          "tipo": "calzone",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "calzone",
+            "ricotta",
+            "salumi",
+            "dop"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Salsiccia, friarielli & provola (ripiena)",
+          "categoria": "Le Pizze Ripiene",
+          "ingredienti": [
+            "salsiccia di maiale a punta di coltello",
+            "friarielli napoletani",
+            "provola affumicata di Agerola",
+            "formaggio",
+            "olio EVO"
+          ],
+          "tipo": "calzone",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "calzone",
+            "salsiccia",
+            "friarielli",
+            "provola-agerola",
+            "napoletana-doc"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Salsiccia, peperoni & provola (ripiena)",
+          "categoria": "Le Pizze Ripiene",
+          "ingredienti": [
+            "salsiccia di maiale a punta di coltello",
+            "peperoni fritti",
+            "provola affumicata di Agerola",
+            "basilico riccio napoletano",
+            "formaggio",
+            "olio EVO"
+          ],
+          "tipo": "calzone",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "calzone",
+            "salsiccia",
+            "peperoni",
+            "provola-agerola"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Provola & scarole (ripiena)",
+          "categoria": "Le Pizze Ripiene",
+          "ingredienti": [
+            "scarola napoletana stufata",
+            "olive nere di Gaeta",
+            "capperi",
+            "pinoli",
+            "uva sultanina",
+            "peperoncino",
+            "provola affumicata di Agerola"
+          ],
+          "tipo": "calzone",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "calzone",
+            "scarola",
+            "agrodolce",
+            "provola-agerola",
+            "napoletana-doc"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Provola & melanzane (ripiena)",
+          "categoria": "Le Pizze Ripiene",
+          "ingredienti": [
+            "provola affumicata di Agerola",
+            "melanzane a funghetto",
+            "basilico riccio napoletano"
+          ],
+          "tipo": "calzone",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "calzone",
+            "melanzane",
+            "verdure",
+            "provola-agerola",
+            "vegetariana"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Fresca fresca (ripiena)",
+          "categoria": "Le Pizze Ripiene",
+          "ingredienti": [
+            "pomodorini datterino",
+            "fiordilatte di Agerola",
+            "rucola",
+            "prosciutto crudo di Parma 3 corone",
+            "scaglie di Parmigiano Reggiano",
+            "basilico riccio napoletano",
+            "olio EVO"
+          ],
+          "tipo": "calzone",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "calzone",
+            "crudo",
+            "salumi"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Munaciello (ripieno)",
+          "categoria": "Le Pizze Ripiene",
+          "ingredienti": [
+            "provola affumicata di Agerola",
+            "ricotta di cestino",
+            "ciccioli di Casavatore",
+            "antico pomodoro di Napoli",
+            "formaggio",
+            "scaglie di Parmigiano Reggiano 36 mesi",
+            "basilico riccio napoletano",
+            "olio EVO",
+            "pepe di Rimbas"
+          ],
+          "tipo": "calzone",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "calzone",
+            "ciccioli",
+            "ricotta",
+            "provola-agerola",
+            "napoletana-doc"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Santa Lucia (ripiena)",
+          "categoria": "Le Pizze Ripiene",
+          "ingredienti": [
+            "ricotta di cestino",
+            "mozzarella di bufala campana DOP",
+            "pomodoro datterino fresco",
+            "formaggio",
+            "basilico riccio napoletano",
+            "olio EVO"
+          ],
+          "tipo": "calzone",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "calzone",
+            "bufala",
+            "ricotta",
+            "dop"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Burrata",
+          "categoria": "Le Pizze Ripiene",
+          "ingredienti": [
+            "pomodoro del piennolo rosso",
+            "burrata di Putignano",
+            "rucola",
+            "scaglie di Parmigiano Reggiano",
+            "olio EVO"
+          ],
+          "tipo": "rossa",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "burrata",
+            "piennolo",
+            "vegetariana"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Margherita",
+          "categoria": "Le Pizze Classiche",
+          "ingredienti": [
+            "passato di pomodoro italiano",
+            "fior di latte di Agerola",
+            "formaggio",
+            "basilico riccio napoletano",
+            "olio EVO"
+          ],
+          "tipo": "rossa",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "vegetariana",
+            "classica",
+            "napoletana-doc"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Marinara",
+          "categoria": "Le Pizze Classiche",
+          "ingredienti": [
+            "passato di pomodoro italiano",
+            "aglio paesano",
+            "origano di montagna",
+            "basilico riccio napoletano",
+            "olio EVO"
+          ],
+          "tipo": "rossa",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "vegetariana",
+            "vegana",
+            "classica",
+            "napoletana-doc"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Cosacca",
+          "categoria": "Le Pizze Classiche",
+          "ingredienti": [
+            "passato di pomodoro italiano",
+            "aglio paesano",
+            "basilico riccio napoletano",
+            "formaggio",
+            "olio EVO"
+          ],
+          "tipo": "rossa",
+          "fonte": "Carmnella, Napoli",
+          "tags": [
+            "vegetariana",
+            "classica",
+            "napoletana-doc",
+            "senza-mozzarella"
+          ],
+          "note": ""
+        }
+      ]
+    },
+    {
+      "nome": "Pizzeria Starita a Materdei",
+      "citta": "Napoli",
+      "maestro": "Antonio Starita",
+      "stile": "Napoletana storica / Fritta",
+      "note_menu": "Storica pizzeria napoletana dal 1901, nel rione Materdei. Celebre per le montanare e le pizze fritte.",
+      "pizze": [
+        {
+          "nome": "Marinara Starita",
+          "categoria": "Specialità Starita",
+          "ingredienti": [
+            "passata di pomodoro",
+            "pomodoro datterino",
+            "Pecorino Romano DOP",
+            "aglio",
+            "origano",
+            "pepe",
+            "basilico"
+          ],
+          "tipo": "rossa",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "classica",
+            "vegetariana",
+            "vegana",
+            "senza-mozzarella",
+            "dop",
+            "signature"
+          ],
+          "note": "Signature dish Starita — datterini siciliani, aglio al centro"
+        },
+        {
+          "nome": "Montanara Starita",
+          "categoria": "Specialità Starita",
+          "ingredienti": [
+            "base fritta poi ripassata al forno",
+            "ragù napoletano",
+            "provola affumicata",
+            "Pecorino Romano DOP",
+            "basilico"
+          ],
+          "tipo": "fritta",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "montanara",
+            "ragù",
+            "doppia-cottura",
+            "fritta",
+            "napoletana-doc",
+            "signature"
+          ],
+          "note": "Doppia cottura: fritta poi al forno. Ricetta storica anni '80"
+        },
+        {
+          "nome": "Ripieno Starita",
+          "categoria": "Specialità Starita",
+          "ingredienti": [
+            "ricotta di pecora",
+            "provola affumicata",
+            "salame Vesuvio",
+            "pepe nero",
+            "passata di pomodoro",
+            "prosciutto cotto",
+            "funghi champignon",
+            "Pecorino Romano DOP",
+            "basilico"
+          ],
+          "tipo": "calzone",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "calzone",
+            "ricotta",
+            "salumi",
+            "funghi",
+            "dop"
+          ],
+          "note": "Ripieno di ricotta+salame+provola; copertura con pomodoro, cotto, funghi"
+        },
+        {
+          "nome": "Corna di Maradona",
+          "categoria": "Specialità Starita",
+          "ingredienti": [
+            "pasta di pizza arrotolata e fritta",
+            "ricotta di pecora",
+            "cicoli napoletani",
+            "pepe nero"
+          ],
+          "tipo": "fritta",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "fritta",
+            "ricotta",
+            "ciccioli",
+            "napoletana-doc",
+            "signature"
+          ],
+          "note": "Forma a ferro di cavallo, fritta. Nome ispirato a un cliente tifoso del Napoli"
+        },
+        {
+          "nome": "Margherita",
+          "categoria": "Le Classiche",
+          "ingredienti": [
+            "passata di pomodoro",
+            "fiordilatte campano",
+            "basilico"
+          ],
+          "tipo": "rossa",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "classica",
+            "vegetariana",
+            "napoletana-doc"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Marinara",
+          "categoria": "Le Classiche",
+          "ingredienti": [
+            "passata di pomodoro",
+            "aglio",
+            "origano",
+            "basilico"
+          ],
+          "tipo": "rossa",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "classica",
+            "vegetariana",
+            "vegana",
+            "senza-mozzarella",
+            "napoletana-doc"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Calzone al forno",
+          "categoria": "Le Classiche",
+          "ingredienti": [
+            "ricotta di pecora",
+            "salame Vesuvio",
+            "provola affumicata",
+            "passata di pomodoro",
+            "pepe nero",
+            "basilico"
+          ],
+          "tipo": "calzone",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "calzone",
+            "ricotta",
+            "salumi",
+            "napoletana-doc"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Calzone di scarole",
+          "categoria": "Le Classiche",
+          "ingredienti": [
+            "scarola alla Monachina",
+            "provola affumicata",
+            "basilico"
+          ],
+          "tipo": "calzone",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "calzone",
+            "scarola",
+            "agrodolce",
+            "vegetariana",
+            "napoletana-doc"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Capricciosa",
+          "categoria": "Le Classiche",
+          "ingredienti": [
+            "passata di pomodoro",
+            "fiordilatte campano",
+            "prosciutto cotto",
+            "funghi champignon",
+            "carciofini sott'olio",
+            "basilico"
+          ],
+          "tipo": "rossa",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "classica",
+            "funghi",
+            "salumi",
+            "carciofi"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Diavola",
+          "categoria": "Le Classiche",
+          "ingredienti": [
+            "passata di pomodoro",
+            "fiordilatte campano",
+            "salame piccante",
+            "basilico"
+          ],
+          "tipo": "rossa",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "classica",
+            "piccante",
+            "salumi"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Romana",
+          "categoria": "Le Classiche",
+          "ingredienti": [
+            "passata di pomodoro",
+            "fiordilatte campano",
+            "acciughe sott'olio",
+            "olive di Gaeta",
+            "basilico"
+          ],
+          "tipo": "rossa",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "classica",
+            "alici",
+            "pesce"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Verace",
+          "categoria": "Le Classiche",
+          "ingredienti": [
+            "passata di pomodoro",
+            "pomodoro datterino",
+            "bocconcini di bufala",
+            "basilico"
+          ],
+          "tipo": "rossa",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "classica",
+            "bufala",
+            "vegetariana"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Fiorilli e zucchine",
+          "categoria": "Le Classiche",
+          "ingredienti": [
+            "fiori di zucca",
+            "zucchine",
+            "provola affumicata",
+            "basilico"
+          ],
+          "tipo": "bianca",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "zucchine",
+            "verdure",
+            "vegetariana",
+            "napoletana-doc"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Ortolana",
+          "categoria": "Le Classiche",
+          "ingredienti": [
+            "misto di verdure",
+            "pomodoro datterino",
+            "fiordilatte campano",
+            "basilico"
+          ],
+          "tipo": "rossa",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "verdure",
+            "vegetariana"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Siciliana",
+          "categoria": "Le Classiche",
+          "ingredienti": [
+            "melanzane fritte",
+            "pomodoro datterino",
+            "fiordilatte campano",
+            "basilico"
+          ],
+          "tipo": "rossa",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "melanzane",
+            "verdure",
+            "vegetariana"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Miss Italia",
+          "categoria": "Le Classiche",
+          "ingredienti": [
+            "fiordilatte campano",
+            "crudo di Parma DOP",
+            "rucola",
+            "scaglie di Grana Padano"
+          ],
+          "tipo": "bianca",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "crudo",
+            "salumi",
+            "dop"
+          ],
+          "note": "crudo a crudo in uscita"
+        },
+        {
+          "nome": "Quattro formaggi",
+          "categoria": "Le Classiche",
+          "ingredienti": [
+            "crema ai quattro formaggi",
+            "provola affumicata",
+            "basilico"
+          ],
+          "tipo": "bianca",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "formaggi",
+            "vegetariana"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Würstel e patatine",
+          "categoria": "Le Classiche",
+          "ingredienti": [
+            "fiordilatte campano",
+            "würstel",
+            "patatine fritte",
+            "basilico"
+          ],
+          "tipo": "bianca",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "patate"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "S.T.G. napoletana",
+          "categoria": "Le Sfiziosе",
+          "ingredienti": [
+            "passata di pomodoro San Marzano",
+            "bocconcini di bufala",
+            "basilico"
+          ],
+          "tipo": "rossa",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "bufala",
+            "vegetariana",
+            "stg"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Vesuvio special",
+          "categoria": "Le Sfiziosе",
+          "ingredienti": [
+            "pomodoro del Piennolo del Vesuvio giallo",
+            "pomodoro del Piennolo del Vesuvio rosso",
+            "pancetta pepata",
+            "basilico"
+          ],
+          "tipo": "rossa",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "piennolo",
+            "doppio-piennolo",
+            "pomodorini-gialli",
+            "salumi"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Porta a Porta",
+          "categoria": "Le Sfiziosе",
+          "ingredienti": [
+            "doppio bordo ripieno di ricotta di pecora e friarielli",
+            "pomodoro datterino",
+            "bocconcino di bufala",
+            "basilico"
+          ],
+          "tipo": "rossa",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "bufala",
+            "ricotta",
+            "friarielli",
+            "verdure",
+            "tecnica"
+          ],
+          "note": "Pizza rettangolare con bordo ripieno di ricotta e friarielli"
+        },
+        {
+          "nome": "Salsiccia e friarielli",
+          "categoria": "Le Sfiziosе",
+          "ingredienti": [
+            "salsiccia",
+            "friarielli",
+            "provola affumicata",
+            "basilico"
+          ],
+          "tipo": "bianca",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "salsiccia",
+            "friarielli",
+            "verdure",
+            "napoletana-doc"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Pistacchio e salsiccia",
+          "categoria": "Le Sfiziosе",
+          "ingredienti": [
+            "pesto di pistacchio",
+            "salsiccia",
+            "provola affumicata",
+            "basilico"
+          ],
+          "tipo": "bianca",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "pistacchio",
+            "salsiccia",
+            "pesto"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Pistacchio e mortadella",
+          "categoria": "Le Sfiziosе",
+          "ingredienti": [
+            "pesto di pistacchio",
+            "mortadella La Santo IGP",
+            "provola affumicata",
+            "basilico"
+          ],
+          "tipo": "bianca",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "pistacchio",
+            "mortadella",
+            "salumi",
+            "pesto",
+            "igp"
+          ],
+          "note": "mortadella a crudo in uscita"
+        },
+        {
+          "nome": "Nerano",
+          "categoria": "Le Sfiziosе",
+          "ingredienti": [
+            "fiori di zucca",
+            "zucchine",
+            "zucchine fritte",
+            "provola affumicata",
+            "Provolone del Monaco DOP",
+            "basilico"
+          ],
+          "tipo": "bianca",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "zucchine",
+            "verdure",
+            "dop",
+            "vegetariana",
+            "napoletana-doc"
+          ],
+          "note": "ispirata alla pasta alla Nerano"
+        },
+        {
+          "nome": "Pizza del Papa",
+          "categoria": "Le Sfiziosе",
+          "ingredienti": [
+            "crema di zucca",
+            "peperoni saltati in padella",
+            "fiori di zucca e zucchine",
+            "provola affumicata",
+            "basilico"
+          ],
+          "tipo": "bianca",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "verdure",
+            "zucchine",
+            "peperoni",
+            "vegetariana"
+          ],
+          "note": "omaggio al Papa Giovanni Paolo II nel Giubileo 2000"
+        },
+        {
+          "nome": "Monaciello",
+          "categoria": "Le Sfiziosе",
+          "ingredienti": [
+            "pomodorino rosso del Piennolo del Vesuvio",
+            "provola affumicata",
+            "coppa di Parma",
+            "Provolone del Monaco DOP",
+            "basilico"
+          ],
+          "tipo": "rossa",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "piennolo",
+            "salumi",
+            "dop",
+            "formaggi-campani"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Messicana",
+          "categoria": "Le Sfiziosе",
+          "ingredienti": [
+            "crema piccante",
+            "provola affumicata",
+            "salsiccia",
+            "salame piccante",
+            "basilico"
+          ],
+          "tipo": "bianca",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "piccante",
+            "salsiccia",
+            "salumi"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Burrata",
+          "categoria": "Le Sfiziosе",
+          "ingredienti": [
+            "burrata pugliese",
+            "pomodoro datterino",
+            "basilico"
+          ],
+          "tipo": "rossa",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "burrata",
+            "vegetariana"
+          ],
+          "note": "burrata in uscita"
+        },
+        {
+          "nome": "Boscaiola",
+          "categoria": "Le Sfiziosе",
+          "ingredienti": [
+            "funghi porcini trifolati",
+            "provola affumicata",
+            "basilico"
+          ],
+          "tipo": "bianca",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "funghi",
+            "vegetariana"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Noci e fiorilli",
+          "categoria": "Le Sfiziosе",
+          "ingredienti": [
+            "pesto di noci",
+            "fiori di zucca e zucchine",
+            "provola affumicata",
+            "basilico"
+          ],
+          "tipo": "bianca",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "noci",
+            "zucchine",
+            "verdure",
+            "vegetariana",
+            "pesto"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Noci e porcini",
+          "categoria": "Le Sfiziosе",
+          "ingredienti": [
+            "pesto di noci",
+            "funghi porcini trifolati",
+            "provola affumicata",
+            "basilico"
+          ],
+          "tipo": "bianca",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "noci",
+            "funghi",
+            "vegetariana",
+            "pesto"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Tartufo e formaggio",
+          "categoria": "Le Sfiziosе",
+          "ingredienti": [
+            "crema di tartufo",
+            "crema ai quattro formaggi",
+            "provola affumicata",
+            "basilico"
+          ],
+          "tipo": "bianca",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "tartufo",
+            "formaggi",
+            "vegetariana"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Tartufo e porcini",
+          "categoria": "Le Sfiziosе",
+          "ingredienti": [
+            "crema di tartufo",
+            "funghi porcini trifolati",
+            "provola affumicata",
+            "basilico"
+          ],
+          "tipo": "bianca",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "tartufo",
+            "funghi",
+            "vegetariana"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Montanara fuscella",
+          "categoria": "Pizze Fritte",
+          "ingredienti": [
+            "base fritta poi ripassata al forno",
+            "ragù napoletano",
+            "ricotta di fuscella",
+            "Pecorino Romano DOP",
+            "basilico"
+          ],
+          "tipo": "fritta",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "montanara",
+            "ragù",
+            "ricotta",
+            "doppia-cottura",
+            "dop",
+            "napoletana-doc"
+          ],
+          "note": "ricotta di fuscella = ricotta fresca in cestino"
+        },
+        {
+          "nome": "Montanara genovese",
+          "categoria": "Pizze Fritte",
+          "ingredienti": [
+            "base fritta poi ripassata al forno",
+            "genovese napoletana",
+            "Pecorino Romano DOP",
+            "basilico"
+          ],
+          "tipo": "fritta",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "montanara",
+            "genovese",
+            "doppia-cottura",
+            "dop",
+            "napoletana-doc",
+            "lunga-cottura"
+          ],
+          "note": "genovese = ragù di cipolle di lunga cottura"
+        },
+        {
+          "nome": "Pizza fritta",
+          "categoria": "Pizze Fritte",
+          "ingredienti": [
+            "ricotta di pecora",
+            "cicoli napoletani",
+            "provola affumicata",
+            "passata di pomodoro",
+            "pepe nero"
+          ],
+          "tipo": "fritta",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "fritta",
+            "ricotta",
+            "ciccioli",
+            "napoletana-doc"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Pizza fritta di scarole",
+          "categoria": "Pizze Fritte",
+          "ingredienti": [
+            "scarola alla monachina"
+          ],
+          "tipo": "fritta",
+          "fonte": "Antonio Starita — Pizzeria Starita, Napoli",
+          "tags": [
+            "fritta",
+            "scarola",
+            "agrodolce",
+            "vegetariana",
+            "napoletana-doc"
+          ],
+          "note": "scarola alla monachina = con olive, capperi, pinoli, uvetta"
+        }
+      ]
+    },
+    {
+      "nome": "Factory",
+      "citta": "Caserta",
+      "maestro": "Francesco Martucci",
+      "stile": "Contemporanea / Tecnica — cottura a tre temperature",
+      "note_menu": "Tecnica signature: pizza cotta a vapore (100°) + fritta (180°) + al forno (400°). Forte uso di Presidi Slow Food e prodotti del territorio casertano.",
+      "pizze": [
+        {
+          "nome": "Futuro di Marinara",
+          "categoria": "Pizza a tre temperature",
+          "ingredienti": [
+            "crema di pomodoro arrosto",
+            "olive caiazzane Presidio Slow Food",
+            "alici",
+            "pesto di aglio orsino",
+            "capperi di Salina Presidio Slow Food",
+            "origano selvatico di Salina"
+          ],
+          "tipo": "rossa",
+          "fonte": "Francesco Martucci — Factory, Caserta",
+          "tags": [
+            "tre-temperature",
+            "alici",
+            "pesce",
+            "presidio",
+            "slow-food",
+            "tecnica",
+            "vegana-opzione"
+          ],
+          "note": "Tre cotture: vapore 100° + fritta 180° + forno 400°. Olive denocciolate a mano"
+        },
+        {
+          "nome": "Le 7 consistenze della cipolla",
+          "categoria": "Pizza a tre temperature",
+          "ingredienti": [
+            "cipolla in crema",
+            "cipolla fermentata",
+            "cipolla croccante",
+            "cipolla bruciata",
+            "maionese di cipolla (senza uova, con latte di soia)",
+            "confettura di cipolla",
+            "gel di cipolla",
+            "fiordilatte"
+          ],
+          "tipo": "bianca",
+          "fonte": "Francesco Martucci — Factory, Caserta",
+          "tags": [
+            "tre-temperature",
+            "tecnica",
+            "monoingrediente",
+            "vegetariana"
+          ],
+          "note": "7 preparazioni diverse della cipolla. Maionese vegan (soia)"
+        },
+        {
+          "nome": "Assoluto di pomodoro",
+          "categoria": "Pizza a tre temperature",
+          "ingredienti": [
+            "crema di pomodoro ciliegino arrosto",
+            "pomodoro del piennolo a pacchetelle saltato",
+            "pomodoro giallo da serbo saltato",
+            "mousse di pomodoro San Marzano DOP",
+            "pomodorino del piennolo secco",
+            "cialda di datterino rosso",
+            "confettura di pomodoro del piennolo",
+            "olio EVO Il Mozzafiato Incuso"
+          ],
+          "tipo": "rossa",
+          "fonte": "Francesco Martucci — Factory, Caserta",
+          "tags": [
+            "tre-temperature",
+            "triplo-pomodoro",
+            "piennolo",
+            "dop",
+            "tecnica",
+            "vegetariana",
+            "vegana",
+            "senza-mozzarella"
+          ],
+          "note": "7 preparazioni diverse del pomodoro"
+        },
+        {
+          "nome": "Via Emilia",
+          "categoria": "Pizza a tre temperature",
+          "ingredienti": [
+            "fior di latte",
+            "mortadella di Bologna IGP",
+            "scaglie di Parmigiano Reggiano di vacca Bianca modenese 28 mesi"
+          ],
+          "tipo": "bianca",
+          "fonte": "Francesco Martucci — Factory, Caserta",
+          "tags": [
+            "tre-temperature",
+            "mortadella",
+            "salumi",
+            "igp",
+            "tecnica"
+          ],
+          "note": "mortadella a crudo in uscita"
+        },
+        {
+          "nome": "Margherita",
+          "categoria": "Pizza al forno",
+          "ingredienti": [
+            "pomodoro San Marzano DOP",
+            "fiordilatte",
+            "olio EVO Mozzafiato"
+          ],
+          "tipo": "rossa",
+          "fonte": "Francesco Martucci — Factory, Caserta",
+          "tags": [
+            "classica",
+            "dop",
+            "vegetariana"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Bufala",
+          "categoria": "Pizza al forno",
+          "ingredienti": [
+            "pomodoro San Marzano DOP",
+            "mozzarella di bufala campana DOP Fattorie Garofalo",
+            "olio EVO Core 'ngrato Madonna dell'Olivo"
+          ],
+          "tipo": "rossa",
+          "fonte": "Francesco Martucci — Factory, Caserta",
+          "tags": [
+            "bufala",
+            "dop",
+            "vegetariana",
+            "classica"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Provola e pepe secondo Martucci",
+          "categoria": "Pizza al forno",
+          "ingredienti": [
+            "pomodoro San Marzano DOP",
+            "mozzarella di bufala affumicata Fattorie Garofalo",
+            "olio EVO Fontana Lupo",
+            "pepe di Sichuan",
+            "pepe di cubebe"
+          ],
+          "tipo": "rossa",
+          "fonte": "Francesco Martucci — Factory, Caserta",
+          "tags": [
+            "bufala",
+            "dop",
+            "signature",
+            "tecnica"
+          ],
+          "note": "pepe di Sichuan + cubebe — firma Martucci"
+        },
+        {
+          "nome": "Nero di Corbara",
+          "categoria": "Pizza al forno",
+          "ingredienti": [
+            "pomodoro corbarino in acqua e sale",
+            "salsiccia a punta di coltello con finocchietto di maiale nero razza casertana/lucana (cotta a vapore)",
+            "cacioCostanzo affumicato",
+            "olio EVO Madonna dell'Olivo"
+          ],
+          "tipo": "rossa",
+          "fonte": "Francesco Martucci — Factory, Caserta",
+          "tags": [
+            "salsiccia",
+            "presidio",
+            "tecnica"
+          ],
+          "note": "salsiccia cotta a vapore prima della pizza"
+        },
+        {
+          "nome": "Marinara atomica",
+          "categoria": "Pizza al forno",
+          "ingredienti": [
+            "pomodoro San Marzano DOP cotto 12 ore",
+            "pomodoro del Piennolo secco",
+            "buccia di pomodoro croccante",
+            "maionese di pomodoro (senza uova, con latte di soia)",
+            "origano di montagna",
+            "aglio dell'Ufita",
+            "pecorino dei Monti Lattari gran riserva",
+            "olio EVO"
+          ],
+          "tipo": "rossa",
+          "fonte": "Francesco Martucci — Factory, Caserta",
+          "tags": [
+            "dop",
+            "piennolo",
+            "tecnica",
+            "lunga-cottura",
+            "senza-mozzarella",
+            "vegana-opzione"
+          ],
+          "note": "San Marzano cotto 12h. Maionese vegan (soia). Tutto sul pomodoro"
+        },
+        {
+          "nome": "Capricciosa secondo Martucci",
+          "categoria": "Pizza al forno",
+          "ingredienti": [
+            "crema di pomodoro arrosto",
+            "fiordilatte",
+            "olive caiazzane al forno",
+            "funghi cardoncelli",
+            "carciofini",
+            "prosciutto cotto artigianale di pelatello teanese",
+            "salame di maiale croccante",
+            "olio EVO Fontana Lupo"
+          ],
+          "tipo": "rossa",
+          "fonte": "Francesco Martucci — Factory, Caserta",
+          "tags": [
+            "funghi",
+            "carciofi",
+            "salumi",
+            "signature",
+            "presidio"
+          ],
+          "note": "olive caiazzane denocciolate a mano"
+        },
+        {
+          "nome": "Mani di velluto",
+          "categoria": "Pizza al forno",
+          "ingredienti": [
+            "crema di friarielli al latte di bufala",
+            "mozzarella di bufala campana DOP Fattorie Garofalo",
+            "salsiccia a punta di coltello di maiale di razza casertana con finocchietto",
+            "Pecorino dei Monti Lattari gran riserva",
+            "olio EVO Mozzafiato"
+          ],
+          "tipo": "bianca",
+          "fonte": "Francesco Martucci — Factory, Caserta",
+          "tags": [
+            "bufala",
+            "salsiccia",
+            "friarielli",
+            "verdure",
+            "dop",
+            "tecnica"
+          ],
+          "note": "crema di friarielli al latte di bufala — tecnica"
+        },
+        {
+          "nome": "DOC",
+          "categoria": "Pizza al forno",
+          "ingredienti": [
+            "pomodoro San Marzano DOP",
+            "mozzarella di bufala campana DOP Fattorie Garofalo",
+            "Parmigiano Reggiano Bianca 28 mesi",
+            "pomodoro ciliegino confit"
+          ],
+          "tipo": "rossa",
+          "fonte": "Francesco Martucci — Factory, Caserta",
+          "tags": [
+            "bufala",
+            "dop",
+            "vegetariana"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Camouflage",
+          "categoria": "Pizza al forno",
+          "ingredienti": [
+            "fior di latte",
+            "patè di olive caiazzane",
+            "nduja di Spilinga",
+            "pesto di aglio orsino"
+          ],
+          "tipo": "bianca",
+          "fonte": "Francesco Martucci — Factory, Caserta",
+          "tags": [
+            "nduja",
+            "piccante",
+            "pesto",
+            "presidio"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Vegan",
+          "categoria": "Pizza al forno",
+          "ingredienti": [
+            "pomodori pelati in zucchero di canna",
+            "misticanza di campo",
+            "menta",
+            "crema di rapa rossa",
+            "crema di cavolfiore",
+            "pomodorini secchi del piennolo",
+            "capperi Orto di Lucullo croccanti",
+            "olio EVO Raro Madonna dell'Olivo"
+          ],
+          "tipo": "rossa",
+          "fonte": "Francesco Martucci — Factory, Caserta",
+          "tags": [
+            "vegana",
+            "vegetariana",
+            "piennolo",
+            "presidio",
+            "senza-mozzarella",
+            "verdure"
+          ],
+          "note": "100% vegan, senza mozzarella"
+        },
+        {
+          "nome": "'O Cazone",
+          "categoria": "Pizza al forno",
+          "ingredienti": [
+            "ricotta di bufala campana DOP Fattorie Garofalo",
+            "prosciutto cotto artigianale",
+            "fiordilatte",
+            "pepe",
+            "fiordilatte (in uscita)",
+            "pomodoro (in uscita)",
+            "Parmigiano Reggiano Bianca 28 mesi (in uscita)"
+          ],
+          "tipo": "calzone",
+          "fonte": "Francesco Martucci — Factory, Caserta",
+          "tags": [
+            "calzone",
+            "bufala",
+            "ricotta",
+            "dop",
+            "salumi"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "'O Cazone c'a scarola",
+          "categoria": "Pizza al forno",
+          "ingredienti": [
+            "scarola riccia saltata",
+            "oliva caiazzana",
+            "capperi di Salina Orto di Lucullo",
+            "alici",
+            "pinoli",
+            "pomodorini confit",
+            "fior di latte",
+            "riduzione di scarola e pecorino dei Monti Lattari (in uscita)"
+          ],
+          "tipo": "calzone",
+          "fonte": "Francesco Martucci — Factory, Caserta",
+          "tags": [
+            "calzone",
+            "scarola",
+            "alici",
+            "pesce",
+            "agrodolce",
+            "napoletana-doc",
+            "presidio"
+          ],
+          "note": ""
+        },
+        {
+          "nome": "Una volta",
+          "categoria": "Pizza al forno",
+          "ingredienti": [
+            "fiordilatte",
+            "caciocavallo di Agnone semistagionato",
+            "blu di bufala Fattorie Garofalo",
+            "fesa di Prussiana marinata con aglio, olio e prezzemolo",
+            "mousse di lime",
+            "pepe di Sichuan",
+            "pepe di cubebe"
+          ],
+          "tipo": "bianca",
+          "fonte": "Francesco Martucci — Factory, Caserta",
+          "tags": [
+            "manzo",
+            "bufala",
+            "formaggi",
+            "tecnica"
+          ],
+          "note": "Prussiana = razza bovina lucana. Mousse di lime + pepe Sichuan/cubebe"
+        },
+        {
+          "nome": "Non è una lardiata",
+          "categoria": "Pizza al forno",
+          "ingredienti": [
+            "pomodoro San Marzano DOP",
+            "lardo di Patanegra",
+            "conciato romano Presidio Slow Food",
+            "coriandolo"
+          ],
+          "tipo": "rossa",
+          "fonte": "Francesco Martucci — Factory, Caserta",
+          "tags": [
+            "dop",
+            "presidio",
+            "slow-food",
+            "salumi",
+            "tecnica"
+          ],
+          "note": "conciato romano = formaggio antico casertano, Presidio Slow Food"
+        },
+        {
+          "nome": "Trombetta & Company",
+          "categoria": "Pizza al forno",
+          "ingredienti": [
+            "crema di zucca trombetta",
+            "caciocavallo di Agnone semistagionato",
+            "macinato di Prussiana",
+            "carpaccio di zucca trombetta marinato allo tosazu (in uscita)",
+            "stracchino di bufala Fattorie Garofalo (in uscita)",
+            "polvere di oliva caiazzana (in uscita)",
+            "polvere di capperi di Salina (in uscita)"
+          ],
+          "tipo": "bianca",
+          "fonte": "Francesco Martucci — Factory, Caserta",
+          "tags": [
+            "manzo",
+            "bufala",
+            "verdure",
+            "tecnica",
+            "presidio"
+          ],
+          "note": "tosazu = aceto di riso giapponese. Polveri di oliva e capperi — tecnica"
+        },
+        {
+          "nome": "Nessun compromesso",
+          "categoria": "Pizza al forno",
+          "ingredienti": [
+            "fior di latte",
+            "insalata di funghi champignon",
+            "carpaccio di Black Angus",
+            "cheddar stagionato Black Bomber Extra Mature Snowdonia"
+          ],
+          "tipo": "bianca",
+          "fonte": "Francesco Martucci — Factory, Caserta",
+          "tags": [
+            "manzo",
+            "funghi",
+            "formaggi",
+            "tecnica"
+          ],
+          "note": "ingredienti internazionali — Black Angus + cheddar gallese"
+        },
+        {
+          "nome": "Assoluto di carciofo",
+          "categoria": "Pizza al forno",
+          "ingredienti": [
+            "crema di gambo di carciofo fresco",
+            "provola affumicata",
+            "carciofo fresco",
+            "Pecorino dei Monti Lattari gran riserva",
+            "pepe",
+            "aglio",
+            "prezzemolo",
+            "olio affumicato"
+          ],
+          "tipo": "bianca",
+          "fonte": "Francesco Martucci — Factory, Caserta",
+          "tags": [
+            "carciofi",
+            "verdure",
+            "vegetariana",
+            "tecnica",
+            "monoingrediente"
+          ],
+          "note": "carciofo in due consistenze: crema di gambo + carciofo fresco"
+        },
+        {
+          "nome": "Verde tartufo",
+          "categoria": "Pizza al forno",
+          "ingredienti": [
+            "spinaci biologici saltati al burro di Normandia",
+            "fiordilatte",
+            "lardo di Pata Negra",
+            "Parmigiano Reggiano 28 mesi",
+            "blu di bufala Fattorie Garofalo",
+            "tartufo nero di Bagnoli (Tuber mesentericum Vittadini)",
+            "zest di limone"
+          ],
+          "tipo": "bianca",
+          "fonte": "Francesco Martucci — Factory, Caserta",
+          "tags": [
+            "tartufo",
+            "bufala",
+            "salumi",
+            "verdure",
+            "tecnica"
+          ],
+          "note": "tartufo nero di Bagnoli Irpino"
+        },
+        {
+          "nome": "Fattorie Garofalo and Friends",
+          "categoria": "Pizza al forno",
+          "ingredienti": [
+            "crema di ricotta di bufala",
+            "pomodoro cuore di bue arrosto",
+            "caciocavallo al latte di bufala",
+            "blu di bufala",
+            "chips di stagionato di bufala",
+            "stracchino di bufala",
+            "olio EVO Fontana Lupo"
+          ],
+          "tipo": "rossa",
+          "fonte": "Francesco Martucci — Factory, Caserta",
+          "tags": [
+            "bufala",
+            "tecnica",
+            "formaggi",
+            "vegetariana",
+            "monoingrediente"
+          ],
+          "note": "5 formaggi tutti di bufala — assoluto di bufala"
+        }
+      ]
+    }
+  ]
+}
