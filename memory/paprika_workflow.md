@@ -165,7 +165,7 @@ def find_base64_images(obj):
 - **Flusso aggiunta pizzeria**: menu incollato → script Python in outputs/ → aggiunge a JSON → riesegui genera_menu_files.py → copia in docs/ → commit + push
 - **Rete sandbox**: pizzeriestarita.it e la maggior parte dei domini non sono raggiungibili dalla sandbox. Usare Chrome MCP (solo tab del gruppo MCP) oppure copia-incolla dell'utente.
 
-## Fonti elaborate (aggiornato 2026-05-02)
+## Fonti elaborate (aggiornato 2026-05-02 — ricette singole)
 | File | Contenuto |
 |------|-----------|
 | `pizza_napoletana_avpn.paprikarecipes` | 7 ricette AVPN (impasto + 6 versioni), ×0.65 |
@@ -183,3 +183,4 @@ def find_base64_images(obj):
 | `patate_rosmarino_teglia.paprikarecipes` | Versione teglia — patate e rosmarino (bianca) |
 | `nduja_olive_teglia.paprikarecipes` | Versione teglia — 'nduja e olive taggiasche (rossa) |
 | `salamino_gorgonzola_teglia.paprikarecipes` | Versione teglia — salamino piccante e gorgonzola (rossa) |
+| `nduja_stracciata_50kalo.paprikarecipes` | Versione teglia — 'nduja e stracciatella (50 Kalò, rossa) |
