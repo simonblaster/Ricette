@@ -1,0 +1,10 @@
+# Backup skill (file temporanei)
+*.skill.bak
+
+# File temporanei senza nome (sessioni Claude)
+zi??????
+
+# macOS
+.DS_Store
+__pycache__/
+*.pyc
