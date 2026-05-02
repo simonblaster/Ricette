@@ -174,7 +174,7 @@ function DesktopShopping({ go }) {
             </h1>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
-            <button className="rcp-btn" style={{ padding: '8px 14px', border: `1px solid ${T.ruleSoft}`, borderRadius: 999, fontSize: 12, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <button onClick={() => window.print()} className="rcp-btn" style={{ padding: '8px 14px', border: `1px solid ${T.ruleSoft}`, borderRadius: 999, fontSize: 12, display: 'flex', alignItems: 'center', gap: 6 }}>
               <II.printer size={12} /> Stampa
             </button>
             <button onClick={() => Store.clearShopping()} className="rcp-btn" style={{ padding: '8px 14px', border: `1px solid ${T.ruleSoft}`, borderRadius: 999, fontSize: 12, color: T.muted }}>Svuota</button>

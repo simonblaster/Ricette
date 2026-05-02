@@ -136,9 +136,20 @@ function MobileHome({ go }) {
 function MobileDetail({ recipe, go, back }) {
   const { servings, setS, fmtIng } = useServings(recipe.porzioni);
   const [checked, setChecked] = React.useState(() => recipe.ingredienti.map(() => false));
+  const [addedToCart, setAddedToCart] = React.useState(false);
   const store = useStore();
   const isFav = store.favorites.has(recipe.id);
-  const checkedItems = recipe.ingredienti.filter((_, i) => !checked[i]).map((i) => i.n);
+  const addToShopping = () => {
+    const items = recipe.ingredienti
+      .filter((ing, i) => !checked[i] && !ing.header)
+      .map(ing => {
+        if (ing.qb) return ing.n;
+        return [ing.q, ing.u, ing.n].filter(Boolean).join(' ').trim();
+      });
+    Store.addToShopping(items);
+    setAddedToCart(true);
+    setTimeout(() => setAddedToCart(false), 2000);
+  };
 
   return (
     <Frame>
@@ -156,7 +167,11 @@ function MobileDetail({ recipe, go, back }) {
               style={{ width: 36, height: 36, borderRadius: 18, background: 'rgba(250,248,243,.92)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: isFav ? T.accent : T.ink }}>
               <II.heart size={14} fill={isFav ? T.accent : 'none'} />
             </button>
-            <button className="rcp-btn"
+            <button onClick={() => {
+                const url = window.location.href;
+                if (navigator.share) { navigator.share({ title: recipe.nome, url }); }
+                else { navigator.clipboard.writeText(url).then(() => alert('Link copiato!')); }
+              }} className="rcp-btn"
               style={{ width: 36, height: 36, borderRadius: 18, background: 'rgba(250,248,243,.92)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <II.share size={14} />
             </button>
@@ -198,13 +213,15 @@ function MobileDetail({ recipe, go, back }) {
               style={{ flex: 1, background: T.ink, color: T.bg, padding: '13px 14px', borderRadius: 12, fontWeight: 600, fontSize: 13, letterSpacing: -0.1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
               <II.play size={12} fill={T.bg} color={T.bg} /> Inizia a cucinare
             </button>
-            <button onClick={() => Store.addToShopping(checkedItems)} className="rcp-btn"
-              style={{ width: 46, height: 46, borderRadius: 12, border: `1px solid ${T.ruleSoft}`, background: T.card, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <II.cart size={15} />
+            <button onClick={addToShopping} className="rcp-btn"
+              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3, padding: '6px 12px', minWidth: 56, borderRadius: 12, border: `1px solid ${addedToCart ? T.accent : T.ruleSoft}`, background: addedToCart ? T.accentSoft : T.card, transition: 'all .2s' }}>
+              <II.cart size={14} color={addedToCart ? T.accent : T.ink} />
+              <span style={{ fontFamily: T.mono, fontSize: 9, letterSpacing: 0.5, color: addedToCart ? T.accent : T.muted }}>{addedToCart ? 'OK!' : 'Spesa'}</span>
             </button>
-            <button className="rcp-btn"
-              style={{ width: 46, height: 46, borderRadius: 12, border: `1px solid ${T.ruleSoft}`, background: T.card, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <II.printer size={15} />
+            <button onClick={() => window.print()} className="rcp-btn"
+              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3, padding: '6px 12px', minWidth: 56, borderRadius: 12, border: `1px solid ${T.ruleSoft}`, background: T.card }}>
+              <II.printer size={14} />
+              <span style={{ fontFamily: T.mono, fontSize: 9, letterSpacing: 0.5, color: T.muted }}>Stampa</span>
             </button>
           </div>
 
@@ -219,17 +236,23 @@ function MobileDetail({ recipe, go, back }) {
           </div>
 
           <div style={{ marginTop: 12 }}>
-            {recipe.ingredienti.map((ing, i) => (
-              <button key={i} onClick={() => setChecked((c) => c.map((v, j) => j === i ? !v : v))} className="rcp-btn"
-                style={{ display: 'grid', gridTemplateColumns: '20px 64px 1fr', gap: 10, width: '100%', padding: '10px 0', borderBottom: `1px dotted ${T.ruleSoft}`, alignItems: 'center', textAlign: 'left',
-                  opacity: checked[i] ? 0.4 : 1, textDecoration: checked[i] ? 'line-through' : 'none' }}>
-                <span style={{ width: 18, height: 18, borderRadius: 9, border: checked[i] ? 'none' : `1.5px solid ${T.faint}`, background: checked[i] ? T.accent : 'transparent', color: T.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  {checked[i] && <II.check size={11} color={T.bg} strokeWidth={2} />}
-                </span>
-                {(() => { const f = fmtIng(ing); return <span style={{ fontFamily: T.mono, fontSize: 11, fontVariantNumeric: 'tabular-nums', color: f.hasQty ? T.inkSoft : T.muted, fontStyle: f.hasQty ? 'normal' : 'italic' }}>{f.qty}</span>; })()}
-                <span style={{ fontSize: 14 }}>{ing.n}</span>
-              </button>
-            ))}
+            {recipe.ingredienti.map((ing, i) => {
+              if (ing.header) return (
+                <div key={i} style={{ fontFamily: T.serif, fontSize: 13, fontWeight: 600, fontStyle: 'italic', color: T.ink, padding: '10px 0 4px', marginTop: 4 }}>{ing.n}</div>
+              );
+              const f = fmtIng(ing);
+              return (
+                <button key={i} onClick={() => setChecked((c) => c.map((v, j) => j === i ? !v : v))} className="rcp-btn"
+                  style={{ display: 'grid', gridTemplateColumns: '20px 64px 1fr', gap: 10, width: '100%', padding: '10px 0', borderBottom: `1px dotted ${T.ruleSoft}`, alignItems: 'center', textAlign: 'left',
+                    opacity: checked[i] ? 0.4 : 1, textDecoration: checked[i] ? 'line-through' : 'none' }}>
+                  <span style={{ width: 18, height: 18, borderRadius: 9, border: checked[i] ? 'none' : `1.5px solid ${T.faint}`, background: checked[i] ? T.accent : 'transparent', color: T.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {checked[i] && <II.check size={11} color={T.bg} strokeWidth={2} />}
+                  </span>
+                  <span style={{ fontFamily: T.mono, fontSize: 11, fontVariantNumeric: 'tabular-nums', color: f.hasQty ? T.inkSoft : T.muted, fontStyle: f.hasQty ? 'normal' : 'italic' }}>{f.qty}</span>
+                  <span style={{ fontSize: 14 }}>{ing.n}</span>
+                </button>
+              );
+            })}
           </div>
 
           {/* PREPARAZIONE */}
