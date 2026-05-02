@@ -2729,10 +2729,10 @@
     },
     {
       "nome": "50 Kalò",
-      "citta": "Londra",
+      "citta": "Napoli",
       "maestro": "Ciro Salvo",
       "stile": "Napoletana",
-      "note_menu": "Menu della sede londinese di 50 Kalò di Ciro Salvo (marzo 2026). Impasto napoletano con pomodoro San Marzano DOP Casa Marrazzo e olio EVO Colline Salernitane come fil rouge.",
+      "note_menu": "Menu della sede di Napoli di 50 Kalò di Ciro Salvo (marzo 2026). Impasto napoletano con pomodoro San Marzano DOP Casa Marrazzo e olio EVO Colline Salernitane come fil rouge.",
       "pizze": [
         {
           "nome": "Marinara",
@@ -2745,7 +2745,7 @@
             "basilico"
           ],
           "tipo": "rossa",
-          "fonte": "Ciro Salvo — 50 Kalò, Londra",
+          "fonte": "Ciro Salvo — 50 Kalò, Napoli",
           "tags": [
             "vegetariana",
             "vegana",
@@ -2768,7 +2768,7 @@
             "basilico"
           ],
           "tipo": "rossa",
-          "fonte": "Ciro Salvo — 50 Kalò, Londra",
+          "fonte": "Ciro Salvo — 50 Kalò, Napoli",
           "tags": [
             "senza-mozzarella",
             "pesce"
@@ -2785,7 +2785,7 @@
             "basilico"
           ],
           "tipo": "rossa",
-          "fonte": "Ciro Salvo — 50 Kalò, Londra",
+          "fonte": "Ciro Salvo — 50 Kalò, Napoli",
           "tags": [
             "vegetariana",
             "senza-mozzarella",
@@ -2804,7 +2804,7 @@
             "basilico"
           ],
           "tipo": "rossa",
-          "fonte": "Ciro Salvo — 50 Kalò, Londra",
+          "fonte": "Ciro Salvo — 50 Kalò, Napoli",
           "tags": [
             "vegetariana",
             "classica"
@@ -2821,7 +2821,7 @@
             "basilico"
           ],
           "tipo": "rossa",
-          "fonte": "Ciro Salvo — 50 Kalò, Londra",
+          "fonte": "Ciro Salvo — 50 Kalò, Napoli",
           "tags": [
             "vegetariana",
             "classica"
@@ -2839,7 +2839,7 @@
             "basilico"
           ],
           "tipo": "rossa",
-          "fonte": "Ciro Salvo — 50 Kalò, Londra",
+          "fonte": "Ciro Salvo — 50 Kalò, Napoli",
           "tags": [
             "vegetariana"
           ],
@@ -2856,7 +2856,7 @@
             "basilico"
           ],
           "tipo": "rossa",
-          "fonte": "Ciro Salvo — 50 Kalò, Londra",
+          "fonte": "Ciro Salvo — 50 Kalò, Napoli",
           "tags": [
             "vegetariana",
             "new"
@@ -2875,7 +2875,7 @@
             "basilico"
           ],
           "tipo": "bianca",
-          "fonte": "Ciro Salvo — 50 Kalò, Londra",
+          "fonte": "Ciro Salvo — 50 Kalò, Napoli",
           "tags": [
             "vegetariana"
           ],
@@ -2893,7 +2893,7 @@
             "basilico"
           ],
           "tipo": "rossa",
-          "fonte": "Ciro Salvo — 50 Kalò, Londra",
+          "fonte": "Ciro Salvo — 50 Kalò, Napoli",
           "tags": [
             "vegetariana",
             "new"
@@ -2913,7 +2913,7 @@
             "basilico"
           ],
           "tipo": "bianca",
-          "fonte": "Ciro Salvo — 50 Kalò, Londra",
+          "fonte": "Ciro Salvo — 50 Kalò, Napoli",
           "tags": [
             "vegetariana",
             "new"
@@ -2931,7 +2931,7 @@
             "olio EVO Colline Salernitane"
           ],
           "tipo": "bianca",
-          "fonte": "Ciro Salvo — 50 Kalò, Londra",
+          "fonte": "Ciro Salvo — 50 Kalò, Napoli",
           "tags": [],
           "note": ""
         },
@@ -2947,7 +2947,7 @@
             "basilico"
           ],
           "tipo": "rossa",
-          "fonte": "Ciro Salvo — 50 Kalò, Londra",
+          "fonte": "Ciro Salvo — 50 Kalò, Napoli",
           "tags": [],
           "note": ""
         },
@@ -2963,7 +2963,7 @@
             "basilico"
           ],
           "tipo": "rossa",
-          "fonte": "Ciro Salvo — 50 Kalò, Londra",
+          "fonte": "Ciro Salvo — 50 Kalò, Napoli",
           "tags": [
             "piccante"
           ],
@@ -2980,7 +2980,7 @@
             "basilico"
           ],
           "tipo": "rossa",
-          "fonte": "Ciro Salvo — 50 Kalò, Londra",
+          "fonte": "Ciro Salvo — 50 Kalò, Napoli",
           "tags": [
             "piccante"
           ],
@@ -2996,7 +2996,7 @@
             "olio EVO Colline Salernitane"
           ],
           "tipo": "bianca",
-          "fonte": "Ciro Salvo — 50 Kalò, Londra",
+          "fonte": "Ciro Salvo — 50 Kalò, Napoli",
           "tags": [],
           "note": ""
         },
@@ -3011,7 +3011,7 @@
             "olio EVO Colline Salernitane"
           ],
           "tipo": "bianca",
-          "fonte": "Ciro Salvo — 50 Kalò, Londra",
+          "fonte": "Ciro Salvo — 50 Kalò, Napoli",
           "tags": [],
           "note": ""
         },
@@ -3030,7 +3030,7 @@
             "basilico"
           ],
           "tipo": "rossa",
-          "fonte": "Ciro Salvo — 50 Kalò, Londra",
+          "fonte": "Ciro Salvo — 50 Kalò, Napoli",
           "tags": [
             "classica"
           ],
@@ -3046,7 +3046,7 @@
             "patate al forno"
           ],
           "tipo": "bianca",
-          "fonte": "Ciro Salvo — 50 Kalò, Londra",
+          "fonte": "Ciro Salvo — 50 Kalò, Napoli",
           "tags": [],
           "note": ""
         },
@@ -3061,7 +3061,7 @@
             "olio EVO Colline Salernitane"
           ],
           "tipo": "bianca",
-          "fonte": "Ciro Salvo — 50 Kalò, Londra",
+          "fonte": "Ciro Salvo — 50 Kalò, Napoli",
           "tags": [
             "napoletana"
           ],
@@ -3078,7 +3078,7 @@
             "olio EVO Colline Salernitane"
           ],
           "tipo": "rossa",
-          "fonte": "Ciro Salvo — 50 Kalò, Londra",
+          "fonte": "Ciro Salvo — 50 Kalò, Napoli",
           "tags": [
             "pesce"
           ],
@@ -3096,7 +3096,7 @@
             "olio EVO Colline Salernitane"
           ],
           "tipo": "bianca",
-          "fonte": "Ciro Salvo — 50 Kalò, Londra",
+          "fonte": "Ciro Salvo — 50 Kalò, Napoli",
           "tags": [],
           "note": ""
         },
@@ -3111,7 +3111,7 @@
             "basilico"
           ],
           "tipo": "bianca",
-          "fonte": "Ciro Salvo — 50 Kalò, Londra",
+          "fonte": "Ciro Salvo — 50 Kalò, Napoli",
           "tags": [
             "new",
             "napoletana"
@@ -3129,7 +3129,7 @@
             "funghi cardoncelli saltati"
           ],
           "tipo": "bianca",
-          "fonte": "Ciro Salvo — 50 Kalò, Londra",
+          "fonte": "Ciro Salvo — 50 Kalò, Napoli",
           "tags": [
             "vegetariana",
             "new"
@@ -3148,7 +3148,7 @@
             "basilico"
           ],
           "tipo": "rossa",
-          "fonte": "Ciro Salvo — 50 Kalò, Londra",
+          "fonte": "Ciro Salvo — 50 Kalò, Napoli",
           "tags": [
             "vegetariana"
           ],
@@ -3166,7 +3166,7 @@
             "menta"
           ],
           "tipo": "bianca",
-          "fonte": "Ciro Salvo — 50 Kalò, Londra",
+          "fonte": "Ciro Salvo — 50 Kalò, Napoli",
           "tags": [
             "vegetariana"
           ],
@@ -3183,7 +3183,7 @@
             "Pecorino Fiore Sardo DOP"
           ],
           "tipo": "bianca",
-          "fonte": "Ciro Salvo — 50 Kalò, Londra",
+          "fonte": "Ciro Salvo — 50 Kalò, Napoli",
           "tags": [
             "vegetariana",
             "new"
@@ -3199,7 +3199,7 @@
             "basilico"
           ],
           "tipo": "fritta",
-          "fonte": "Ciro Salvo — 50 Kalò, Londra",
+          "fonte": "Ciro Salvo — 50 Kalò, Napoli",
           "tags": [
             "vegetariana",
             "classica"
@@ -3216,7 +3216,7 @@
             "pepe nero"
           ],
           "tipo": "fritta",
-          "fonte": "Ciro Salvo — 50 Kalò, Londra",
+          "fonte": "Ciro Salvo — 50 Kalò, Napoli",
           "tags": [
             "classica",
             "napoletana"
