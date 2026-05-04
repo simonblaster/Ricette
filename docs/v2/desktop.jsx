@@ -265,6 +265,24 @@ function DesktopDetail({ recipe, go, back }) {
                 <div style={{ fontFamily: T.serif, fontSize: 16, lineHeight: 1.55, color: T.inkSoft, paddingTop: 4 }}>{p}</div>
               </div>
             ))}
+
+            {/* note della ricetta (da Paprika ZNOTES) */}
+            {recipe.notes && (
+              <div style={{ marginTop: 32, padding: '16px 20px', borderRadius: 10,
+                            background: T.card, border: `1px solid ${T.ruleSoft}` }}>
+                <Eyebrow style={{ marginBottom: 8 }}>Note</Eyebrow>
+                <p style={{ margin: 0, fontFamily: T.serif, fontStyle: 'italic',
+                            fontSize: 14, lineHeight: 1.65, color: T.inkSoft,
+                            whiteSpace: 'pre-wrap' }}>
+                  {recipe.notes}
+                </p>
+              </div>
+            )}
+
+            {/* commenti Firebase */}
+            {window.CommentiSection && (
+              <window.CommentiSection recipeUid={recipe.id} />
+            )}
           </div>
         </div>
       </div>

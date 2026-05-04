@@ -8,3 +8,6 @@ zi??????
 .DS_Store
 __pycache__/
 *.pyc
+
+# Firebase service account (credenziali private — non committare mai)
+firebase-service-account.json

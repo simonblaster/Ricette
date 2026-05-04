@@ -263,6 +263,26 @@ function MobileDetail({ recipe, go, back }) {
               <div style={{ fontSize: 14, lineHeight: 1.6, color: T.inkSoft, paddingTop: 4 }}>{p}</div>
             </div>
           ))}
+
+          {/* note della ricetta (da Paprika ZNOTES) */}
+          {recipe.notes && (
+            <div style={{ marginTop: 28, padding: '14px 16px', borderRadius: 10,
+                          background: T.card, border: `1px solid ${T.ruleSoft}` }}>
+              <Eyebrow style={{ marginBottom: 6 }}>Note</Eyebrow>
+              <p style={{ margin: 0, fontFamily: T.serif, fontStyle: 'italic',
+                          fontSize: 14, lineHeight: 1.65, color: T.inkSoft,
+                          whiteSpace: 'pre-wrap' }}>
+                {recipe.notes}
+              </p>
+            </div>
+          )}
+
+          {/* commenti Firebase */}
+          <div style={{ padding: '0 0 24px' }}>
+            {window.CommentiSection && (
+              <window.CommentiSection recipeUid={recipe.id} />
+            )}
+          </div>
         </div>
       </div>
     </Frame>

@@ -9,6 +9,7 @@ Uso:
 """
 
 import sqlite3, json, os, sys, re, shutil, io, base64, gzip, zipfile as _zipfile, uuid as _uuid
+import subprocess
 from pathlib import Path
 from datetime import datetime
 
@@ -26,6 +27,27 @@ PAPRIKA_PHOTOS = PAPRIKA_BASE / 'Photos'
 DOCS_DIR.mkdir(exist_ok=True)
 PHOTOS_DIR.mkdir(exist_ok=True)
 BACKUP_DIR.mkdir(exist_ok=True)
+
+# ── 0. Script helper: env condiviso (per passare PAPRIKA_BASE_OVERRIDE al sandbox) ──
+_env_extra = {**os.environ}
+if _paprika_override:
+    _env_extra['PAPRIKA_BASE_OVERRIDE'] = _paprika_override
+
+def _run_helper(script_name, extra_args=None):
+    """Esegue uno script Python nella stessa cartella, con lo stesso env."""
+    script = SCRIPT_DIR / script_name
+    if not script.exists():
+        print(f"   ⚠️  {script_name} non trovato — saltato")
+        return
+    cmd = [sys.executable, str(script)] + (extra_args or [])
+    result = subprocess.run(cmd, env=_env_extra, capture_output=False)
+    if result.returncode != 0:
+        print(f"   ⚠️  {script_name} terminato con codice {result.returncode}")
+
+# ── 0a. Sincronizza commenti Firebase → Paprika (prima del backup, così il
+#         backup include già i commenti) ─────────────────────────────────────
+print("💬 Sincronizzazione commenti Firebase...")
+_run_helper('sync_commenti.py')
 
 # ── 1. Backup database Paprika ────────────────────────────────────────────────
 print("💾 Backup database Paprika...")
@@ -58,6 +80,10 @@ for old in backups[:-10]:
         pass
 
 print(f"   ✅ {backup_name} ({backup_path.stat().st_size // 1024} KB)")
+
+# ── 1b. Assegna categorie automatiche alle ricette nuove ─────────────────────
+print("🏷  Assegnazione categorie automatiche...")
+_run_helper('assegna_categorie.py')   # modalità incrementale (solo ricette nuove)
 
 # ── 2. Lettura database Paprika ───────────────────────────────────────────────
 print("📖 Lettura database Paprika...")
