@@ -87,15 +87,40 @@ window.II = II;
 // simple store in-memory + listeners così tutte le viste reagiscono.
 // ─────────────────────────────────────────────────────────────
 const Store = (() => {
-  // Init: prendi le prime ricette in elenco come seed dinamico per fav/storia
-  const seedIds = (window.RECIPES || []).slice(0, 6).map(r => r.id);
-  let state = {
-    favorites: new Set(seedIds.slice(0, 3)),
-    history: seedIds.slice(0, 4),
-    shopping: new Set(),
+  // Persistenza su localStorage
+  const LS_KEY = 'recipees_store_v1';
+  const load = () => {
+    try {
+      const raw = localStorage.getItem(LS_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      return {
+        favorites: new Set(parsed.favorites || []),
+        history:   parsed.history   || [],
+        shopping:  new Set(parsed.shopping  || []),
+      };
+    } catch { return null; }
   };
+  const save = (s) => {
+    try {
+      localStorage.setItem(LS_KEY, JSON.stringify({
+        favorites: [...s.favorites],
+        history:   s.history,
+        shopping:  [...s.shopping],
+      }));
+    } catch {}
+  };
+
+  // Carica da localStorage; se non c'è nulla usa array vuoti (niente seed)
+  const persisted = load();
+  let state = persisted || {
+    favorites: new Set(),
+    history:   [],
+    shopping:  new Set(),
+  };
+
   const listeners = new Set();
-  const notify = () => listeners.forEach((l) => l());
+  const notify = () => { save(state); listeners.forEach((l) => l()); };
   return {
     get: () => state,
     subscribe(fn) { listeners.add(fn); return () => listeners.delete(fn); },
@@ -116,7 +141,7 @@ const Store = (() => {
     },
     clearShopping() { state = { ...state, shopping: new Set() }; notify(); },
     pushHistory(id) {
-      const h = [id, ...state.history.filter((x) => x !== id)].slice(0, 8);
+      const h = [id, ...state.history.filter((x) => x !== id)].slice(0, 20);
       state = { ...state, history: h }; notify();
     },
   };
