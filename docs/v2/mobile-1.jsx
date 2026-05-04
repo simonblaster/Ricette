@@ -35,24 +35,31 @@ function BottomNav({ active, go }) {
 // ─── HOME ───────────────────────────────────────────────────
 function MobileHome({ go }) {
   const store = useStore();
+  const fbUser = window.useFirebaseUser ? window.useFirebaseUser() : null;
   const featured = (window.RECIPES.find(r => r.rating >= 4 && (r.passi?.length ?? 0) > 2) || window.RECIPES[0]) || {};
   const featNome = featured.nome || 'Senza titolo';
   const featDescr = featured.descrizione || '';
   const recents = (store?.history || []).map((id) => window.RECIPES.find((r) => r.id === id)).filter(Boolean);
   const all = window.RECIPES;
+  const firstName = fbUser ? (fbUser.displayName || 'chef').split(' ')[0] : 'Simone';
   return (
     <Frame>
       <div className="rcp-scroll" style={{ flex: 1, padding: '18px 18px 90px' }}>
         {/* masthead */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 18 }}>
           <div>
-            <Eyebrow color={T.accent}>Mer · 2 mag</Eyebrow>
+            <Eyebrow color={T.accent}>Cosa cuciniamo,</Eyebrow>
             <h1 style={{ fontFamily: T.serif, fontSize: 30, fontWeight: 500, letterSpacing: -0.8, margin: '4px 0 0', lineHeight: 0.95 }}>
-              Cosa cuciniamo,<br/><span style={{ fontStyle: 'italic' }}>Simone?</span>
+              <span style={{ fontStyle: 'italic' }}>{firstName}?</span>
             </h1>
           </div>
-          <button className="rcp-btn" style={{ width: 36, height: 36, borderRadius: 18, background: T.card, border: `1px solid ${T.ruleSoft}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <II.user size={16} />
+          {/* Avatar — cliccabile: profilo se loggato, login se no */}
+          <button className="rcp-btn rcp-press"
+            onClick={() => { if (fbUser) { go('profile'); } else if (window._firebaseAuth) { window.loginGoogle && window.loginGoogle(); } }}
+            style={{ width: 36, height: 36, borderRadius: 18, background: T.card, border: `1px solid ${T.ruleSoft}`, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            {fbUser && fbUser.photoURL
+              ? <img src={fbUser.photoURL} style={{ width: 36, height: 36, objectFit: 'cover' }} alt="" />
+              : <II.user size={16} />}
           </button>
         </div>
 

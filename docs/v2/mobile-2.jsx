@@ -223,23 +223,47 @@ function MobileShopping({ go }) {
 // ─── PROFILE / FAVORITES ────────────────────────────────────
 function MobileProfile({ go }) {
   const store = useStore();
+  const fbUser = window.useFirebaseUser ? window.useFirebaseUser() : null;
   const [tab, setTab] = React.useState('fav');
   const fav = Array.from(store.favorites).map((id) => window.RECIPES.find((r) => r.id === id)).filter(Boolean);
   const hist = store.history.map((id) => window.RECIPES.find((r) => r.id === id)).filter(Boolean);
   const list = tab === 'fav' ? fav : hist;
 
+  const displayName = fbUser ? (fbUser.displayName || 'Utente') : 'Simone';
+  const firstName = displayName.split(' ')[0];
+  const initial = firstName[0].toUpperCase();
+
   return (
     <Frame>
       <div className="rcp-scroll" style={{ flex: 1, padding: '20px 18px 100px' }}>
+
+        {/* Header utente */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 22 }}>
-          <div style={{ width: 56, height: 56, borderRadius: 28, background: T.bgDeep, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: T.serif, fontSize: 22, fontStyle: 'italic', color: T.accent, fontWeight: 500 }}>S</div>
-          <div>
+          {fbUser && fbUser.photoURL
+            ? <img src={fbUser.photoURL} alt="" style={{ width: 56, height: 56, borderRadius: 28, objectFit: 'cover', flexShrink: 0 }} />
+            : <div style={{ width: 56, height: 56, borderRadius: 28, background: T.bgDeep, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: T.serif, fontSize: 22, fontStyle: 'italic', color: T.accent, fontWeight: 500 }}>{initial}</div>
+          }
+          <div style={{ minWidth: 0 }}>
             <Eyebrow>· Profilo</Eyebrow>
-            <div style={{ fontFamily: T.serif, fontSize: 22, fontWeight: 500, letterSpacing: -0.4, marginTop: 2 }}>Simone</div>
+            <div style={{ fontFamily: T.serif, fontSize: 22, fontWeight: 500, letterSpacing: -0.4, marginTop: 2 }}>{firstName}</div>
             <div style={{ fontFamily: T.mono, fontSize: 10, color: T.muted, marginTop: 2 }}>{fav.length} preferite · {hist.length} cucinate</div>
           </div>
+          {/* Login / Logout */}
+          {fbUser
+            ? <button className="rcp-btn" onClick={() => window._firebaseAuth && window._firebaseAuth.signOut()}
+                style={{ marginLeft: 'auto', fontFamily: T.mono, fontSize: 9, color: T.muted, letterSpacing: 1,
+                  textTransform: 'uppercase', padding: '5px 8px', border: `1px solid ${T.ruleSoft}`, borderRadius: 6, flexShrink: 0 }}>
+                Esci
+              </button>
+            : <button className="rcp-btn" onClick={() => window.loginGoogle && window.loginGoogle()}
+                style={{ marginLeft: 'auto', fontFamily: T.mono, fontSize: 9, color: T.accent, letterSpacing: 1,
+                  textTransform: 'uppercase', padding: '5px 8px', border: `1px solid ${T.accentSoft}`, borderRadius: 6, flexShrink: 0 }}>
+                Accedi
+              </button>
+          }
         </div>
 
+        {/* Stats */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginBottom: 22 }}>
           {[['Cucinate', hist.length], ['Preferite', fav.length], ['Settimana', 4]].map(([l, v]) => (
             <div key={l} style={{ background: T.card, border: `1px solid ${T.ruleSoft}`, borderRadius: 12, padding: '12px 10px', textAlign: 'center' }}>
@@ -249,9 +273,9 @@ function MobileProfile({ go }) {
           ))}
         </div>
 
-        {/* tabs */}
+        {/* Tabs */}
         <div style={{ display: 'flex', gap: 0, borderBottom: `1px solid ${T.ruleSoft}`, marginBottom: 14 }}>
-          {[['fav', 'Preferite'], ['hist', 'Cronologia']].map(([k, l]) => (
+          {[['fav', '♥ Preferite'], ['hist', 'Cronologia']].map(([k, l]) => (
             <button key={k} className="rcp-btn" onClick={() => setTab(k)}
               style={{ padding: '10px 16px', fontSize: 13, fontWeight: tab === k ? 600 : 500, color: tab === k ? T.ink : T.muted, borderBottom: tab === k ? `2px solid ${T.accent}` : '2px solid transparent', marginBottom: -1 }}>
               {l}
@@ -259,18 +283,34 @@ function MobileProfile({ go }) {
           ))}
         </div>
 
+        {list.length === 0 && tab === 'fav' && (
+          <div style={{ textAlign: 'center', padding: '40px 0', color: T.muted }}>
+            <II.heart size={28} color={T.faint} />
+            <div style={{ fontFamily: T.serif, fontSize: 16, fontStyle: 'italic', marginTop: 10 }}>Nessuna ricetta preferita.</div>
+            <div style={{ fontSize: 12, marginTop: 6 }}>Tocca ♥ nelle ricette per aggiungerle qui.</div>
+          </div>
+        )}
+
         {list.map((r, i) => (
-          <button key={r.id + i} onClick={() => go('detail', { recipeId: r.id })} className="rcp-btn"
-            style={{ display: 'flex', gap: 12, width: '100%', padding: '11px 0', borderBottom: `1px dotted ${T.ruleSoft}`, alignItems: 'center', textAlign: 'left' }}>
-            <div style={{ width: 48, height: 48, borderRadius: 4, overflow: 'hidden', flexShrink: 0 }}>
-              <Photo src={r.photo} label={r.nome} tone="#d4c8a8" text="#3a2f15" />
-            </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontFamily: T.serif, fontSize: 16, fontWeight: 500, letterSpacing: -0.3 }}>{r.nome}</div>
-              <div style={{ fontFamily: T.mono, fontSize: 10, color: T.muted, marginTop: 2 }}>{fmtMin(r.tempo)} · {r.categoria}</div>
-            </div>
-            {tab === 'fav' && <II.heart size={14} color={T.accent} fill={T.accent} />}
-          </button>
+          <div key={r.id + i} style={{ display: 'flex', gap: 12, width: '100%', padding: '11px 0', borderBottom: `1px dotted ${T.ruleSoft}`, alignItems: 'center' }}>
+            <button onClick={() => go('detail', { recipeId: r.id })} className="rcp-btn"
+              style={{ display: 'flex', gap: 12, flex: 1, alignItems: 'center', textAlign: 'left', minWidth: 0 }}>
+              <div style={{ width: 48, height: 48, borderRadius: 4, overflow: 'hidden', flexShrink: 0 }}>
+                <Photo src={r.photo} label={r.nome} tone="#d4c8a8" text="#3a2f15" />
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontFamily: T.serif, fontSize: 16, fontWeight: 500, letterSpacing: -0.3 }}>{r.nome}</div>
+                <div style={{ fontFamily: T.mono, fontSize: 10, color: T.muted, marginTop: 2 }}>{fmtMin(r.tempo)} · {r.categoria}</div>
+              </div>
+            </button>
+            {/* ♥ cliccabile per rimuovere dai preferiti */}
+            {tab === 'fav' && (
+              <button className="rcp-btn rcp-press" onClick={() => Store.toggleFav(r.id)}
+                style={{ padding: 8, flexShrink: 0 }}>
+                <II.heart size={16} color={T.accent} fill={T.accent} />
+              </button>
+            )}
+          </div>
         ))}
       </div>
       <BottomNav active="profile" go={go} />
