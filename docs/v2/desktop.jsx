@@ -94,8 +94,15 @@ function DesktopShell({ children, active, go, store, activeCats = null, onCat = 
             </>
           )}
 
-          {/* Footer utente */}
-          <div style={{ paddingTop: 12, marginTop: showCats ? 8 : 'auto', display: 'flex', alignItems: 'center', gap: 10, borderTop: `1px solid ${T.ruleSoft}` }}>
+          {/* Footer utente — clicca per login/logout */}
+          <button className="rcp-btn"
+            onClick={() => { if (fbUser) { go('profile'); } else { loginGoogle(); } }}
+            title={fbUser ? 'Vai al profilo' : 'Accedi con Google'}
+            style={{ paddingTop: 12, marginTop: showCats ? 8 : 'auto', display: 'flex', alignItems: 'center', gap: 10,
+              borderTop: `1px solid ${T.ruleSoft}`, width: '100%', textAlign: 'left',
+              opacity: 1, transition: 'opacity .15s' }}
+            onMouseEnter={e => e.currentTarget.style.opacity = '0.7'}
+            onMouseLeave={e => e.currentTarget.style.opacity = '1'}>
             {fbUser && fbUser.photoURL ? (
               <img src={fbUser.photoURL} alt=""
                 style={{ width: 28, height: 28, borderRadius: 14, objectFit: 'cover', flexShrink: 0 }} />
@@ -106,13 +113,14 @@ function DesktopShell({ children, active, go, store, activeCats = null, onCat = 
                 {initial}
               </div>
             )}
-            <div style={{ minWidth: 0 }}>
+            <div style={{ minWidth: 0, flex: 1 }}>
               <div style={{ fontSize: 12, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{displayName}</div>
               <div style={{ fontFamily: T.mono, fontSize: 9, color: T.muted, letterSpacing: 1 }}>
-                {store.favorites.size} ♥ · {store.history.length} cucinate
+                {fbUser ? `${store.favorites.size} ♥ · ${store.history.length} cucinate` : 'Accedi con Google'}
               </div>
             </div>
-          </div>
+            {fbUser && <span style={{ fontFamily: T.mono, fontSize: 8, color: T.faint, letterSpacing: 1 }}>esci</span>}
+          </button>
         </div>
 
         {/* ── Content ─────────────────────────────────────────── */}
@@ -169,9 +177,9 @@ function DesktopHome({ go }) {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderBottom: `1px solid ${T.ink}`, paddingBottom: 18, marginBottom: 24 }}>
           <div>
             {fbUser ? (
-              <Eyebrow color={T.accent}>
+              <div style={{ fontFamily: T.serif, fontSize: 20, fontStyle: 'italic', color: T.accent, marginBottom: 2 }}>
                 Cosa cuciniamo, {(fbUser.displayName || 'chef').split(' ')[0]}?
-              </Eyebrow>
+              </div>
             ) : (
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <Eyebrow color={T.muted}>Mer · 2 maggio</Eyebrow>
