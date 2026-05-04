@@ -1,95 +1,213 @@
 // Desktop layout — Recipees
 // Single-window app per artboard. Sidebar persistente, content area che cambia.
 
-function DesktopShell({ children, active, go, store, activeCat = null, onCat = () => {} }) {
+function DesktopShell({ children, active, go, store, activeCats = null, onCat = () => {}, showCats = false }) {
+  const fbUser = window.useFirebaseUser ? window.useFirebaseUser() : null;
+
   const navItems = [
-    { k: 'home', l: 'Indice', I: II.list },
-    { k: 'search', l: 'Cerca', I: II.search },
-    { k: 'shopping', l: 'Lista spesa', I: II.cart, badge: store.shopping.size },
-    { k: 'profile', l: 'Profilo', I: II.user },
+    { k: 'home',     l: 'Indice',      I: II.list,   dest: 'home' },
+    { k: 'search',   l: 'Cerca',       I: II.search, dest: 'search' },
+    { k: 'shopping', l: 'Lista spesa', I: II.cart,   dest: 'shopping', badge: store.shopping.size },
+    { k: 'profile',  l: 'Profilo',     I: II.user,   dest: 'profile' },
   ];
+
+  // Nome breve da mostrare nella sidebar
+  const displayName = fbUser
+    ? (fbUser.displayName || 'Utente').split(' ')[0]
+    : 'Simone';
+  const initial = displayName[0].toUpperCase();
+
   return (
     <Frame>
       <div style={{ display: 'flex', height: '100%' }}>
-        {/* sidebar */}
+        {/* ── Sidebar ─────────────────────────────────────────── */}
         <div style={{ width: 220, background: T.bgAlt, borderRight: `1px solid ${T.ruleSoft}`, display: 'flex', flexDirection: 'column', padding: '24px 16px' }}>
+          {/* Logo */}
           <div style={{ marginBottom: 28, paddingLeft: 6 }}>
-            <Eyebrow color={T.accent}>vol. III · ’26</Eyebrow>
+            <Eyebrow color={T.accent}>vol. III · '26</Eyebrow>
             <div style={{ fontFamily: T.serif, fontSize: 22, fontWeight: 500, letterSpacing: -0.5, marginTop: 4, lineHeight: 1 }}>
               Recip<span style={{ fontStyle: 'italic', color: T.accent }}>ees</span>.
             </div>
           </div>
+
+          {/* Nav principale */}
           <Eyebrow size={8}>· Naviga</Eyebrow>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 2, marginTop: 8, marginBottom: 24 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2, marginTop: 8 }}>
             {navItems.map((n) => {
               const a = active === n.k;
               return (
-                <button key={n.k} className="rcp-btn" onClick={() => go(n.k)}
-                  style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 10px', borderRadius: 8, background: a ? T.bg : 'transparent', color: a ? T.ink : T.inkSoft, fontSize: 13, fontWeight: a ? 600 : 500, textAlign: 'left', border: a ? `1px solid ${T.ruleSoft}` : '1px solid transparent' }}>
+                <button key={n.k} className="rcp-btn" onClick={() => go(n.dest)}
+                  style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 10px', borderRadius: 8,
+                    background: a ? T.bg : 'transparent', color: a ? T.ink : T.inkSoft,
+                    fontSize: 13, fontWeight: a ? 600 : 500, textAlign: 'left',
+                    border: a ? `1px solid ${T.ruleSoft}` : '1px solid transparent' }}>
                   <n.I size={14} />
                   <span style={{ flex: 1 }}>{n.l}</span>
                   {n.badge > 0 && <span style={{ fontFamily: T.mono, fontSize: 10, padding: '1px 6px', borderRadius: 999, background: T.accent, color: T.bg }}>{n.badge}</span>}
                 </button>
               );
             })}
+
+            {/* Collegamento rapido "Le mie preferite" */}
+            <button className="rcp-btn" onClick={() => go('profile')}
+              style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 10px', borderRadius: 8,
+                background: 'transparent', color: T.inkSoft, fontSize: 13, fontWeight: 500,
+                textAlign: 'left', border: '1px solid transparent', marginTop: 4 }}>
+              <II.heart size={14} color={T.accent} fill={store.favorites.size > 0 ? T.accentSoft : 'none'} />
+              <span style={{ flex: 1 }}>Le mie preferite</span>
+              {store.favorites.size > 0 && (
+                <span style={{ fontFamily: T.mono, fontSize: 10, padding: '1px 6px', borderRadius: 999, background: T.accentSoft, color: T.accent }}>
+                  {store.favorites.size}
+                </span>
+              )}
+            </button>
           </div>
-          <Eyebrow size={8}>· Categorie</Eyebrow>
-          <div style={{ display: 'flex', flexDirection: 'column', marginTop: 6, flex: 1, overflowY: 'auto', minHeight: 0 }}>
-            {window.CATEGORIES.slice(1).map((c) => (
-              <button key={c} className="rcp-btn" onClick={() => onCat(activeCat === c ? null : c)}
-                style={{ padding: '6px 10px', borderRadius: 6, fontFamily: T.serif, fontSize: 13, fontStyle: 'italic', textAlign: 'left',
-                  color: activeCat === c ? T.accent : T.inkSoft,
-                  background: activeCat === c ? T.accentSoft : 'transparent',
-                  fontWeight: activeCat === c ? 600 : 400,
-                  flexShrink: 0,
-                }}>{c}</button>
-            ))}
-          </div>
-          <div style={{ paddingTop: 12, marginTop: 8, display: 'flex', alignItems: 'center', gap: 10, borderTop: `1px solid ${T.ruleSoft}` }}>
-            <div style={{ width: 28, height: 28, borderRadius: 14, background: T.bgDeep, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: T.serif, fontSize: 14, fontStyle: 'italic', color: T.accent, fontWeight: 500 }}>S</div>
-            <div>
-              <div style={{ fontSize: 12, fontWeight: 600 }}>Simone</div>
-              <div style={{ fontFamily: T.mono, fontSize: 9, color: T.muted, letterSpacing: 1 }}>{store.favorites.size} ♥ · {store.history.length} cucinate</div>
+
+          {/* Categorie — visibili solo in home, multi-selezione */}
+          {showCats && (
+            <>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 20, marginBottom: 6 }}>
+                <Eyebrow size={8}>· Categorie</Eyebrow>
+                {activeCats && activeCats.size > 0 && (
+                  <button className="rcp-btn" onClick={() => onCat('__clear__')}
+                    style={{ fontFamily: T.mono, fontSize: 8, color: T.accent, letterSpacing: 1, textTransform: 'uppercase' }}>
+                    Azzera ×
+                  </button>
+                )}
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflowY: 'auto', minHeight: 0 }}>
+                {window.CATEGORIES.slice(1).map((c) => {
+                  const isActive = activeCats && activeCats.has(c);
+                  return (
+                    <button key={c} className="rcp-btn" onClick={() => onCat(c)}
+                      style={{ padding: '6px 10px', borderRadius: 6, fontFamily: T.serif, fontSize: 13, fontStyle: 'italic',
+                        textAlign: 'left', color: isActive ? T.accent : T.inkSoft,
+                        background: isActive ? T.accentSoft : 'transparent',
+                        fontWeight: isActive ? 600 : 400, flexShrink: 0,
+                        display: 'flex', alignItems: 'center', gap: 6 }}>
+                      {isActive && <span style={{ fontFamily: T.mono, fontSize: 9, lineHeight: 1 }}>✓</span>}
+                      {c}
+                    </button>
+                  );
+                })}
+              </div>
+            </>
+          )}
+
+          {/* Footer utente */}
+          <div style={{ paddingTop: 12, marginTop: showCats ? 8 : 'auto', display: 'flex', alignItems: 'center', gap: 10, borderTop: `1px solid ${T.ruleSoft}` }}>
+            {fbUser && fbUser.photoURL ? (
+              <img src={fbUser.photoURL} alt=""
+                style={{ width: 28, height: 28, borderRadius: 14, objectFit: 'cover', flexShrink: 0 }} />
+            ) : (
+              <div style={{ width: 28, height: 28, borderRadius: 14, background: T.bgDeep, flexShrink: 0,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontFamily: T.serif, fontSize: 14, fontStyle: 'italic', color: T.accent, fontWeight: 500 }}>
+                {initial}
+              </div>
+            )}
+            <div style={{ minWidth: 0 }}>
+              <div style={{ fontSize: 12, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{displayName}</div>
+              <div style={{ fontFamily: T.mono, fontSize: 9, color: T.muted, letterSpacing: 1 }}>
+                {store.favorites.size} ♥ · {store.history.length} cucinate
+              </div>
             </div>
           </div>
         </div>
-        {/* content */}
+
+        {/* ── Content ─────────────────────────────────────────── */}
         <div style={{ flex: 1, minWidth: 0 }}>{children}</div>
       </div>
     </Frame>
   );
 }
 
+// ── Funzione helper login Google (riutilizzata) ──────────────
+function loginGoogle(setErrore) {
+  if (!window._firebaseAuth) return;
+  const provider = new firebase.auth.GoogleAuthProvider();
+  window._firebaseAuth.signInWithPopup(provider).catch((e) => {
+    if (setErrore) setErrore('Errore accesso: ' + e.message);
+  });
+}
+window.loginGoogle = loginGoogle;
+
 // HOME desktop — editorial 3-col grid
 function DesktopHome({ go }) {
   const store = useStore();
-  const [activeCat, setActiveCat] = React.useState(null);
+  const fbUser = window.useFirebaseUser ? window.useFirebaseUser() : null;
+
+  // Multi-selezione categorie con logica AND
+  const [activeCats, setActiveCats] = React.useState(new Set());
+  const toggleCat = (c) => {
+    if (c === '__clear__') { setActiveCats(new Set()); return; }
+    setActiveCats((prev) => {
+      const s = new Set(prev);
+      s.has(c) ? s.delete(c) : s.add(c);
+      return s;
+    });
+  };
+
+  // Filtra: mostra ricette che hanno TUTTE le categorie selezionate (AND)
+  const all = activeCats.size === 0
+    ? window.RECIPES
+    : window.RECIPES.filter((r) => [...activeCats].every((cat) => (r.tag || []).includes(cat)));
+
   const featured = window.RECIPES[2];
-  const all = activeCat ? window.RECIPES.filter(r => r.tag.includes(activeCat)) : window.RECIPES;
+
+  // Titolo sezione indice
+  const indexLabel = activeCats.size === 0
+    ? 'Indice'
+    : [...activeCats].join(' + ');
+
   return (
-    <DesktopShell active="home" go={go} store={store} activeCat={activeCat} onCat={setActiveCat}>
+    <DesktopShell active="home" go={go} store={store}
+      activeCats={activeCats} onCat={toggleCat} showCats={true}>
       <div className="rcp-scroll" style={{ height: '100%', padding: '28px 36px 48px' }}>
-        {/* masthead */}
+
+        {/* ── Masthead ── */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderBottom: `1px solid ${T.ink}`, paddingBottom: 18, marginBottom: 24 }}>
           <div>
-            <Eyebrow color={T.accent}>Mer · 2 maggio</Eyebrow>
+            {fbUser ? (
+              <Eyebrow color={T.accent}>
+                Cosa cuciniamo, {(fbUser.displayName || 'chef').split(' ')[0]}?
+              </Eyebrow>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Eyebrow color={T.muted}>Mer · 2 maggio</Eyebrow>
+                {window._firebaseAuth && (
+                  <button className="rcp-btn" onClick={() => loginGoogle()}
+                    style={{ fontFamily: T.mono, fontSize: 8, letterSpacing: 1.5, textTransform: 'uppercase',
+                      color: T.accent, borderBottom: `1px solid ${T.accentSoft}`, paddingBottom: 1 }}>
+                    Accedi
+                  </button>
+                )}
+              </div>
+            )}
             <h1 style={{ fontFamily: T.serif, fontSize: 56, fontWeight: 500, letterSpacing: -1.6, margin: '4px 0 0', lineHeight: 0.9 }}>
               Le mie <span style={{ fontStyle: 'italic' }}>ricette.</span>
             </h1>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
-            <button onClick={() => go('search')} className="rcp-btn" style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px', background: T.card, border: `1px solid ${T.ruleSoft}`, borderRadius: 999, fontSize: 12, color: T.muted }}>
-              <II.search size={12} /> Cerca <span style={{ fontFamily: T.mono, fontSize: 10, padding: '1px 5px', background: T.bgAlt, borderRadius: 4, marginLeft: 6 }}>⌘K</span>
+            <button onClick={() => go('search')} className="rcp-btn"
+              style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 14px',
+                background: T.card, border: `1px solid ${T.ruleSoft}`, borderRadius: 999,
+                fontSize: 12, color: T.muted }}>
+              <II.search size={12} /> Cerca
+              <span style={{ fontFamily: T.mono, fontSize: 10, padding: '1px 5px', background: T.bgAlt, borderRadius: 4, marginLeft: 6 }}>⌘K</span>
             </button>
-            <button className="rcp-btn" style={{ padding: '8px 14px', background: T.ink, color: T.bg, borderRadius: 999, fontSize: 12, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <button className="rcp-btn"
+              style={{ padding: '8px 14px', background: T.ink, color: T.bg, borderRadius: 999,
+                fontSize: 12, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
               <II.plus size={12} color={T.bg} /> Aggiungi
             </button>
           </div>
         </div>
 
-        {/* featured */}
+        {/* ── Featured ── */}
         <button onClick={() => go('detail', { recipeId: featured.id })} className="rcp-btn"
-          style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 32, width: '100%', padding: '8px 0 28px', textAlign: 'left', borderBottom: `1px solid ${T.ruleSoft}` }}>
+          style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 32, width: '100%',
+            padding: '8px 0 28px', textAlign: 'left', borderBottom: `1px solid ${T.ruleSoft}` }}>
           <div style={{ borderRadius: 4, overflow: 'hidden' }}>
             <Photo src={featured.photo} label={featured.nome} tone="#d4c8a8" text="#3a2f15" ratio="3/2" />
           </div>
@@ -110,36 +228,61 @@ function DesktopHome({ go }) {
           </div>
         </button>
 
-        {/* index 3-col */}
+        {/* ── Index 3-col ── */}
         <div style={{ marginTop: 28, display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 16 }}>
-          <Eyebrow>· {activeCat ? activeCat : 'Indice'} — {all.length} ricette</Eyebrow>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <Eyebrow>· {indexLabel} — {all.length} ricett{all.length === 1 ? 'a' : 'e'}</Eyebrow>
+            {activeCats.size > 0 && (
+              <button className="rcp-btn" onClick={() => setActiveCats(new Set())}
+                style={{ fontFamily: T.mono, fontSize: 8, color: T.accent,
+                  letterSpacing: 1, textTransform: 'uppercase', borderBottom: `1px solid ${T.accentSoft}` }}>
+                Azzera filtri ×
+              </button>
+            )}
+          </div>
           <div style={{ display: 'flex', gap: 12 }}>
             <Eyebrow>ordine: a-z</Eyebrow>
             <Eyebrow color={T.accent}>griglia</Eyebrow>
           </div>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px 28px' }}>
-          {all.map((r, i) => (
-            <button key={r.id} onClick={() => go('detail', { recipeId: r.id })} className="rcp-btn"
-              style={{ textAlign: 'left', display: 'block' }}>
-              <div style={{ borderRadius: 4, overflow: 'hidden', marginBottom: 10 }}>
-                <Photo src={r.photo} label={r.nome} tone="#d4c8a8" text="#3a2f15" ratio="4/3" />
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
-                <Eyebrow size={8}>№{(i + 1).toString().padStart(2, '0')} · {r.categoria}</Eyebrow>
-                {store.favorites.has(r.id) && <span style={{ color: T.accent, fontSize: 11 }}>♥</span>}
-              </div>
-              <div style={{ fontFamily: T.serif, fontSize: 22, fontWeight: 500, letterSpacing: -0.5, lineHeight: 1.05 }}>{r.nome}</div>
-              <div style={{ fontFamily: T.mono, fontSize: 10, color: T.muted, marginTop: 6, letterSpacing: 1, textTransform: 'uppercase' }}>{fmtMin(r.tempo)} · {r.porzioni} pers · {r.difficolta}</div>
+
+        {all.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '60px 0', color: T.muted }}>
+            <div style={{ fontFamily: T.serif, fontSize: 20, fontStyle: 'italic', marginBottom: 8 }}>
+              Nessuna ricetta con tutte le categorie selezionate.
+            </div>
+            <button className="rcp-btn" onClick={() => setActiveCats(new Set())}
+              style={{ fontSize: 12, color: T.accent, fontFamily: T.mono, letterSpacing: 1 }}>
+              Azzera filtri
             </button>
-          ))}
-        </div>
+          </div>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px 28px' }}>
+            {all.map((r, i) => (
+              <button key={r.id} onClick={() => go('detail', { recipeId: r.id })} className="rcp-btn"
+                style={{ textAlign: 'left', display: 'block' }}>
+                <div style={{ borderRadius: 4, overflow: 'hidden', marginBottom: 10 }}>
+                  <Photo src={r.photo} label={r.nome} tone="#d4c8a8" text="#3a2f15" ratio="4/3" />
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
+                  <Eyebrow size={8}>№{(i + 1).toString().padStart(2, '0')} · {r.categoria}</Eyebrow>
+                  {store.favorites.has(r.id) && <span style={{ color: T.accent, fontSize: 11 }}>♥</span>}
+                </div>
+                <div style={{ fontFamily: T.serif, fontSize: 22, fontWeight: 500, letterSpacing: -0.5, lineHeight: 1.05 }}>{r.nome}</div>
+                <div style={{ fontFamily: T.mono, fontSize: 10, color: T.muted, marginTop: 6, letterSpacing: 1, textTransform: 'uppercase' }}>
+                  {fmtMin(r.tempo)} · {r.porzioni} pers · {r.difficolta}
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     </DesktopShell>
   );
 }
 
 // DETAIL desktop — 2-col layout: hero + actions left, ingredienti+passi right
+// Nota: showCats è false (default) → categorie non appaiono nella sidebar
 function DesktopDetail({ recipe, go, back }) {
   const store = useStore();
   const { servings, setS, fmtIng } = useServings(recipe.porzioni);
@@ -162,7 +305,8 @@ function DesktopDetail({ recipe, go, back }) {
   return (
     <DesktopShell active="home" go={go} store={store}>
       <div className="rcp-scroll" style={{ height: '100%', padding: '24px 36px 48px' }}>
-        <button onClick={back} className="rcp-btn" style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: T.muted, marginBottom: 18, textTransform: 'uppercase', letterSpacing: 1.5, fontFamily: T.mono }}>
+        <button onClick={back} className="rcp-btn"
+          style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: T.muted, marginBottom: 18, textTransform: 'uppercase', letterSpacing: 1.5, fontFamily: T.mono }}>
           <II.back size={11} color={T.muted} /> Indice
         </button>
 
@@ -218,7 +362,7 @@ function DesktopDetail({ recipe, go, back }) {
             <p style={{ fontFamily: T.serif, fontStyle: 'italic', fontSize: 16, lineHeight: 1.55, color: T.inkSoft, margin: '14px 0 0', maxWidth: 460 }}>
               {recipe.descrizione}
             </p>
-            <div style={{ display: 'flex', gap: 6, marginTop: 14 }}>
+            <div style={{ display: 'flex', gap: 6, marginTop: 14, flexWrap: 'wrap' }}>
               {(recipe.tag || []).map((t) => <Tag key={t} kind="olive">{t}</Tag>)}
             </div>
 
@@ -227,7 +371,10 @@ function DesktopDetail({ recipe, go, back }) {
               <h2 style={{ fontFamily: T.serif, fontSize: 22, fontWeight: 500, letterSpacing: -0.4, margin: 0, fontStyle: 'italic' }}>Ingredienti</h2>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <button onClick={addToShopping} className="rcp-btn"
-                  style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 11px', border: `1px solid ${addedToCart ? T.accent : T.ruleSoft}`, borderRadius: 999, fontSize: 11, color: addedToCart ? T.accent : T.inkSoft, background: addedToCart ? T.accentSoft : 'transparent', transition: 'all .2s' }}>
+                  style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 11px',
+                    border: `1px solid ${addedToCart ? T.accent : T.ruleSoft}`, borderRadius: 999,
+                    fontSize: 11, color: addedToCart ? T.accent : T.inkSoft,
+                    background: addedToCart ? T.accentSoft : 'transparent', transition: 'all .2s' }}>
                   <II.cart size={11} color={addedToCart ? T.accent : T.inkSoft} />{addedToCart ? 'Aggiunto!' : 'Lista spesa'}
                 </button>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4, background: T.card, border: `1px solid ${T.ruleSoft}`, borderRadius: 999, padding: 2 }}>
@@ -245,9 +392,13 @@ function DesktopDetail({ recipe, go, back }) {
                 const f = fmtIng(ing);
                 return (
                   <button key={i} onClick={() => setChecked((c) => c.map((v, j) => j === i ? !v : v))} className="rcp-btn"
-                    style={{ display: 'grid', gridTemplateColumns: '20px 70px 1fr', gap: 12, width: '100%', padding: '8px 0', borderBottom: `1px dotted ${T.ruleSoft}`, alignItems: 'center', textAlign: 'left',
+                    style={{ display: 'grid', gridTemplateColumns: '20px 70px 1fr', gap: 12, width: '100%', padding: '8px 0',
+                      borderBottom: `1px dotted ${T.ruleSoft}`, alignItems: 'center', textAlign: 'left',
                       opacity: checked[i] ? 0.4 : 1, textDecoration: checked[i] ? 'line-through' : 'none' }}>
-                    <span style={{ width: 16, height: 16, borderRadius: 8, border: checked[i] ? 'none' : `1.5px solid ${T.faint}`, background: checked[i] ? T.accent : 'transparent', color: T.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <span style={{ width: 16, height: 16, borderRadius: 8,
+                      border: checked[i] ? 'none' : `1.5px solid ${T.faint}`,
+                      background: checked[i] ? T.accent : 'transparent', color: T.bg,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       {checked[i] && <II.check size={9} color={T.bg} strokeWidth={2} />}
                     </span>
                     <span style={{ fontFamily: T.mono, fontSize: 11, fontVariantNumeric: 'tabular-nums', color: f.hasQty ? T.inkSoft : T.muted, fontStyle: f.hasQty ? 'normal' : 'italic' }}>{f.qty}</span>
@@ -260,20 +411,18 @@ function DesktopDetail({ recipe, go, back }) {
             {/* passi */}
             <h2 style={{ fontFamily: T.serif, fontSize: 22, fontWeight: 500, letterSpacing: -0.4, margin: '32px 0 14px', fontStyle: 'italic' }}>Preparazione</h2>
             {recipe.passi.map((p, i) => (
-              <div key={i} style={{ display: 'grid', gridTemplateColumns: '50px 1fr', gap: 14, padding: '14px 0', borderTop: i === 0 ? `1px solid ${T.ink}` : `1px solid ${T.ruleSoft}` }}>
+              <div key={i} style={{ display: 'grid', gridTemplateColumns: '50px 1fr', gap: 14, padding: '14px 0',
+                borderTop: i === 0 ? `1px solid ${T.ink}` : `1px solid ${T.ruleSoft}` }}>
                 <div style={{ fontFamily: T.serif, fontSize: 44, fontWeight: 500, color: T.accent, fontStyle: 'italic', lineHeight: 0.85 }}>{i + 1}</div>
                 <div style={{ fontFamily: T.serif, fontSize: 16, lineHeight: 1.55, color: T.inkSoft, paddingTop: 4 }}>{p}</div>
               </div>
             ))}
 
-            {/* note della ricetta (da Paprika ZNOTES) */}
+            {/* note */}
             {recipe.notes && (
-              <div style={{ marginTop: 32, padding: '16px 20px', borderRadius: 10,
-                            background: T.card, border: `1px solid ${T.ruleSoft}` }}>
+              <div style={{ marginTop: 32, padding: '16px 20px', borderRadius: 10, background: T.card, border: `1px solid ${T.ruleSoft}` }}>
                 <Eyebrow style={{ marginBottom: 8 }}>Note</Eyebrow>
-                <p style={{ margin: 0, fontFamily: T.serif, fontStyle: 'italic',
-                            fontSize: 14, lineHeight: 1.65, color: T.inkSoft,
-                            whiteSpace: 'pre-wrap' }}>
+                <p style={{ margin: 0, fontFamily: T.serif, fontStyle: 'italic', fontSize: 14, lineHeight: 1.65, color: T.inkSoft, whiteSpace: 'pre-wrap' }}>
                   {recipe.notes}
                 </p>
               </div>

@@ -234,6 +234,20 @@ function Frame({ children, bg = T.bg, style = {} }) {
 }
 window.Frame = Frame;
 
+// Hook: legge auth state Firebase e lo espone come valore React
+function useFirebaseUser() {
+  const [user, setUser] = React.useState(() =>
+    window._firebaseAuth ? window._firebaseAuth.currentUser : null
+  );
+  React.useEffect(() => {
+    const auth = window._firebaseAuth;
+    if (!auth) return;
+    return auth.onAuthStateChanged(setUser);
+  }, []);
+  return user;
+}
+window.useFirebaseUser = useFirebaseUser;
+
 // CSS injection per scrollbar nascosta + scelte tipografiche
 if (typeof document !== 'undefined' && !document.getElementById('recipees-styles')) {
   const s = document.createElement('style');

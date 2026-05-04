@@ -212,23 +212,52 @@ function DesktopShopping({ go }) {
 
 function DesktopProfile({ go }) {
   const store = useStore();
+  const fbUser = window.useFirebaseUser ? window.useFirebaseUser() : null;
   const [tab, setTab] = React.useState('fav');
   const fav = Array.from(store.favorites).map((id) => window.RECIPES.find((r) => r.id === id)).filter(Boolean);
   const hist = store.history.map((id) => window.RECIPES.find((r) => r.id === id)).filter(Boolean);
   const list = tab === 'fav' ? fav : hist;
+
+  const displayName = fbUser
+    ? (fbUser.displayName || 'Utente')
+    : 'Simone Borgheresi';
+  const nameParts = displayName.split(' ');
+  const firstName = nameParts[0];
+  const restName = nameParts.slice(1).join(' ');
+  const initial = firstName[0].toUpperCase();
+
   return (
     <DesktopShell active="profile" go={go} store={store}>
       <div className="rcp-scroll" style={{ height: '100%', padding: '28px 36px 48px' }}>
+
+        {/* ── Header utente ── */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 18, marginBottom: 24 }}>
-          <div style={{ width: 72, height: 72, borderRadius: 36, background: T.bgDeep, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: T.serif, fontSize: 32, fontStyle: 'italic', color: T.accent, fontWeight: 500 }}>S</div>
+          {fbUser && fbUser.photoURL ? (
+            <img src={fbUser.photoURL} alt=""
+              style={{ width: 72, height: 72, borderRadius: 36, objectFit: 'cover', flexShrink: 0 }} />
+          ) : (
+            <div style={{ width: 72, height: 72, borderRadius: 36, background: T.bgDeep, flexShrink: 0,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontFamily: T.serif, fontSize: 32, fontStyle: 'italic', color: T.accent, fontWeight: 500 }}>
+              {initial}
+            </div>
+          )}
           <div>
             <Eyebrow color={T.accent}>· Profilo</Eyebrow>
             <h1 style={{ fontFamily: T.serif, fontSize: 36, fontWeight: 500, letterSpacing: -1, margin: '4px 0 0' }}>
-              Simone <span style={{ fontStyle: 'italic', color: T.muted }}>Blaster</span>
+              {firstName}{restName && <span style={{ fontStyle: 'italic', color: T.muted }}> {restName}</span>}
             </h1>
+            {fbUser && (
+              <button className="rcp-btn" onClick={() => window._firebaseAuth && window._firebaseAuth.signOut()}
+                style={{ fontFamily: T.mono, fontSize: 9, color: T.muted, letterSpacing: 1,
+                  textTransform: 'uppercase', marginTop: 4, borderBottom: `1px solid ${T.ruleSoft}` }}>
+                Esci dall'account
+              </button>
+            )}
           </div>
         </div>
 
+        {/* ── Stats ── */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 28 }}>
           {[['Cucinate', hist.length], ['Preferite', fav.length], ['Settimana', 4], ['Tot. ricette', window.RECIPES.length]].map(([l, v]) => (
             <div key={l} style={{ background: T.card, border: `1px solid ${T.ruleSoft}`, borderRadius: 12, padding: '16px' }}>
@@ -238,25 +267,60 @@ function DesktopProfile({ go }) {
           ))}
         </div>
 
+        {/* ── Tab bar ── */}
         <div style={{ display: 'flex', gap: 0, borderBottom: `1px solid ${T.ruleSoft}`, marginBottom: 18 }}>
-          {[['fav', 'Preferite'], ['hist', 'Cronologia']].map(([k, l]) => (
+          {[['fav', '♥ Preferite'], ['hist', 'Cronologia']].map(([k, l]) => (
             <button key={k} className="rcp-btn" onClick={() => setTab(k)}
-              style={{ padding: '10px 18px', fontSize: 14, fontWeight: tab === k ? 600 : 500, color: tab === k ? T.ink : T.muted, borderBottom: tab === k ? `2px solid ${T.accent}` : '2px solid transparent', marginBottom: -1 }}>
+              style={{ padding: '10px 18px', fontSize: 14, fontWeight: tab === k ? 600 : 500,
+                color: tab === k ? T.ink : T.muted,
+                borderBottom: tab === k ? `2px solid ${T.accent}` : '2px solid transparent', marginBottom: -1 }}>
               {l}
             </button>
           ))}
         </div>
 
+        {/* ── Grid ── */}
+        {list.length === 0 && tab === 'fav' && (
+          <div style={{ textAlign: 'center', padding: '60px 0', color: T.muted }}>
+            <II.heart size={36} color={T.faint} />
+            <div style={{ fontFamily: T.serif, fontSize: 20, fontStyle: 'italic', marginTop: 14 }}>
+              Ancora nessuna ricetta preferita.
+            </div>
+            <div style={{ fontSize: 13, marginTop: 8 }}>
+              Tocca il ♥ nelle ricette per aggiungerle qui.
+            </div>
+          </div>
+        )}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px 24px' }}>
           {list.map((r) => (
-            <button key={r.id} onClick={() => go('detail', { recipeId: r.id })} className="rcp-btn" style={{ textAlign: 'left' }}>
-              <div style={{ borderRadius: 4, overflow: 'hidden', marginBottom: 8 }}>
-                <Photo src={r.photo} label={r.nome} tone="#d4c8a8" text="#3a2f15" ratio="4/3" />
-              </div>
-              <Eyebrow size={8}>{r.categoria}</Eyebrow>
-              <div style={{ fontFamily: T.serif, fontSize: 18, fontWeight: 500, letterSpacing: -0.3, marginTop: 2 }}>{r.nome}</div>
-              <div style={{ fontFamily: T.mono, fontSize: 10, color: T.muted, marginTop: 4 }}>{fmtMin(r.tempo)} · {r.porzioni} pers</div>
-            </button>
+            <div key={r.id} style={{ position: 'relative' }}>
+              <button onClick={() => go('detail', { recipeId: r.id })} className="rcp-btn"
+                style={{ textAlign: 'left', width: '100%', display: 'block' }}>
+                <div style={{ borderRadius: 4, overflow: 'hidden', marginBottom: 8, position: 'relative' }}>
+                  <Photo src={r.photo} label={r.nome} tone="#d4c8a8" text="#3a2f15" ratio="4/3" />
+                  {/* Bottone rimuovi dai preferiti — solo nel tab preferite */}
+                  {tab === 'fav' && (
+                    <button
+                      className="rcp-btn"
+                      onClick={(e) => { e.stopPropagation(); Store.toggleFav(r.id); }}
+                      title="Rimuovi dai preferiti"
+                      style={{ position: 'absolute', top: 7, right: 7,
+                        width: 28, height: 28, borderRadius: 14,
+                        background: 'rgba(250,248,243,0.92)',
+                        border: `1px solid ${T.ruleSoft}`,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        boxShadow: '0 1px 4px rgba(0,0,0,0.12)' }}>
+                      <II.heart size={13} fill={T.accent} color={T.accent} />
+                    </button>
+                  )}
+                </div>
+                <Eyebrow size={8}>{r.categoria}</Eyebrow>
+                <div style={{ fontFamily: T.serif, fontSize: 18, fontWeight: 500, letterSpacing: -0.3, marginTop: 2 }}>{r.nome}</div>
+                <div style={{ fontFamily: T.mono, fontSize: 10, color: T.muted, marginTop: 4 }}>
+                  {fmtMin(r.tempo)} · {r.porzioni} pers
+                </div>
+              </button>
+            </div>
           ))}
         </div>
       </div>
