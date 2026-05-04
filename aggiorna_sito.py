@@ -210,6 +210,16 @@ print(f"   ✅ {n_recipes} ricette, {len(all_cats)} categorie, {len(photo_uids)}
 # ── 6. .nojekyll per GitHub Pages ─────────────────────────────────────────────
 (DOCS_DIR / ".nojekyll").write_text("")
 
+# ── 6b. Cache-busting: aggiorna il timestamp ?v= nei tag <script> di index.html ──
+import re as _re, time as _time
+_idx = DOCS_DIR / 'index.html'
+_v   = str(int(_time.time()))
+_html = _idx.read_text(encoding='utf-8')
+_html = _re.sub(r'(v2/\w[\w\-]*\.jsx)(\?v=\d+)?', lambda m: f'{m.group(1)}?v={_v}', _html)
+_html = _re.sub(r'<!-- v=\d+', f'<!-- v={_v}', _html)
+_idx.write_text(_html, encoding='utf-8')
+print(f"   🔖 Cache-bust JSX: ?v={_v}")
+
 # ── 7. Export completo .paprikarecipes ────────────────────────────────────────
 print("📦 Export Paprika → .paprikarecipes...")
 
