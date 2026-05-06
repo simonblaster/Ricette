@@ -79,6 +79,19 @@ def fix_ingredienti(text: str, nome_map: dict) -> tuple:
 _TAG_SPLIT = re.compile(r'(\[recipe:[^\]]+\])')
 
 
+def normalizza_spaziatura_sezioni(text: str) -> str:
+    """
+    Garantisce che ogni == Header == sia preceduto da una riga vuota.
+    Corregge sezioni già esistenti con spaziatura insufficiente.
+    """
+    if not text or '== ' not in text:
+        return text
+    # Assicura doppio newline prima di ogni == Header ==
+    # (ma non all'inizio del testo)
+    text = re.sub(r'([^\n])\n(== [^\n]+ ==)', r'\1\n\n\2', text)
+    return text
+
+
 def fix_tag_spezzati(text: str, nomi_validi: set) -> str:
     """
     Ripara tag [recipe:...] spezzati dalla fase di exact-match.
@@ -633,10 +646,11 @@ def main():
         desc_orig  = r['ZDESCRIPTIONTEXT'] or ''
         notes_orig = r['ZNOTES']           or ''
 
-        # ── Fase 0: ripara tag spezzati da run precedenti ──────────────────
+        # ── Fase 0: ripara tag spezzati e normalizza spaziatura ────────────
         dirs_orig  = fix_tag_spezzati(dirs_orig,  nomi_validi)
         desc_orig  = fix_tag_spezzati(desc_orig,  nomi_validi)
         notes_orig = fix_tag_spezzati(notes_orig, nomi_validi)
+        notes_orig = normalizza_spaziatura_sezioni(notes_orig)
 
         # ── Fase 1: exact matching ──────────────────────────────────────────
         if ONLY_CLUSTER:
