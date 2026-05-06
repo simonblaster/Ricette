@@ -102,11 +102,21 @@
 
   const transformed = raw.map((r) => {
     const por = parsePorzioni(r.servings);
+    // Mappa nome ricetta → uid per risolvere [recipe:Nome] negli ingredienti
+    const recipeByName = {};
+    raw.forEach(rx => { if (rx.name) recipeByName[rx.name.toLowerCase()] = rx.uid; });
+
     const ingredienti = (r.ingredients || []).map(it => {
       if (it.type === 'header') return { header: true, n: it.text };
       // Bold-as-header: "**Header**"
       const bm = (it.text || '').match(/^\*\*(.+)\*\*$/);
       if (bm) return { header: true, n: bm[1] };
+      // Link a un'altra ricetta: [recipe:Nome]
+      const rm = (it.text || '').match(/^\[recipe:(.+)\]$/);
+      if (rm) {
+        const linkedUid = recipeByName[rm[1].toLowerCase()];
+        if (linkedUid) return { recipeLink: linkedUid, n: rm[1], q: '', u: '', qb: true };
+      }
       return parseIngredient(it.text);
     });
     return {

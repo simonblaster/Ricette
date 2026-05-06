@@ -267,7 +267,7 @@ function DesktopHome({ go }) {
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px 28px' }}>
             {all.map((r, i) => (
-              <button key={r.id} onClick={() => go('detail', { recipeId: r.id })} className="rcp-btn"
+              <button key={r.id} onClick={() => go('detail', { recipeId: r.id, contextIds: all.map(x => x.id) })} className="rcp-btn"
                 style={{ textAlign: 'left', display: 'block' }}>
                 <div style={{ borderRadius: 4, overflow: 'hidden', marginBottom: 10 }}>
                   <Photo src={r.photo} label={r.nome} tone="#d4c8a8" text="#3a2f15" ratio="4/3" />
@@ -291,11 +291,25 @@ function DesktopHome({ go }) {
 
 // DETAIL desktop — 2-col layout: hero + actions left, ingredienti+passi right
 // Nota: showCats è false (default) → categorie non appaiono nella sidebar
-function DesktopDetail({ recipe, go, back }) {
+function DesktopDetail({ recipe, go, back, contextIds = [] }) {
   const store = useStore();
   const { servings, setS, fmtIng } = useServings(recipe.porzioni);
   const [checked, setChecked] = React.useState(() => recipe.ingredienti.map(() => false));
   const [addedToCart, setAddedToCart] = React.useState(false);
+
+  // Navigazione contestuale prev/next
+  const ctxIdx = contextIds.indexOf(recipe.id);
+  const prevId = ctxIdx > 0 ? contextIds[ctxIdx - 1] : null;
+  const nextId = ctxIdx >= 0 && ctxIdx < contextIds.length - 1 ? contextIds[ctxIdx + 1] : null;
+  const prevR  = prevId ? window.RECIPES.find(r => r.id === prevId) : null;
+  const nextR  = nextId ? window.RECIPES.find(r => r.id === nextId) : null;
+  const goCtx  = (id) => go('detail', { recipeId: id, contextIds });
+
+  // Ricette correlate
+  const links     = (window.RECIPE_LINKS || {})[recipe.id] || {};
+  const usesR     = (links.uses    || []).map(id => window.RECIPES.find(r => r.id === id)).filter(Boolean);
+  const usedInR   = (links.used_in || []).map(id => window.RECIPES.find(r => r.id === id)).filter(Boolean);
+
   const addToShopping = () => {
     const items = recipe.ingredienti
       .filter(ing => !ing.header)
@@ -313,10 +327,40 @@ function DesktopDetail({ recipe, go, back }) {
   return (
     <DesktopShell active="home" go={go} store={store}>
       <div className="rcp-scroll" style={{ height: '100%', padding: '24px 36px 48px' }}>
-        <button onClick={back} className="rcp-btn"
-          style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: T.muted, marginBottom: 18, textTransform: 'uppercase', letterSpacing: 1.5, fontFamily: T.mono }}>
-          <II.back size={11} color={T.muted} /> Indice
-        </button>
+        {/* Barra navigazione: ← Indice  |  ‹ Prev  N/tot  Next › */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20 }}>
+          <button onClick={back} className="rcp-btn"
+            style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: T.muted,
+              textTransform: 'uppercase', letterSpacing: 1.5, fontFamily: T.mono, flexShrink: 0 }}>
+            <II.back size={11} color={T.muted} /> Indice
+          </button>
+          {contextIds.length > 1 && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1 }}>
+              <div style={{ height: 14, borderLeft: `1px solid ${T.ruleSoft}`, flexShrink: 0 }} />
+              <button onClick={() => prevId && goCtx(prevId)} className="rcp-btn"
+                style={{ display: 'flex', alignItems: 'center', gap: 4, opacity: prevId ? 1 : 0.25,
+                  pointerEvents: prevId ? 'auto' : 'none' }}>
+                <II.chevL size={12} color={T.muted} />
+                {prevR && <span style={{ fontFamily: T.serif, fontSize: 12, fontStyle: 'italic',
+                  color: T.inkSoft, maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {prevR.nome}
+                </span>}
+              </button>
+              <span style={{ fontFamily: T.mono, fontSize: 9, color: T.faint, flexShrink: 0 }}>
+                {ctxIdx + 1} / {contextIds.length}
+              </span>
+              <button onClick={() => nextId && goCtx(nextId)} className="rcp-btn"
+                style={{ display: 'flex', alignItems: 'center', gap: 4, opacity: nextId ? 1 : 0.25,
+                  pointerEvents: nextId ? 'auto' : 'none', flexDirection: 'row-reverse' }}>
+                <II.chevR size={12} color={T.muted} />
+                {nextR && <span style={{ fontFamily: T.serif, fontSize: 12, fontStyle: 'italic',
+                  color: T.inkSoft, maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {nextR.nome}
+                </span>}
+              </button>
+            </div>
+          )}
+        </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: 40 }}>
           {/* LEFT — hero + meta */}
@@ -433,6 +477,41 @@ function DesktopDetail({ recipe, go, back }) {
                 <p style={{ margin: 0, fontFamily: T.serif, fontStyle: 'italic', fontSize: 14, lineHeight: 1.65, color: T.inkSoft, whiteSpace: 'pre-wrap' }}>
                   {recipe.notes}
                 </p>
+              </div>
+            )}
+
+            {/* RICETTE CORRELATE */}
+            {(usesR.length > 0 || usedInR.length > 0) && (
+              <div style={{ marginTop: 32 }}>
+                <div style={{ borderTop: `1px solid ${T.ink}`, paddingTop: 14, marginBottom: 14 }}>
+                  <Eyebrow>· Ricette correlate</Eyebrow>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {[...usesR.map(r => ({ r, label: 'Base usata' })),
+                    ...usedInR.map(r => ({ r, label: 'Usata in' }))].map(({ r, label }) => (
+                    <button key={r.id} onClick={() => goCtx(r.id)} className="rcp-btn rcp-press"
+                      style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 14px',
+                        borderRadius: 10, background: T.bgAlt, border: `1px solid ${T.ruleSoft}`,
+                        textAlign: 'left', transition: 'background .15s' }}
+                      onMouseEnter={e => e.currentTarget.style.background = T.bgDeep}
+                      onMouseLeave={e => e.currentTarget.style.background = T.bgAlt}>
+                      <div style={{ width: 52, height: 52, borderRadius: 6, overflow: 'hidden', flexShrink: 0 }}>
+                        <Photo src={r.photo} label={r.nome} tone="#d4c8a8" text="#3a2f15" />
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontFamily: T.mono, fontSize: 8, color: T.accent, letterSpacing: 1.5,
+                          textTransform: 'uppercase', marginBottom: 3 }}>{label}</div>
+                        <div style={{ fontFamily: T.serif, fontSize: 16, fontWeight: 500, letterSpacing: -0.3,
+                          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.nome}</div>
+                        <div style={{ fontFamily: T.mono, fontSize: 9, color: T.muted, marginTop: 2,
+                          letterSpacing: 1, textTransform: 'uppercase' }}>
+                          {fmtMin(r.tempo)} · {r.categoria}
+                        </div>
+                      </div>
+                      <II.chevR size={13} color={T.muted} />
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
 

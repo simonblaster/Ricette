@@ -61,7 +61,7 @@ function MobileSearch({ go, back }) {
         <Eyebrow>· {filtered.length} risultat{filtered.length === 1 ? 'o' : 'i'}</Eyebrow>
         <div style={{ marginTop: 10 }}>
           {filtered.map((r, i) => (
-            <button key={r.id} onClick={() => go('detail', { recipeId: r.id })} className="rcp-btn"
+            <button key={r.id} onClick={() => go('detail', { recipeId: r.id, contextIds: filtered.map(x => x.id) })} className="rcp-btn"
               style={{ display: 'flex', gap: 12, width: '100%', padding: '12px 0', borderBottom: `1px solid ${T.ruleSoft}`, alignItems: 'center', textAlign: 'left' }}>
               <div style={{ width: 56, height: 56, borderRadius: 4, overflow: 'hidden', flexShrink: 0 }}>
                 <Photo src={r.photo} label={r.nome} tone="#d4c8a8" text="#3a2f15" />

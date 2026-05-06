@@ -42,6 +42,8 @@ function MobileHome({ go }) {
   const recents = (store?.history || []).map((id) => window.RECIPES.find((r) => r.id === id)).filter(Boolean);
   const all = window.RECIPES;
   const firstName = fbUser ? (fbUser.displayName || 'chef').split(' ')[0] : 'Simone';
+  // Tutti gli ID nell'ordine dell'indice (usato per navigazione prev/next)
+  const allIds = all.map(r => r.id);
   return (
     <Frame>
       <div className="rcp-scroll" style={{ flex: 1, padding: '18px 18px 90px' }}>
@@ -74,7 +76,7 @@ function MobileHome({ go }) {
         </button>
 
         {/* featured editorial card */}
-        <button onClick={() => go('detail', { recipeId: featured.id })} className="rcp-btn rcp-press"
+        <button onClick={() => go('detail', { recipeId: featured.id, contextIds: allIds })} className="rcp-btn rcp-press"
           style={{ display: 'block', width: '100%', textAlign: 'left', marginBottom: 26 }}>
           <Eyebrow color={T.accent}>Della settimana · №27</Eyebrow>
           <div style={{ marginTop: 8, position: 'relative', borderRadius: 4, overflow: 'hidden' }}>
@@ -100,7 +102,7 @@ function MobileHome({ go }) {
         </div>
         <div className="rcp-scroll" style={{ display: 'flex', gap: 10, overflowX: 'auto', marginBottom: 22, marginLeft: -18, marginRight: -18, padding: '0 18px' }}>
           {recents.map((r) => (
-            <button key={r.id} onClick={() => go('detail', { recipeId: r.id })} className="rcp-btn rcp-press"
+            <button key={r.id} onClick={() => go('detail', { recipeId: r.id, contextIds: recents.map(x => x.id) })} className="rcp-btn rcp-press"
               style={{ flexShrink: 0, width: 130, textAlign: 'left' }}>
               <div style={{ width: 130, height: 130, borderRadius: 4, overflow: 'hidden', marginBottom: 8 }}>
                 <Photo src={r.photo} label={r.nome} tone="#d4c8a8" text="#3a2f15" />
@@ -117,7 +119,7 @@ function MobileHome({ go }) {
           <Eyebrow>min · pers</Eyebrow>
         </div>
         {all.map((r, i) => (
-          <button key={r.id} onClick={() => go('detail', { recipeId: r.id })} className="rcp-btn"
+          <button key={r.id} onClick={() => go('detail', { recipeId: r.id, contextIds: allIds })} className="rcp-btn"
             style={{ display: 'grid', gridTemplateColumns: '22px 1fr auto', gap: 10, width: '100%',
               padding: '11px 0', borderBottom: `1px solid ${T.ruleSoft}`, alignItems: 'baseline', textAlign: 'left' }}>
             <span style={{ fontFamily: T.mono, fontSize: 10, color: T.muted, fontVariantNumeric: 'tabular-nums' }}>{(i + 1).toString().padStart(2, '0')}</span>
@@ -140,12 +142,28 @@ function MobileHome({ go }) {
 }
 
 // ─── DETAIL ─────────────────────────────────────────────────
-function MobileDetail({ recipe, go, back }) {
+function MobileDetail({ recipe, go, back, contextIds = [] }) {
   const { servings, setS, fmtIng } = useServings(recipe.porzioni);
   const [checked, setChecked] = React.useState(() => recipe.ingredienti.map(() => false));
   const [addedToCart, setAddedToCart] = React.useState(false);
   const store = useStore();
   const isFav = store.favorites.has(recipe.id);
+
+  // Navigazione contestuale prev/next
+  const ctxIdx  = contextIds.indexOf(recipe.id);
+  const prevId  = ctxIdx > 0 ? contextIds[ctxIdx - 1] : null;
+  const nextId  = ctxIdx >= 0 && ctxIdx < contextIds.length - 1 ? contextIds[ctxIdx + 1] : null;
+  const prevR   = prevId ? window.RECIPES.find(r => r.id === prevId) : null;
+  const nextR   = nextId ? window.RECIPES.find(r => r.id === nextId) : null;
+  const goCtx   = (id) => go('detail', { recipeId: id, contextIds });
+
+  // Ricette correlate (da RECIPE_LINKS)
+  const links     = (window.RECIPE_LINKS || {})[recipe.id] || {};
+  const usesIds   = links.uses    || [];
+  const usedInIds = links.used_in || [];
+  const usesR     = usesIds.map(id => window.RECIPES.find(r => r.id === id)).filter(Boolean);
+  const usedInR   = usedInIds.map(id => window.RECIPES.find(r => r.id === id)).filter(Boolean);
+
   const addToShopping = () => {
     const items = recipe.ingredienti
       .filter((ing, i) => !checked[i] && !ing.header)
@@ -157,6 +175,25 @@ function MobileDetail({ recipe, go, back }) {
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2000);
   };
+
+  // Mini card per ricetta correlata
+  const LinkedCard = ({ r, label }) => (
+    <button onClick={() => goCtx(r.id)} className="rcp-btn rcp-press"
+      style={{ display: 'flex', alignItems: 'center', gap: 10, width: '100%',
+        padding: '10px 12px', borderRadius: 10, background: T.card,
+        border: `1px solid ${T.ruleSoft}`, textAlign: 'left' }}>
+      <div style={{ width: 44, height: 44, borderRadius: 6, overflow: 'hidden', flexShrink: 0 }}>
+        <Photo src={r.photo} label={r.nome} tone="#d4c8a8" text="#3a2f15" />
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontFamily: T.mono, fontSize: 8, color: T.accent, letterSpacing: 1.5,
+          textTransform: 'uppercase', marginBottom: 2 }}>{label}</div>
+        <div style={{ fontFamily: T.serif, fontSize: 14, fontWeight: 500, lineHeight: 1.2,
+          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.nome}</div>
+      </div>
+      <II.chevR size={12} color={T.muted} />
+    </button>
+  );
 
   return (
     <Frame>
@@ -184,6 +221,38 @@ function MobileDetail({ recipe, go, back }) {
             </button>
           </div>
         </div>
+
+        {/* Barra navigazione contestuale prev/next */}
+        {contextIds.length > 1 && (
+          <div style={{ display: 'flex', alignItems: 'center', background: T.bgAlt,
+            borderBottom: `1px solid ${T.ruleSoft}`, padding: '8px 14px', gap: 6 }}>
+            <button onClick={back} className="rcp-btn"
+              style={{ fontFamily: T.mono, fontSize: 8, letterSpacing: 1.5, textTransform: 'uppercase',
+                color: T.muted, display: 'flex', alignItems: 'center', gap: 3, flexShrink: 0 }}>
+              <II.back size={10} color={T.muted} /> Indice
+            </button>
+            <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+              <button onClick={() => prevId && goCtx(prevId)} className="rcp-btn"
+                style={{ display: 'flex', alignItems: 'center', gap: 3, opacity: prevId ? 1 : 0.25,
+                  pointerEvents: prevId ? 'auto' : 'none', maxWidth: 100, overflow: 'hidden' }}>
+                <II.chevL size={11} />
+                {prevR && <span style={{ fontFamily: T.serif, fontSize: 11, fontStyle: 'italic',
+                  overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{prevR.nome}</span>}
+              </button>
+              <span style={{ fontFamily: T.mono, fontSize: 9, color: T.faint, flexShrink: 0 }}>
+                {ctxIdx + 1}/{contextIds.length}
+              </span>
+              <button onClick={() => nextId && goCtx(nextId)} className="rcp-btn"
+                style={{ display: 'flex', alignItems: 'center', gap: 3, opacity: nextId ? 1 : 0.25,
+                  pointerEvents: nextId ? 'auto' : 'none', maxWidth: 100, overflow: 'hidden',
+                  flexDirection: 'row-reverse' }}>
+                <II.chevR size={11} />
+                {nextR && <span style={{ fontFamily: T.serif, fontSize: 11, fontStyle: 'italic',
+                  overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{nextR.nome}</span>}
+              </button>
+            </div>
+          </div>
+        )}
 
         <div style={{ padding: '20px 18px 0' }}>
           <Eyebrow color={T.accent}>{recipe.categoria} · №{(window.RECIPES.indexOf(recipe) + 1).toString().padStart(2, '0')}</Eyebrow>
@@ -244,6 +313,20 @@ function MobileDetail({ recipe, go, back }) {
 
           <div style={{ marginTop: 12 }}>
             {recipe.ingredienti.map((ing, i) => {
+              // Ingrediente che è un link a un'altra ricetta
+              if (ing.recipeLink) {
+                const linked = window.RECIPES.find(r => r.id === ing.recipeLink);
+                if (linked) return (
+                  <button key={i} onClick={() => goCtx(linked.id)} className="rcp-btn rcp-press"
+                    style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%',
+                      padding: '8px 10px', borderBottom: `1px dotted ${T.ruleSoft}`,
+                      color: T.accent, textAlign: 'left' }}>
+                    <II.tag size={11} color={T.accent} />
+                    <span style={{ fontFamily: T.serif, fontSize: 14, fontStyle: 'italic' }}>{linked.nome}</span>
+                    <II.chevR size={10} color={T.faint} style={{ marginLeft: 'auto' }} />
+                  </button>
+                );
+              }
               if (ing.header) return (
                 <div key={i} style={{ fontFamily: T.serif, fontSize: 13, fontWeight: 600, fontStyle: 'italic', color: T.ink, padding: '10px 0 4px', marginTop: 4 }}>{ing.n}</div>
               );
@@ -270,6 +353,19 @@ function MobileDetail({ recipe, go, back }) {
               <div style={{ fontSize: 14, lineHeight: 1.6, color: T.inkSoft, paddingTop: 4 }}>{p}</div>
             </div>
           ))}
+
+          {/* RICETTE CORRELATE — Basi usate / Usata in */}
+          {(usesR.length > 0 || usedInR.length > 0) && (
+            <div style={{ marginTop: 28 }}>
+              <div style={{ borderTop: `1px solid ${T.ink}`, paddingTop: 14, marginBottom: 12 }}>
+                <Eyebrow>· Ricette correlate</Eyebrow>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {usesR.map(r => <LinkedCard key={r.id} r={r} label="Base usata" />)}
+                {usedInR.map(r => <LinkedCard key={r.id} r={r} label="Usata in" />)}
+              </div>
+            </div>
+          )}
 
           {/* note della ricetta (da Paprika ZNOTES) */}
           {recipe.notes && (
