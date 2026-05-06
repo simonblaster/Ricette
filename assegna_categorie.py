@@ -35,14 +35,30 @@ DRY_RUN   = '--dry-run' in sys.argv
 CATS_ESCLUSE = {'Test'}  # stessa logica di aggiorna_sito.py
 
 # ── Nuove categorie da creare se non esistono ─────────────────────────────────
+# Le categorie già esistenti in Paprika (Messinese, Ricette base, 30 minuti,
+# Aiutacuochi, Pizze/focacce, Impasti, Pollo, Manzo, Maiale, Desserts, Pasqua,
+# Pane) NON vanno qui — esistono già nel DB.
+# Nota: 'Desserts' sarà eliminata dal DB — le ricette migrano in 'Dolce'.
+# Nota: 'Pane' rimane nel DB ma le ricette pane migrano in 'Impasti per pizze...'
 NUOVE_CATEGORIE = [
     # PORTATA
-    'Antipasto', 'Primo', 'Secondo', 'Contorno', 'Dolce', 'Lievitati',
-    # INGREDIENTE PRINCIPALE
+    'Antipasto', 'Primo', 'Secondo', 'Contorno', 'Dolce',
+    'Zuppa, Minestra & Vellutate', 'Piatto unico', 'Sughi per primi',
+    # PROTEINE
     'Pesce', 'Frutti di mare', 'Selvaggina e volatili',
     'Vegetariano', 'Vegano', 'Legumi',
-    # CARATTERISTICA
+    'Vitello', 'Verdure', 'Formaggio', 'Affettati',
+    # INGREDIENTE SPECIFICO
+    'Funghi', 'Patate',
+    # TECNICA
+    'Fritto', 'Lento e Brasato', 'Arrosto', 'Lesso e Bollito',
+    'Gratinato', 'Cotto o saltato in padella', 'Al forno', 'Alla griglia & BBQ',
+    # OCCASIONE
     'Natale', 'Internazionale',
+    # MOMENTO PASTO
+    'Pranzo', 'Cena', 'Colazione', 'Merenda',
+    # PREPARAZIONI BASE
+    'Salse, sughi e intingoli vari',
 ]
 
 # ── Regole di assegnazione ────────────────────────────────────────────────────
@@ -51,51 +67,60 @@ NUOVE_CATEGORIE = [
 #   nome contiene ALMENO UNA name_keyword
 #   OPPURE ingredienti contengono ALMENO UNA ingr_keyword
 #   E nome NON contiene nessuna name_exclude
+# Le categorie non sono esclusive: una ricetta può averne più di una.
 RULES = [
 
     # ══ PORTATA ══════════════════════════════════════════════════════════════
 
     ('Dolce',
-     ['brownie', 'crostata', 'cheese cake', 'cheesecake', 'crème brulèe',
-      'creme brule', 'pandoro', 'schiacciata fiorentina', 'tarte tatin',
+     ['brownie', 'crostata', 'cheese cake', 'cheesecake', 'crème brûlée',
+      'creme brulée', 'crème brulèe', 'creme brule', 'creme brulèe', 'pandoro', 'schiacciata fiorentina', 'tarte tatin',
       'lebkuchen', 'pan dei morti', 'stelle alla gelatina', 'pignolata',
       'cannoli', 'iris fritte', 'flan al cioccolato', 'crema inglese',
       'crema pasticcera', 'crema al cioccolato', 'pasta frolla',
-      'peanut butter biscuit', 'classico alberello', 'banana sour cream bread'],
+      'peanut butter biscuit', 'classico alberello', 'banana sour cream bread',
+      'schiacciata toscana con li.co.li'],
      [],
-     ['salata', 'scarola']),   # torta salata, non dolce
+     ['salata', 'scarola']),   # torta salata → non dolce
 
     ('Antipasto',
      ['hummus', 'guacamole', 'crudité', 'crudite', 'terrina', 'rillettes',
       'fonduta', 'insalata di polpo', 'winter crunch salad', 'crumble niçois',
-      'crumble nicois', 'passatina', 'ristretto di zucca', 'uova in camicia'],
+      'crumble nicois', 'passatina', 'ristretto di zucca', 'uova in camicia',
+      'peperoni arlecchino', 'peperoni ripieni al forno', 'carciofi alla messinese',
+      'caponata di melanzane'],
      [],
      []),
 
-    # soufflé con formaggio/zucchine = antipasto/secondo salato
+    # soufflé salato = antipasto/secondo
     ('Antipasto',
      ['soufflé', 'souffle'],
      [],
      ['dolce']),
 
+    ('Zuppa, Minestra & Vellutate',
+     ['crema di asparagi', 'crema di gamberi', 'passatina di piselli',
+      'ristretto di zucca', 'zuppa di lenticchie', 'zuppa di pomodoro',
+      'brodo con royale', 'egyptian red lentil', 'red lentil soup',
+      "mum's everyday red lentil", "mum's everyday",
+      'macco', 'lentil soup'],
+     [],
+     []),
+
     ('Primo',
      ['spaghetti', 'rigatoni', 'orecchiette', 'linguine', 'tagliatelle',
-      'lasagne', 'gnocchi', 'risotto', 'paella',
+      'lasagne', 'gnocchi', 'risotto',
       "pasta 'ncasciata", 'pasta alla norma', 'pasta con i broccoli',
       'pasta con la mollica', 'pasta con le sarde',
       'macco', 'ragout di pesce', 'rigatoni col sugo', 'rigatoni al ragout',
-      'zuppa di', 'brodo con royale', 'crema di asparagi', 'crema di gamberi'],
+      'zuppa di', 'brodo con royale', 'crema di asparagi', 'crema di gamberi',
+      'lentil soup', 'red lentil', 'everyday red lentil', 'zuppa di lenticchie',
+      'egyptian red lentil', "mum's everyday"],
      [],
      # Escludi brodi/fondi base e ragù come preparazioni base
      ['brodo di', 'brodo universale', 'soffritto', 'roux',
       "sugo d'arrosto", 'sugo da roast', 'ragù napoletano', 'ragù di carne',
       'fondo di', 'ragù alla messinese']),
-
-    ('Primo',
-     ['lentil soup', 'red lentil', 'everyday red lentil', 'zuppa di lenticchie',
-      'egyptian red lentil', "mum's everyday"],
-     [],
-     []),
 
     ('Secondo',
      ['scaloppine', 'polpettone', 'braciole', 'falso magro', 'rotolo di vitello',
@@ -104,44 +129,61 @@ RULES = [
       'pollo arrosto', 'pollo al vino', 'pollo alla mascalzona',
       'teglia di pollo', 'torta di pollo', 'tacchino ripieno',
       "jamie's christmas turkey", 'beef and ale stew', 'hash di manzo',
-      'calamari ripieni', 'peperoni arlecchino', 'peperoni ripieni al forno',
-      'melanzane ripiene', 'pomodori ripieni', 'zucchine ripiene',
-      'stinco alla'],
+      'calamari ripieni', 'melanzane ripiene', 'pomodori ripieni', 'zucchine ripiene',
+      'stinco alla', 'buddy\'s chicken', 'chicken fajitas',
+      'merluzzo in crosta', 'ragout di pesce', 'crocchette di pesce'],
      [],
-     ['impasto', 'soffritto', 'roux', 'a tabacchiera']),
+     ['impasto', 'soffritto', 'roux', 'sugo da', "sugo d'"]),
 
-    # Roast beef e arrosto: possono chiamarsi in vari modi
+    # Roast beef e arrosto
     ('Secondo',
      ['roast beef', 'roast-beef', 'arrosto di manzo'],
      [],
-     []),
+     ['sugo da', "sugo d'"]),
 
     ('Contorno',
      ['patate al forno', 'patate novelle', 'patate croccanti', 'patate schiacciate',
-      'patate alla parmentier', 'patate, pastinache', 'purè di patate',
-      'purè di piselli', 'spinaci cremosi', 'piselli alla francese',
-      'pannocchie abbrustolite', 'jacket potatoes', 'verdure croccanti'],
+      'patate alla parmentier', 'patate, pastinache', 'jacket potatoes',
+      'pannocchie abbrustolite', 'verdure croccanti', 'spinaci cremosi',
+      'piselli alla francese', 'purè di patate', 'purè di piselli',
+      'winter crunch salad', 'zucchina lunga al sapore'],
      [],
      []),
 
-    ('Lievitati',
-     ['ciabatta', 'pane bianco', 'pane 3', 'pane con la macchina del pane',
-      'pane bianco standard'],
+    # Piatto unico: non esclusivo, si sovrappone con Primo/Secondo
+    ('Piatto unico',
+     ['paella', 'arancini di riso', 'beef and ale stew', "buddy's chicken fajitas",
+      'chicken fajitas', 'falso magro', 'macco', 'orecchiette con polpette',
+      "pasta 'ncasciata", 'teglia di pollo', 'torta di pollo',
+      'torta pasqualina', 'torta salata alla scarola',
+      'zuppa di lenticchie', 'egyptian red lentil', "mum's everyday"],
      [],
-     # pane già nei nomi focacce/pizza/schiacciata toscana è coperto da altra cat
-     ['pizza', 'focaccia', 'schiacciata', 'trancio', 'sfincione',
-      'lingue di pizza', 'pitoni']),
+     ['impasto', 'soffritto']),
+
+    ('Sughi per primi',
+     ['ragù di carne', 'ragù napoletano', 'ragù alla messinese',
+      'ragù di agnello', 'sugo alla', 'sugo di'],
+     [],
+     ['sugo da roast', "sugo d'arrosto", 'soffritto', 'brodo']),
+
+    # Pane → migra in "Impasti per pizze, focacce & co." (cat già esistente)
+    ('Impasti per pizze, focacce & co.',
+     ['ciabatta', 'pane bianco', 'pane 3', 'pane con la macchina del pane',
+      'pane bianco standard', 'schiacciata toscana', 'focaccia'],
+     [],
+     ['pizza', 'lingue di pizza', 'trancio', 'sfincione',
+      'pitoni', 'alla fiorentina', 'con li.co.li']),
 
     # ══ PROTEINE / INGREDIENTE PRINCIPALE ════════════════════════════════════
 
     ('Pesce',
      ['baccalà', 'stoccafisso', 'pescestocco', 'filetto di tonno',
       'crocchette di pesce', 'ragout di pesce', 'rigatoni al ragout di pesce',
-      'fondo di pesce', 'merluzzo in crosta'],
-     # ingredienti: match su parole chiave pesce
+      'fondo di pesce', 'brodo di pesce', 'merluzzo in crosta',
+      'pasta con le sarde'],
      ['pesce', 'tonno', 'baccalà', 'stoccafisso', 'merluzzo', 'salmone',
       'sogliola', 'trota', 'alici', 'acciughe'],
-     []),
+     ['caponata', 'focaccia messinese']),
 
     ('Frutti di mare',
      ['calamari ripieni', 'insalata di polpo', 'niuru de sicci', 'niuru',
@@ -155,17 +197,15 @@ RULES = [
     ('Manzo',
      ['arrosto di manzo', 'roast beef', 'roast-beef', 'hash di manzo',
       'filetto di manzo', 'beef and ale stew', 'aggrassato',
-      'rigatoni col sugo dell', 'falso magro', 'rotolo di vitello',
-      'scaloppine', 'braciole messinesi'],
-     ['manzo', 'vitello', 'bistecca'],
-     # Escludi brodi base — quelli sono Ricette base/Aiutacuochi
-     ['brodo di manzo', 'brodo di vitello', 'soffritto', 'sugo']),
+      'rigatoni col sugo dell', 'braciole messinesi'],
+     ['manzo', 'bistecca'],
+     ['brodo di manzo', 'soffritto', 'sugo', 'vitello']),
 
-    # Pollo: solo name-based per evitare falsi positivi da brodi/fondi con pollo
+    # Pollo: solo name-based per evitare falsi positivi da brodi/fondi
     ('Pollo',
      ['pollo arrosto', 'pollo al vino', 'pollo alla mascalzona', 'teglia di pollo',
-      'torta di pollo', "buddy's chicken", "buddy’s chicken",
-      'chicken fajitas', 'terrina di fegati di pollo'],
+      'torta di pollo', "buddy's chicken", 'chicken fajitas',
+      'terrina di fegati di pollo'],
      [],
      ['brodo di pollo']),
 
@@ -173,11 +213,13 @@ RULES = [
      ['stinco alla', 'polpettone alla messinese'],
      ['maiale', 'pancetta', 'lardo', 'salsiccia', 'prosciutto', 'guanciale',
       'speck', 'salame', 'lonza', 'chorizo'],
-     ['brodo', 'soffritto']),
+     # Escludi quando la proteina principale è un'altra
+     ['brodo', 'soffritto',
+      'filetto di manzo', 'pollo al vino', 'teglia di pollo',
+      'tacchino', 'turkey', 'terrina', 'anatra', 'duck']),
 
     ('Selvaggina e volatili',
-     ['anatra', 'duck', "terrina d'anatra", "terrina d'anatra alle mele",
-      'terrina di fegati', 'tacchino', 'turkey'],
+     ['anatra', 'duck', "terrina d'anatra", 'terrina di fegati', 'tacchino', 'turkey'],
      ['anatra', 'duck', 'tacchino'],
      []),
 
@@ -188,28 +230,173 @@ RULES = [
      ['lenticchie', 'ceci', 'fagioli', 'fave'],
      []),
 
-    # ══ CARATTERISTICA ═══════════════════════════════════════════════════════
+    ('Vitello',
+     ['rotolo di vitello', 'brodo di vitello', 'scaloppine', 'falso magro'],
+     [],
+     # No ingr_kws: evita falsi positivi da ricette che usano vitello come ingrediente secondario
+     []),
+
+    ('Verdure',
+     ['melanzane ripiene', 'melenzane alla parmigiana', 'caponata di melanzane',
+      'peperoni arlecchino', 'peperoni ripieni al forno',
+      'pomodori ripieni al forno', 'carciofi alla messinese',
+      'zucchine ripiene', 'zucchina lunga al sapore'],
+     [],
+     []),
+
+    # ══ TECNICA DI COTTURA ═══════════════════════════════════════════════════
+
+    ('Fritto',
+     ['iris fritte', 'pignolata alla messinese', 'pitoni fritti',
+      'pizza fritta', 'crocchette di pesce'],
+     [],
+     []),
+
+    ('Lento e Brasato',
+     ['aggrassato', 'beef and ale stew', 'carne murata', 'falso magro',
+      'ragù napoletano', 'ragù di carne', 'ragù alla messinese', 'stinco alla',
+      'arrosto di manzo'],
+     [],
+     ['impasto', 'soffritto', 'sugo da', "sugo d'"]),
+
+    ('Arrosto',
+     ['arrosto di manzo', 'roast beef', 'roast-beef', 'pollo arrosto',
+      'patate novelle arrosto', 'patate croccanti', 'patate al forno',
+      'patate, pastinache', 'patate alla parmentier', 'jacket potatoes',
+      "jamie's christmas turkey", 'tacchino ripieno', 'rotolo di vitello',
+      'falso magro', 'carne murata', 'pannocchie abbrustolite'],
+     [],
+     ['impasto', 'soffritto', 'sugo da', "sugo d'"]),
+
+    ('Lesso e Bollito',
+     ['insalata di polpo', 'macco', 'uova in camicia'],
+     [],
+     []),
+
+    ('Gratinato',
+     ['carciofi alla messinese', 'calamari ripieni', 'melanzane ripiene',
+      'melenzane alla parmigiana', 'peperoni arlecchino al gratin',
+      'peperoni ripieni al forno', 'pomodori ripieni al forno',
+      'zucchine ripiene'],
+     [],
+     []),
+
+    ('Cotto o saltato in padella',
+     ['filetto di tonno in padella', 'hash di manzo', 'pollo alla mascalzona',
+      'scaloppine', 'spinaci cremosi', 'piselli alla francese'],
+     [],
+     []),
+
+    # ══ OCCASIONE ════════════════════════════════════════════════════════════
 
     ('Natale',
      ['natale', 'natalizia', 'natalizie', 'christmas',
-      'classico alberello', 'lebkuchen', 'pan dei morti',
-      'stelle alla gelatina', 'brodo con royale', 'crostata di natale',
-      'crema inglese di natale', 'salse di mele di natale',
-      'pitoni alla messinese di natale', 'pandoro'],
+      'classico alberello', 'lebkuchen', 'stelle alla gelatina',
+      'brodo con royale', 'crostata di natale', 'crema inglese di natale',
+      'salse di mele di natale', 'pitoni alla messinese di natale', 'pandoro',
+      'pignolata alla messinese'],
      [],
      []),
 
+    # Pan dei Morti = Ognissanti, non Natale → rimosso da Natale
+
     ('Internazionale',
      ['banana sour cream bread', 'beef and ale stew', "buddy's chicken fajitas",
-      'brownie', 'cheese cake', 'cheesecake', 'crumble niçois', 'crumble nicois',
-      'duck rillettes', 'egyptian red lentil', 'guacamole',
-      'hummus', 'jacket potatoes', "jamie's christmas turkey", 'lebkuchen',
-      "mum's everyday red lentil", 'paella', 'peanut butter biscuit',
-      'red lentil soup', 'winter crunch salad', 'yorkshire pudding',
-      'crème brulèe', 'creme brule'],
+      'chicken fajitas', 'brownie', 'cheese cake', 'cheesecake',
+      'crumble niçois', 'crumble nicois', 'duck rillettes',
+      'egyptian red lentil', 'guacamole', 'hummus', 'jacket potatoes',
+      "jamie's christmas turkey", 'lebkuchen', "mum's everyday",
+      'paella', 'peanut butter biscuit', 'red lentil soup',
+      'winter crunch salad', 'yorkshire pudding', 'crème brulèe', 'creme brule',
+      'soufflé', 'souffle', 'terrina'],
+     [],
+     # Evita falsi positivi: soufflé e terrina italiane non sono "internazionali"
+     # ma per ora le includiamo — l'utente può correggere
+     []),
+
+    # ══ MOMENTO PASTO ════════════════════════════════════════════════════════
+
+    ('Colazione',
+     ['banana sour cream bread', 'peanut butter biscuit', 'crèpes', 'crepes',
+      'schiacciata alla fiorentina', 'schiacciata fiorentina'],
+     [],
+     ['impasto indiretto', 'impasto diretto']),  # solo le schiacciata-dolce, non gli impasti
+
+    ('Merenda',
+     ['brownie', 'cannoli alla siciliana', 'cheese cake', 'cheesecake',
+      'crostata di frutta', 'pan dei morti', 'peanut butter biscuit',
+      'schiacciata alla fiorentina', 'schiacciata fiorentina',
+      'flan al cioccolato', 'tarte tatin'],
      [],
      []),
+
+    # Pranzo: pasta, zuppe, piatti veloci e informali
+    ('Pranzo',
+     ['spaghetti', 'rigatoni', 'orecchiette', 'pasta alla norma',
+      "pasta 'ncasciata", 'pasta con i broccoli', 'pasta con la mollica',
+      'pasta con le sarde', 'rigatoni col sugo', 'rigatoni al ragout',
+      'macco', 'zuppa di lenticchie', 'zuppa di pomodoro',
+      'hash di manzo', 'carne murata', 'egyptian red lentil', 'red lentil soup',
+      "mum's everyday", 'crema di asparagi'],
+     [],
+     ['brodo di', 'brodo universale', 'soffritto', 'impasto', 'roux']),
+
+    # ══ NUOVE TECNICHE & PROTEINE ════════════════════════════════════════════
+
+    ('Al forno',
+     ['al forno', 'patate al forno', 'patate novelle arrosto'],
+     [],
+     ['soffritto', 'impasto', 'sugo da', "sugo d'"]),
+
+    ('Alla griglia & BBQ',
+     ['alla griglia', 'bbq', 'grigliata', 'pannocchie abbrustolite'],
+     [],
+     []),
+
+    ('Formaggio',
+     ['fonduta', 'au fromage', 'fromage', 'soufflé classico al formaggio'],
+     [],
+     []),
+
+    ('Affettati',
+     ['rillettes'],
+     [],
+     []),
+
+    ('Funghi',
+     ['trifolat', 'alla boscaiola', 'ai funghi', 'con funghi'],
+     ['porcini', 'funghi', 'champignon', 'shiitake', 'cremini', 'pleurotus'],
+     ['soffritto', 'impasto']),
+
+    ('Patate',
+     ['patate', 'jacket potatoes', 'gattò di patate'],
+     [],
+     ['impasto', 'soffritto']),
+
+    ('Salse, sughi e intingoli vari',
+     ['salsa ', 'salse per', 'soffritto', "sugo d'arrosto", 'sugo da roast',
+      'roux', 'pangrattato', 'fondo di'],
+     [],
+     []),
+
+    # Cena: secondi elaborati, piatti da occasione
+    ('Cena',
+     ['aggrassato', 'arrosto di manzo', 'beef and ale stew',
+      'duck rillettes', 'falso magro', 'filetto di manzo', 'filetto di tonno',
+      'fonduta', "jamie's christmas turkey", 'pollo arrosto', 'pollo al vino',
+      'roast beef', 'roast-beef', 'rotolo di vitello', 'stinco alla',
+      'tacchino ripieno', "terrina d'anatra", 'terrina di fegati',
+      'torta di pollo', 'paella', 'calamari ripieni', 'baccalà alla',
+      'stoccafisso', 'pescestocco'],
+     [],
+     ['impasto', 'brodo di', 'soffritto', 'sugo da', "sugo d'"]),
 ]
+
+# ── Override vegetariano: ricette con ingredienti facoltativi di carne/pesce ──
+# Ricette che il sistema classifica come non-veg ma che per scelta sono veg.
+VEGETARIANO_FORCE = {
+    'caponata di melanzane',  # alici elencate come "aggiunte non usate"
+}
 
 # ── Rilevamento Vegetariano/Vegano (basato su ingredienti) ────────────────────
 CARNE_KW = [
@@ -220,11 +407,11 @@ CARNE_KW = [
     'guanciale', 'speck', 'salame', 'bresaola', 'mortadella', 'bistecca', 'braciole',
     'chorizo', 'alici', 'acciughe', 'sogliola', 'trota', 'lonza',
     'fegato', 'fegatini', 'rognone', 'carne tritata', 'carne macinata',
-    # Parole nel NOME che indicano carne (ragù, agglassato = stufato di carne)
+    # Parole nel NOME che indicano carne
     'ragù', 'ragu', 'agglassato', 'aggrassato', 'polpett',
     # Termini dialettali siciliani
-    'sicci',  # seppia in siciliano (spaghetti o' niuru de sicci)
-    # English keywords (ricette internazionali)
+    'sicci',  # seppia (spaghetti o' niuru de sicci)
+    # English
     'beef', 'chicken', 'pork', 'lamb', 'veal', 'bacon', 'ham', 'sausage',
     'duck', 'turkey', 'anchovy', 'tuna', 'salmon', 'shrimp', 'prawn',
     'stewing beef', 'diced beef', 'ground beef',
@@ -236,8 +423,6 @@ LATTICINI_KW = [
     'yogurt', 'cream', 'milk', 'butter', 'cheese',
 ]
 
-# Ricette che contengono carne nel nome ma NON devono avere Vegetariano/Vegano
-# (sicurezza extra — le regole di ingredienti dovrebbero già bastare)
 NOME_NON_VEGETARIANO = CARNE_KW
 
 
@@ -272,7 +457,7 @@ def calcola_categorie(nome, ingr):
     if is_vegano(n, i_text):
         cats.add('Vegano')
         cats.add('Vegetariano')
-    elif is_vegetariano(n, i_text):
+    elif is_vegetariano(n, i_text) or n in VEGETARIANO_FORCE:
         cats.add('Vegetariano')
 
     return cats

@@ -71,8 +71,8 @@ for junk in BACKUP_DIR.glob('*.sqlite-*'):
     try: junk.unlink()
     except Exception: pass
 
-# Mantieni solo gli ultimi 10 backup
-backups = sorted(BACKUP_DIR.glob('Paprika_*.sqlite'))
+# Mantieni solo gli ultimi 10 backup (pattern specifico: Paprika_YYYY-... esclude pre_links_* ecc.)
+backups = sorted(BACKUP_DIR.glob('Paprika_[0-9]*.sqlite'))
 for old in backups[:-10]:
     try:
         old.unlink()
