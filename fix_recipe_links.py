@@ -76,10 +76,38 @@ def fix_ingredienti(text: str, nome_map: dict) -> tuple:
     return '\n'.join(result), changes
 
 
+_TAG_SPLIT = re.compile(r'(\[recipe:[^\]]+\])')
+
+
+def fix_tag_spezzati(text: str, nomi_validi: set) -> str:
+    """
+    Ripara tag [recipe:...] spezzati dalla fase di exact-match.
+    Es: "Sugo da [recipe:Roast-Beef ultra rapido]"
+      → "[recipe:Sugo da Roast-Beef ultra rapido]"
+    Cerca pattern: una o più parole seguite da [recipe:X] dove "parole X" è un nome ricetta.
+    """
+    def try_fix(m):
+        prefix = m.group(1)
+        inner  = m.group(2)
+        # Prova con tutte le parole finali del prefix (da 1 a N parole)
+        words = prefix.rstrip().split()
+        for start in range(len(words)):
+            candidate = ' '.join(words[start:]) + ' ' + inner
+            if candidate in nomi_validi:
+                # Ricostruisci: testo prima del prefix usato + tag corretto
+                kept = ' '.join(words[:start])
+                sep  = ' ' if kept else ''
+                return kept + sep + f'[recipe:{candidate}]'
+        return m.group(0)  # non toccare se non si trova un match
+
+    return re.sub(r'((?:\w[\w\u2018\u2019\-]* ){1,5})\[recipe:([^\]]+)\]', try_fix, text)
+
+
 def fix_directions(text: str, nomi_ordinati: list, self_nome: str = '') -> tuple:
     """
     Cerca nel testo i nomi di ricette (>= 6 char) e sostituisce
-    inline con [recipe:NomeEsatto]. Non tocca testo già taggato.
+    inline con [recipe:NomeEsatto].
+    Non tocca mai testo già dentro [recipe:...] esistenti (evita tag annidati).
     """
     if not text:
         return text, []
@@ -93,14 +121,22 @@ def fix_directions(text: str, nomi_ordinati: list, self_nome: str = '') -> tuple
             continue
         escaped = re.escape(nome_esatto)
         pattern = r'(?<![A-Za-zÀ-ÿ\d])' + escaped + r'(?![A-Za-zÀ-ÿ\d])'
-        count = [0]
-        def repl(m, _tag=tag, _count=count):
-            _count[0] += 1
-            return _tag
-        new_result = re.sub(pattern, repl, result, flags=re.IGNORECASE)
-        if count[0]:
-            changes.append((nome_esatto, tag, count[0]))
-            result = new_result
+        # Splitta in segmenti: indici pari = testo libero, dispari = dentro [recipe:...]
+        segments = _TAG_SPLIT.split(result)
+        count = 0
+        new_segs = []
+        for i, seg in enumerate(segments):
+            if i % 2 == 1:          # dentro un [recipe:...] esistente: non toccare
+                new_segs.append(seg)
+            else:
+                def repl(m):
+                    return tag
+                new_seg = re.sub(pattern, repl, seg, flags=re.IGNORECASE)
+                count += len(re.findall(pattern, seg, flags=re.IGNORECASE))
+                new_segs.append(new_seg)
+        if count:
+            changes.append((nome_esatto, tag, count))
+            result = ''.join(new_segs)
     return result, changes
 
 
@@ -377,7 +413,7 @@ def aggiungi_nota_fallback(notes: str, emoji_titolo: str, messaggio: str, links:
     riga_nota = f'{messaggio}: {links_str}'
     sezione   = f'{header}\n\n{riga_nota}'
     base      = notes.rstrip()
-    return (base + '\n' + sezione if base else sezione), nuovi
+    return (base + '\n\n' + sezione if base else sezione), nuovi
 
 
 def rimuovi_sezioni_ingr(ingr: str) -> str:
@@ -563,6 +599,7 @@ def main():
     rows_nomi = cur.fetchall()
 
     nome_map = {norm(r['ZNAME']): r['ZNAME'] for r in rows_nomi}
+    nomi_validi = {r['ZNAME'] for r in rows_nomi}   # set per fix_tag_spezzati
 
     nomi_ordinati = sorted(
         [(r['ZNAME'], norm(r['ZNAME'])) for r in rows_nomi],
@@ -595,6 +632,11 @@ def main():
         dirs_orig  = r['ZDIRECTIONS']      or ''
         desc_orig  = r['ZDESCRIPTIONTEXT'] or ''
         notes_orig = r['ZNOTES']           or ''
+
+        # ── Fase 0: ripara tag spezzati da run precedenti ──────────────────
+        dirs_orig  = fix_tag_spezzati(dirs_orig,  nomi_validi)
+        desc_orig  = fix_tag_spezzati(desc_orig,  nomi_validi)
+        notes_orig = fix_tag_spezzati(notes_orig, nomi_validi)
 
         # ── Fase 1: exact matching ──────────────────────────────────────────
         if ONLY_CLUSTER:
