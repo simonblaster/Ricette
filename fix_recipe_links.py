@@ -322,6 +322,65 @@ def aggiungi_sezione(testo: str, header: str, links: list) -> tuple:
         return (base + '\n' + sezione if base else sezione), nuovi
 
 
+ARROW = ' → '  # separatore inline tra ingrediente e link ricette
+
+
+def aggiungi_link_inline(ingr: str, trigger: str, links: list) -> tuple:
+    """
+    Trova la prima riga di ZINGREDIENTS che contiene `trigger` e appende i link inline:
+      "250 g brodo di pollo" → "250 g brodo di pollo → [recipe:X], [recipe:Y]"
+    Restituisce (nuovo_ingr, link_aggiunti, riga_trovata).
+    """
+    if not links:
+        return ingr, [], False
+
+    nuovi = [l for l in links if f"[recipe:{l}]" not in ingr]
+    if not nuovi:
+        return ingr, [], True   # già tutti presenti
+
+    trigger_n = norm(trigger)
+    righe = ingr.split('\n')
+
+    for i, riga in enumerate(righe):
+        stripped = riga.strip()
+        if not stripped or stripped.startswith('=='):
+            continue
+        if re.match(r'^\[recipe:', stripped):   # riga già solo un link
+            continue
+        if trigger_n in norm(riga):
+            links_str = ', '.join(f'[recipe:{l}]' for l in nuovi)
+            if ARROW.strip() in riga:            # già ha una freccia: appendi
+                righe[i] = riga.rstrip() + ', ' + links_str
+            else:
+                righe[i] = riga.rstrip() + ARROW + links_str
+            return '\n'.join(righe), nuovi, True
+
+    return ingr, [], False
+
+
+def rimuovi_sezioni_ingr(ingr: str) -> str:
+    """
+    Rimuove le vecchie sezioni == Brodi/Soffritti/Creme == da ZINGREDIENTS
+    (ora i link sono inline sugli ingredienti).
+    """
+    headers_ingr = [
+        '== \U0001F372 Brodi ==',
+        '== \U0001F9C5 Soffritti ==',
+        '== \U0001F36E Creme ==',
+    ]
+    for header in headers_ingr:
+        if header not in ingr:
+            continue
+        idx = ingr.find(header)
+        rest = ingr[idx + len(header):]
+        next_h = re.search(r'\n(== [^\n]+ ==)', rest)
+        if next_h:
+            ingr = ingr[:idx].rstrip() + '\n' + rest[next_h.start() + 1:]
+        else:
+            ingr = ingr[:idx].rstrip()
+    return ingr
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 # CLUSTER – ZINGREDIENTS  (brodo, soffritto, creme)
 # ══════════════════════════════════════════════════════════════════════════════
