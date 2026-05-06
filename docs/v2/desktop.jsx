@@ -438,6 +438,19 @@ function DesktopDetail({ recipe, go, back, contextIds = [] }) {
             </div>
             <div style={{ marginTop: 10 }}>
               {recipe.ingredienti.map((ing, i) => {
+                if (ing.recipeLink) {
+                  const linked = window.RECIPES.find(r => r.id === ing.recipeLink);
+                  if (linked) return (
+                    <button key={i} onClick={() => goCtx(linked.id)} className="rcp-btn rcp-press"
+                      style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%',
+                        padding: '7px 0', borderBottom: `1px dotted ${T.ruleSoft}`,
+                        color: T.accent, textAlign: 'left' }}>
+                      <II.tag size={10} color={T.accent} />
+                      <span style={{ fontFamily: T.serif, fontSize: 13, fontStyle: 'italic' }}>{linked.nome}</span>
+                      <II.chevR size={10} color={T.faint} style={{ marginLeft: 'auto' }} />
+                    </button>
+                  );
+                }
                 if (ing.header) return (
                   <div key={i} style={{ fontFamily: T.serif, fontSize: 13, fontWeight: 600, fontStyle: 'italic', color: T.ink, padding: '10px 0 4px', marginTop: 4 }}>{ing.n}</div>
                 );
