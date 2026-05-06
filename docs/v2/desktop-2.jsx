@@ -3,14 +3,20 @@
 function DesktopSearch({ go, back }) {
   const store = useStore();
   const [q, setQ] = React.useState('');
-  const [activeTags, setActiveTags] = React.useState(new Set());
+  // window.__searchTags persiste i tag selezionati attraverso la navigazione
+  const [activeTags, setActiveTags] = React.useState(() => new Set(window.__searchTags || []));
   const allTags = Array.from(new Set(window.RECIPES.flatMap((r) => r.tag || []))).sort();
   const filtered = window.RECIPES.filter((r) => {
     if (q && !r.nome.toLowerCase().includes(q.toLowerCase()) && !r.ingredienti.some((i) => i.n.toLowerCase().includes(q.toLowerCase()))) return false;
-    if (activeTags.size > 0 && !(r.tag || []).some((t) => activeTags.has(t))) return false;
+    // AND: la ricetta deve avere TUTTI i tag selezionati
+    if (activeTags.size > 0 && ![...activeTags].every((t) => (r.tag || []).includes(t))) return false;
     return true;
   });
-  const toggle = (t) => setActiveTags((s) => { const n = new Set(s); n.has(t) ? n.delete(t) : n.add(t); return n; });
+  const toggle = (t) => setActiveTags((s) => {
+    const n = new Set(s); n.has(t) ? n.delete(t) : n.add(t);
+    window.__searchTags = [...n];
+    return n;
+  });
 
   return (
     <DesktopShell active="search" go={go} store={store}>
@@ -44,7 +50,7 @@ function DesktopSearch({ go, back }) {
           <Eyebrow>min · pers</Eyebrow>
         </div>
         {filtered.map((r, i) => (
-          <button key={r.id} onClick={() => go('detail', { recipeId: r.id })} className="rcp-btn"
+          <button key={r.id} onClick={() => go('detail', { recipeId: r.id, contextIds: filtered.map(x => x.id), fromScreen: 'search' })} className="rcp-btn"
             style={{ display: 'grid', gridTemplateColumns: '32px 60px 1fr 60px 30px', gap: 14, width: '100%', padding: '14px 0', borderBottom: `1px solid ${T.ruleSoft}`, alignItems: 'center', textAlign: 'left' }}>
             <span style={{ fontFamily: T.mono, fontSize: 11, color: T.muted, fontVariantNumeric: 'tabular-nums' }}>{(i + 1).toString().padStart(2, '0')}</span>
             <div style={{ width: 60, height: 60, borderRadius: 4, overflow: 'hidden' }}>

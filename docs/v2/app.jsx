@@ -13,8 +13,8 @@ function MobileApp({ initialScreen = 'home', initialRecipeId = null }) {
   const { state, go, navigate } = useApp({
     screen: initialScreen, recipeId: initialRecipeId, contextIds: [], activeCats: [],
   });
-  // Torna alla home ripristinando i filtri attivi
-  const back = () => navigate({ screen: 'home', activeCats: state.activeCats || [] });
+  // Torna alla schermata di origine (home o search) ripristinando i filtri attivi
+  const back = () => navigate({ screen: state.fromScreen || 'home', activeCats: state.activeCats || [] });
   const recipe = (state.recipeId && window.RECIPES.find((r) => r.id === state.recipeId)) || window.RECIPES[0] || {};
   if (!recipe || !recipe.id) return null;
 
@@ -41,8 +41,8 @@ function DesktopApp({ initialScreen = 'home', initialRecipeId = null }) {
   const { state, go, navigate } = useApp({
     screen: initialScreen, recipeId: initialRecipeId, contextIds: [], activeCats: [],
   });
-  // Torna alla home ripristinando i filtri attivi
-  const back = () => navigate({ screen: 'home', activeCats: state.activeCats || [] });
+  // Torna alla schermata di origine (home o search) ripristinando i filtri attivi
+  const back = () => navigate({ screen: state.fromScreen || 'home', activeCats: state.activeCats || [] });
   const recipe = (state.recipeId && window.RECIPES.find((r) => r.id === state.recipeId)) || window.RECIPES[0] || {};
   if (!recipe || !recipe.id) return null;
 

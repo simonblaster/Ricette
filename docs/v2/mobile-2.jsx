@@ -3,14 +3,20 @@
 // ─── SEARCH ─────────────────────────────────────────────────
 function MobileSearch({ go, back }) {
   const [q, setQ] = React.useState('');
-  const [activeTags, setActiveTags] = React.useState(new Set());
+  // window.__searchTags persiste i tag selezionati attraverso la navigazione
+  const [activeTags, setActiveTags] = React.useState(() => new Set(window.__searchTags || []));
   const allTags = Array.from(new Set(window.RECIPES.flatMap((r) => r.tag || []))).sort();
   const filtered = window.RECIPES.filter((r) => {
     if (q && !r.nome.toLowerCase().includes(q.toLowerCase()) && !r.ingredienti.some((i) => i.n.toLowerCase().includes(q.toLowerCase()))) return false;
-    if (activeTags.size > 0 && !(r.tag || []).some((t) => activeTags.has(t))) return false;
+    // AND: la ricetta deve avere TUTTI i tag selezionati
+    if (activeTags.size > 0 && ![...activeTags].every((t) => (r.tag || []).includes(t))) return false;
     return true;
   });
-  const toggle = (t) => setActiveTags((s) => { const n = new Set(s); n.has(t) ? n.delete(t) : n.add(t); return n; });
+  const toggle = (t) => setActiveTags((s) => {
+    const n = new Set(s); n.has(t) ? n.delete(t) : n.add(t);
+    window.__searchTags = [...n];
+    return n;
+  });
   const suggestions = ['veloce', 'vegan', 'classico', 'inverno', 'lievitazione lunga'];
 
   return (
@@ -61,7 +67,7 @@ function MobileSearch({ go, back }) {
         <Eyebrow>· {filtered.length} risultat{filtered.length === 1 ? 'o' : 'i'}</Eyebrow>
         <div style={{ marginTop: 10 }}>
           {filtered.map((r, i) => (
-            <button key={r.id} onClick={() => go('detail', { recipeId: r.id, contextIds: filtered.map(x => x.id) })} className="rcp-btn"
+            <button key={r.id} onClick={() => go('detail', { recipeId: r.id, contextIds: filtered.map(x => x.id), fromScreen: 'search' })} className="rcp-btn"
               style={{ display: 'flex', gap: 12, width: '100%', padding: '12px 0', borderBottom: `1px solid ${T.ruleSoft}`, alignItems: 'center', textAlign: 'left' }}>
               <div style={{ width: 56, height: 56, borderRadius: 4, overflow: 'hidden', flexShrink: 0 }}>
                 <Photo src={r.photo} label={r.nome} tone="#d4c8a8" text="#3a2f15" />
