@@ -156,7 +156,7 @@ def find_base64_images(obj):
 - **DB**: `menu_pizzerie.json` — struttura `{pizzerie: [{nome, citta, maestro, stile, note_menu, pizze: [...]}]}`
 - **Sito locale**: `menu_pizzerie.html` — generato da `outputs/genera_menu_files.py`
 - **Sito GitHub Pages**: `docs/pizze-che-raccontano-una-storia.html` → https://simonblaster.github.io/Ricette/pizze-che-raccontano-una-storia.html
-- **Script generazione**: `aggiorna_sito.py` (nella root del progetto) — 7 step: backup DB Paprika, lettura DB, copia foto, generazione `docs/index.html`, `.nojekyll`, **export `paprika_export_complete.paprikarecipes`** (216 ricette + foto). Dopo ogni sessione: `python3 aggiorna_sito.py` → `git add -A && git commit && git push`
+- **Script generazione**: `aggiorna_sito.py` (nella root del progetto) — 7 step: backup DB Paprika, lettura DB, copia foto, genera `docs/recipes.js` + `docs/photo-uids.js` (dati per la React app), `.nojekyll`, **export `paprika_export_complete.paprikarecipes`**. Dopo ogni sessione: `python3 aggiorna_sito.py` → `git add -A && git commit && git push`
 - **`.gitignore`**: esclude `*.skill.bak`, `zi??????` (file temp sessioni Claude), `.DS_Store`
 - **Regola contenuto**: includere SOLO pizze e simili (calzoni, fritte, montanare). MAI antipasti, dolci, bevande, snack.
 - **fonte**: `"Maestro — Pizzeria, Città"` (es. `"Antonio Starita — Pizzeria Starita, Napoli"`)

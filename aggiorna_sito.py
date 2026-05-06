@@ -207,6 +207,61 @@ photo_uids_js  = json.dumps(photo_uids,      ensure_ascii=False, separators=(','
 )
 print(f"   ✅ {n_recipes} ricette, {len(all_cats)} categorie, {len(photo_uids)} foto indicizzate")
 
+# ── 5b. Genera docs/links.js — cross-reference tra ricette ───────────────────
+print("🔗 Calcola link tra ricette...")
+import unicodedata as _ud
+
+def _norm(s: str) -> str:
+    s = s.replace('’', "'").replace('‘', "'")
+    s = _ud.normalize('NFD', s.lower())
+    return ''.join(c for c in s if _ud.category(c) != 'Mn')
+
+# uid → nome_normalizzato (per matching)
+uid_to_norm = {r['uid']: _norm(r['name']) for r in recipes_for_js}
+# nome_normalizzato → uid
+norm_to_uid = {v: k for k, v in uid_to_norm.items()}
+
+# Per ogni ricetta cerca tag [recipe:Nome] in ingredienti e passi
+# (aggiorna_sito.py legge dal DB già aggiornato da fix_recipe_links.py)
+RECIPE_TAG = re.compile(r'\[recipe:([^\]]+)\]')
+
+uses    = {}   # uid_sorgente  → set di uid_destinazione
+used_in = {}   # uid_destinazione → set di uid_sorgente
+
+for r in raw_recipes:
+    uid_src = (r['Zuid'] or '').strip()
+    if not uid_src:
+        continue
+    # Testo grezzo (prima della trasformazione fmt_ingredients)
+    testo = ((r['ZINGREDIENTS'] or '') + '\n' +
+             (r['ZDIRECTIONS'] or '') + '\n' +
+             (r['ZDESCRIPTIONTEXT'] or '') + '\n' +
+             (r['ZNOTES'] or ''))
+    for m in RECIPE_TAG.finditer(testo):
+        linked_name = m.group(1).strip()
+        linked_norm = _norm(linked_name)
+        uid_dst = norm_to_uid.get(linked_norm)
+        if uid_dst and uid_dst != uid_src:
+            uses.setdefault(uid_src, set()).add(uid_dst)
+            used_in.setdefault(uid_dst, set()).add(uid_src)
+
+# Combina in un unico dict serializzabile
+links_combined = {}
+for uid in set(list(uses.keys()) + list(used_in.keys())):
+    links_combined[uid] = {
+        'uses':    sorted(uses.get(uid, [])),
+        'used_in': sorted(used_in.get(uid, [])),
+    }
+
+links_js = json.dumps(links_combined, ensure_ascii=False, separators=(',', ':'))
+(DOCS_DIR / 'links.js').write_text(
+    f"// Auto-generato da aggiorna_sito.py — non modificare a mano.\n"
+    f"window.RECIPE_LINKS={links_js};\n",
+    encoding='utf-8'
+)
+n_links = sum(len(v['uses']) for v in links_combined.values())
+print(f"   ✅ {n_links} link tra {len(links_combined)} ricette")
+
 # ── 6. .nojekyll per GitHub Pages ─────────────────────────────────────────────
 (DOCS_DIR / ".nojekyll").write_text("")
 

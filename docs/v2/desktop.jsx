@@ -1,6 +1,31 @@
 // Desktop layout — Recipees
 // Single-window app per artboard. Sidebar persistente, content area che cambia.
 
+// ─── Helper: converte [recipe:Nome] → pulsante React navigabile ────────────
+function renderWithLinks(text, goFn) {
+  if (!text || !text.includes('[recipe:')) return text;
+  const parts = text.split(/(\[recipe:[^\]]+\])/);
+  return parts.map((part, idx) => {
+    const m = part.match(/^\[recipe:(.+)\]$/);
+    if (!m) return <span key={idx}>{part}</span>;
+    const name = m[1];
+    const linked = window.RECIPES.find(r => r.nome === name);
+    if (linked) return (
+      <button key={idx}
+        onClick={e => { e.stopPropagation(); goFn(linked.id); }}
+        className="rcp-btn"
+        style={{ color: T.accent, fontStyle: 'italic', fontWeight: 600,
+          textDecoration: 'underline', textDecorationStyle: 'dotted',
+          display: 'inline', padding: 0, fontSize: 'inherit',
+          lineHeight: 'inherit', verticalAlign: 'baseline' }}>
+        {linked.nome}
+      </button>
+    );
+    // Nome non trovato: mostra comunque in corsivo colorato
+    return <em key={idx} style={{ color: T.accent }}>{name}</em>;
+  });
+}
+
 function DesktopShell({ children, active, go, store, activeCats = null, onCat = () => {}, showCats = false }) {
   const fbUser = window.useFirebaseUser ? window.useFirebaseUser() : null;
 
@@ -412,7 +437,7 @@ function DesktopDetail({ recipe, go, back, contextIds = [] }) {
               <span style={{ fontStyle: 'italic' }}>{recipe.nome.split(' ')[0]}</span>{recipe.nome.split(' ').length > 1 ? ' ' + recipe.nome.split(' ').slice(1).join(' ') : ''}.
             </h1>
             <p style={{ fontFamily: T.serif, fontStyle: 'italic', fontSize: 16, lineHeight: 1.55, color: T.inkSoft, margin: '14px 0 0', maxWidth: 460 }}>
-              {recipe.descrizione}
+              {renderWithLinks(recipe.descrizione, goCtx)}
             </p>
             <div style={{ display: 'flex', gap: 6, marginTop: 14, flexWrap: 'wrap' }}>
               {(recipe.tag || []).map((t) => <Tag key={t} kind="olive">{t}</Tag>)}
@@ -479,7 +504,7 @@ function DesktopDetail({ recipe, go, back, contextIds = [] }) {
               <div key={i} style={{ display: 'grid', gridTemplateColumns: '50px 1fr', gap: 14, padding: '14px 0',
                 borderTop: i === 0 ? `1px solid ${T.ink}` : `1px solid ${T.ruleSoft}` }}>
                 <div style={{ fontFamily: T.serif, fontSize: 44, fontWeight: 500, color: T.accent, fontStyle: 'italic', lineHeight: 0.85 }}>{i + 1}</div>
-                <div style={{ fontFamily: T.serif, fontSize: 16, lineHeight: 1.55, color: T.inkSoft, paddingTop: 4 }}>{p}</div>
+                <div style={{ fontFamily: T.serif, fontSize: 16, lineHeight: 1.55, color: T.inkSoft, paddingTop: 4 }}>{renderWithLinks(p, goCtx)}</div>
               </div>
             ))}
 
@@ -488,7 +513,7 @@ function DesktopDetail({ recipe, go, back, contextIds = [] }) {
               <div style={{ marginTop: 32, padding: '16px 20px', borderRadius: 10, background: T.card, border: `1px solid ${T.ruleSoft}` }}>
                 <Eyebrow style={{ marginBottom: 8 }}>Note</Eyebrow>
                 <p style={{ margin: 0, fontFamily: T.serif, fontStyle: 'italic', fontSize: 14, lineHeight: 1.65, color: T.inkSoft, whiteSpace: 'pre-wrap' }}>
-                  {recipe.notes}
+                  {renderWithLinks(recipe.notes, goCtx)}
                 </p>
               </div>
             )}

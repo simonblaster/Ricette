@@ -2,6 +2,31 @@
 // 6 schermate: Home, Detail, Search, Cook (step), Shopping, Profile
 // Usano il design system da v2/system.jsx + dati da data.jsx (window.RECIPES)
 
+// ─── Helper: converte [recipe:Nome] → pulsante React navigabile ────────────
+function renderWithLinks(text, goFn) {
+  if (!text || !text.includes('[recipe:')) return text;
+  const parts = text.split(/(\[recipe:[^\]]+\])/);
+  return parts.map((part, idx) => {
+    const m = part.match(/^\[recipe:(.+)\]$/);
+    if (!m) return <span key={idx}>{part}</span>;
+    const name = m[1];
+    const linked = window.RECIPES.find(r => r.nome === name);
+    if (linked) return (
+      <button key={idx}
+        onClick={e => { e.stopPropagation(); goFn(linked.id); }}
+        className="rcp-btn"
+        style={{ color: T.accent, fontStyle: 'italic', fontWeight: 600,
+          textDecoration: 'underline', textDecorationStyle: 'dotted',
+          display: 'inline', padding: 0, fontSize: 'inherit',
+          lineHeight: 'inherit', verticalAlign: 'baseline' }}>
+        {linked.nome}
+      </button>
+    );
+    // Nome non trovato: mostra comunque in corsivo colorato
+    return <em key={idx} style={{ color: T.accent }}>{name}</em>;
+  });
+}
+
 // ─── Bottom nav riusabile ───────────────────────────────────
 function BottomNav({ active, go }) {
   const items = [
@@ -260,7 +285,7 @@ function MobileDetail({ recipe, go, back, contextIds = [] }) {
             <span style={{ fontStyle: 'italic' }}>{recipe.nome.split(' ')[0]}</span>{recipe.nome.split(' ').length > 1 ? ' ' + recipe.nome.split(' ').slice(1).join(' ') : ''}
           </h1>
           <p style={{ fontFamily: T.serif, fontStyle: 'italic', fontSize: 14, lineHeight: 1.55, color: T.inkSoft, margin: '12px 0 0' }}>
-            {recipe.descrizione}
+            {renderWithLinks(recipe.descrizione, goCtx)}
           </p>
           <div style={{ display: 'flex', gap: 6, marginTop: 14, flexWrap: 'wrap' }}>
             {(recipe.tag || []).map((t) => <Tag key={t} kind="olive">{t}</Tag>)}
@@ -350,7 +375,7 @@ function MobileDetail({ recipe, go, back, contextIds = [] }) {
           {recipe.passi.map((p, i) => (
             <div key={i} style={{ display: 'grid', gridTemplateColumns: '40px 1fr', gap: 10, padding: '12px 0', borderTop: i === 0 ? `1px solid ${T.ink}` : `1px solid ${T.ruleSoft}` }}>
               <div style={{ fontFamily: T.serif, fontSize: 36, fontWeight: 500, color: T.accent, fontStyle: 'italic', lineHeight: 0.9 }}>{i + 1}</div>
-              <div style={{ fontSize: 14, lineHeight: 1.6, color: T.inkSoft, paddingTop: 4 }}>{p}</div>
+              <div style={{ fontSize: 14, lineHeight: 1.6, color: T.inkSoft, paddingTop: 4 }}>{renderWithLinks(p, goCtx)}</div>
             </div>
           ))}
 
@@ -375,7 +400,7 @@ function MobileDetail({ recipe, go, back, contextIds = [] }) {
               <p style={{ margin: 0, fontFamily: T.serif, fontStyle: 'italic',
                           fontSize: 14, lineHeight: 1.65, color: T.inkSoft,
                           whiteSpace: 'pre-wrap' }}>
-                {recipe.notes}
+                {renderWithLinks(recipe.notes, goCtx)}
               </p>
             </div>
           )}
