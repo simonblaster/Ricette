@@ -641,16 +641,16 @@ def main():
     for r in ricette:
         pk         = r['Z_PK']
         nome       = r['ZNAME']
-        ingr_orig  = r['ZINGREDIENTS']     or ''
-        dirs_orig  = r['ZDIRECTIONS']      or ''
-        desc_orig  = r['ZDESCRIPTIONTEXT'] or ''
-        notes_orig = r['ZNOTES']           or ''
+        ingr_db  = r['ZINGREDIENTS']     or ''
+        dirs_db  = r['ZDIRECTIONS']      or ''
+        desc_db  = r['ZDESCRIPTIONTEXT'] or ''
+        notes_db = r['ZNOTES']           or ''
 
         # ── Fase 0: ripara tag spezzati e normalizza spaziatura ────────────
-        dirs_orig  = fix_tag_spezzati(dirs_orig,  nomi_validi)
-        desc_orig  = fix_tag_spezzati(desc_orig,  nomi_validi)
-        notes_orig = fix_tag_spezzati(notes_orig, nomi_validi)
-        notes_orig = normalizza_spaziatura_sezioni(notes_orig)
+        ingr_orig  = ingr_db
+        dirs_orig  = fix_tag_spezzati(dirs_db,  nomi_validi)
+        desc_orig  = fix_tag_spezzati(desc_db,  nomi_validi)
+        notes_orig = normalizza_spaziatura_sezioni(fix_tag_spezzati(notes_db, nomi_validi))
 
         # ── Fase 1: exact matching ──────────────────────────────────────────
         if ONLY_CLUSTER:
@@ -680,12 +680,12 @@ def main():
             if aggiunti:
                 logs_notes.append(f"   [nota-fallback {emoji_t}] → {aggiunti}")
 
-        # ── Verifica modifiche ──────────────────────────────────────────────
+        # ── Verifica modifiche (confronto con valori DB originali) ─────────
         has_changes = (
-            ingr_new  != ingr_orig  or
-            dirs_new  != dirs_orig  or
-            desc_new  != desc_orig  or
-            notes_new != notes_orig
+            ingr_new  != ingr_db  or
+            dirs_new  != dirs_db  or
+            desc_new  != desc_db  or
+            notes_new != notes_db
         )
         if not has_changes:
             continue
