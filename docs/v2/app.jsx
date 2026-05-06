@@ -11,9 +11,10 @@ const { MobileHome, MobileDetail, MobileSearch, MobileCook, MobileShopping, Mobi
 
 function MobileApp({ initialScreen = 'home', initialRecipeId = null }) {
   const { state, go, navigate } = useApp({
-    screen: initialScreen, recipeId: initialRecipeId, contextIds: [],
+    screen: initialScreen, recipeId: initialRecipeId, contextIds: [], activeCats: [],
   });
-  const back = () => navigate({ screen: 'home', contextIds: [] });
+  // Torna alla home ripristinando i filtri attivi
+  const back = () => navigate({ screen: 'home', activeCats: state.activeCats || [] });
   const recipe = (state.recipeId && window.RECIPES.find((r) => r.id === state.recipeId)) || window.RECIPES[0] || {};
   if (!recipe || !recipe.id) return null;
 
@@ -32,15 +33,16 @@ function MobileApp({ initialScreen = 'home', initialRecipeId = null }) {
     case 'profile':
       return <MobileProfile go={go} />;
     default:
-      return <MobileHome go={go} />;
+      return <MobileHome go={go} initialCats={state.activeCats || []} />;
   }
 }
 
 function DesktopApp({ initialScreen = 'home', initialRecipeId = null }) {
   const { state, go, navigate } = useApp({
-    screen: initialScreen, recipeId: initialRecipeId, contextIds: [],
+    screen: initialScreen, recipeId: initialRecipeId, contextIds: [], activeCats: [],
   });
-  const back = () => navigate({ screen: 'home', contextIds: [] });
+  // Torna alla home ripristinando i filtri attivi
+  const back = () => navigate({ screen: 'home', activeCats: state.activeCats || [] });
   const recipe = (state.recipeId && window.RECIPES.find((r) => r.id === state.recipeId)) || window.RECIPES[0] || {};
   if (!recipe || !recipe.id) return null;
 
@@ -59,7 +61,7 @@ function DesktopApp({ initialScreen = 'home', initialRecipeId = null }) {
     case 'profile':
       return <DesktopProfile go={go} />;
     default:
-      return <DesktopHome go={go} />;
+      return <DesktopHome go={go} initialCats={state.activeCats || []} />;
   }
 }
 

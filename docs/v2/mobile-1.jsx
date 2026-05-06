@@ -80,17 +80,33 @@ function BottomNav({ active, go }) {
 }
 
 // ─── HOME ───────────────────────────────────────────────────
-function MobileHome({ go }) {
+function MobileHome({ go, initialCats = [] }) {
   const store = useStore();
   const fbUser = window.useFirebaseUser ? window.useFirebaseUser() : null;
   const featured = (window.RECIPES.find(r => r.rating >= 4 && (r.passi?.length ?? 0) > 2) || window.RECIPES[0]) || {};
   const featNome = featured.nome || 'Senza titolo';
   const featDescr = featured.descrizione || '';
   const recents = (store?.history || []).map((id) => window.RECIPES.find((r) => r.id === id)).filter(Boolean);
-  const all = window.RECIPES;
   const firstName = fbUser ? (fbUser.displayName || 'chef').split(' ')[0] : 'Simone';
-  // Tutti gli ID nell'ordine dell'indice (usato per navigazione prev/next)
+
+  // Filtri categorie con logica AND — ripristina stato dai filtri precedenti
+  const [activeCats, setActiveCats] = React.useState(new Set(initialCats));
+  const toggleCat = (c) => {
+    if (c === '__clear__') { setActiveCats(new Set()); return; }
+    setActiveCats(prev => {
+      const s = new Set(prev);
+      s.has(c) ? s.delete(c) : s.add(c);
+      return s;
+    });
+  };
+
+  // Filtra ricette: AND tra tutte le categorie selezionate
+  const all = activeCats.size === 0
+    ? window.RECIPES
+    : window.RECIPES.filter(r => [...activeCats].every(cat => (r.tag || []).includes(cat)));
+  // ID filtrati (per nav prev/next nell'indice) — featured usa sempre tutti
   const allIds = all.map(r => r.id);
+  const fullIds = window.RECIPES.map(r => r.id);
   return (
     <Frame>
       <div className="rcp-scroll" style={{ flex: 1, padding: '18px 18px 90px' }}>
@@ -122,8 +138,8 @@ function MobileHome({ go }) {
           <Tag kind="ghost">⌘K</Tag>
         </button>
 
-        {/* featured editorial card */}
-        <button onClick={() => go('detail', { recipeId: featured.id, contextIds: allIds })} className="rcp-btn rcp-press"
+        {/* featured editorial card — usa sempre fullIds per non dipendere dai filtri */}
+        <button onClick={() => go('detail', { recipeId: featured.id, contextIds: fullIds, activeCats: [...activeCats] })} className="rcp-btn rcp-press"
           style={{ display: 'block', width: '100%', textAlign: 'left', marginBottom: 26 }}>
           <Eyebrow color={T.accent}>Della settimana · №27</Eyebrow>
           <div style={{ marginTop: 8, position: 'relative', borderRadius: 4, overflow: 'hidden' }}>
@@ -149,7 +165,7 @@ function MobileHome({ go }) {
         </div>
         <div className="rcp-scroll" style={{ display: 'flex', gap: 10, overflowX: 'auto', marginBottom: 22, marginLeft: -18, marginRight: -18, padding: '0 18px' }}>
           {recents.map((r) => (
-            <button key={r.id} onClick={() => go('detail', { recipeId: r.id, contextIds: recents.map(x => x.id) })} className="rcp-btn rcp-press"
+            <button key={r.id} onClick={() => go('detail', { recipeId: r.id, contextIds: recents.map(x => x.id), activeCats: [] })} className="rcp-btn rcp-press"
               style={{ flexShrink: 0, width: 130, textAlign: 'left' }}>
               <div style={{ width: 130, height: 130, borderRadius: 4, overflow: 'hidden', marginBottom: 8 }}>
                 <Photo src={r.photo} label={r.nome} tone="#d4c8a8" text="#3a2f15" />
@@ -160,13 +176,53 @@ function MobileHome({ go }) {
           ))}
         </div>
 
+        {/* Filtri categorie — pill orizzontali scrollabili */}
+        {window.CATEGORIES && window.CATEGORIES.length > 1 && (
+          <div style={{ marginBottom: 14 }}>
+            <div className="rcp-scroll" style={{ display: 'flex', gap: 6, overflowX: 'auto', marginLeft: -18, marginRight: -18, padding: '0 18px 6px' }}>
+              {activeCats.size > 0 && (
+                <button onClick={() => toggleCat('__clear__')} className="rcp-btn rcp-press"
+                  style={{ flexShrink: 0, padding: '5px 10px', borderRadius: 999,
+                    background: T.ink, color: T.bg,
+                    fontFamily: T.mono, fontSize: 9, letterSpacing: 1, textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
+                  ✕ Azzera
+                </button>
+              )}
+              {window.CATEGORIES.slice(1).map(c => {
+                const isActive = activeCats.has(c);
+                return (
+                  <button key={c} onClick={() => toggleCat(c)} className="rcp-btn rcp-press"
+                    style={{ flexShrink: 0, padding: '5px 12px', borderRadius: 999,
+                      background: isActive ? T.accent : T.card,
+                      color: isActive ? T.bg : T.inkSoft,
+                      border: `1px solid ${isActive ? T.accent : T.ruleSoft}`,
+                      fontFamily: T.serif, fontSize: 12, fontStyle: 'italic', whiteSpace: 'nowrap' }}>
+                    {isActive && '✓ '}{c}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {/* full index — typo-style */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', borderTop: `1px solid ${T.ink}`, paddingTop: 12, marginBottom: 6 }}>
-          <Eyebrow>· Indice · {all.length} ricette</Eyebrow>
+          <Eyebrow>· {activeCats.size > 0 ? [...activeCats].join(' + ') : 'Indice'} · {all.length} ricett{all.length === 1 ? 'a' : 'e'}</Eyebrow>
           <Eyebrow>min · pers</Eyebrow>
         </div>
+        {all.length === 0 && (
+          <div style={{ textAlign: 'center', padding: '32px 0', color: T.muted }}>
+            <div style={{ fontFamily: T.serif, fontSize: 16, fontStyle: 'italic', marginBottom: 10 }}>
+              Nessuna ricetta con tutte le categorie selezionate.
+            </div>
+            <button className="rcp-btn" onClick={() => toggleCat('__clear__')}
+              style={{ fontSize: 11, color: T.accent, fontFamily: T.mono, letterSpacing: 1 }}>
+              Azzera filtri
+            </button>
+          </div>
+        )}
         {all.map((r, i) => (
-          <button key={r.id} onClick={() => go('detail', { recipeId: r.id, contextIds: allIds })} className="rcp-btn"
+          <button key={r.id} onClick={() => go('detail', { recipeId: r.id, contextIds: allIds, activeCats: [...activeCats] })} className="rcp-btn"
             style={{ display: 'grid', gridTemplateColumns: '22px 1fr auto', gap: 10, width: '100%',
               padding: '11px 0', borderBottom: `1px solid ${T.ruleSoft}`, alignItems: 'baseline', textAlign: 'left' }}>
             <span style={{ fontFamily: T.mono, fontSize: 10, color: T.muted, fontVariantNumeric: 'tabular-nums' }}>{(i + 1).toString().padStart(2, '0')}</span>

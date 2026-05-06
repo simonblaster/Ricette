@@ -184,12 +184,12 @@ function loginGoogle(setErrore) {
 window.loginGoogle = loginGoogle;
 
 // HOME desktop — editorial 3-col grid
-function DesktopHome({ go }) {
+function DesktopHome({ go, initialCats = [] }) {
   const store = useStore();
   const fbUser = window.useFirebaseUser ? window.useFirebaseUser() : null;
 
-  // Multi-selezione categorie con logica AND
-  const [activeCats, setActiveCats] = React.useState(new Set());
+  // Multi-selezione categorie con logica AND — ripristina stato dai filtri precedenti
+  const [activeCats, setActiveCats] = React.useState(new Set(initialCats));
   const toggleCat = (c) => {
     if (c === '__clear__') { setActiveCats(new Set()); return; }
     setActiveCats((prev) => {
@@ -310,7 +310,7 @@ function DesktopHome({ go }) {
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px 28px' }}>
             {all.map((r, i) => (
-              <button key={r.id} onClick={() => go('detail', { recipeId: r.id, contextIds: all.map(x => x.id) })} className="rcp-btn"
+              <button key={r.id} onClick={() => go('detail', { recipeId: r.id, contextIds: all.map(x => x.id), activeCats: [...activeCats] })} className="rcp-btn"
                 style={{ textAlign: 'left', display: 'block' }}>
                 <div style={{ borderRadius: 4, overflow: 'hidden', marginBottom: 10 }}>
                   <Photo src={r.photo} label={r.nome} tone="#d4c8a8" text="#3a2f15" ratio="4/3" />
