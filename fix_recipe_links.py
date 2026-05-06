@@ -358,6 +358,28 @@ def aggiungi_link_inline(ingr: str, trigger: str, links: list) -> tuple:
     return ingr, [], False
 
 
+def aggiungi_nota_fallback(notes: str, emoji_titolo: str, messaggio: str, links: list) -> tuple:
+    """
+    Aggiunge in ZNOTES una nota del tipo:
+      == 🍲 Brodi ==
+      Per la ricetta occorre anche un brodo...: [recipe:X], [recipe:Y]
+    Solo se la sezione non è già presente (idempotente).
+    """
+    header = f'== {emoji_titolo} =='
+    if header in notes:
+        return notes, []     # sezione già presente
+
+    nuovi = [l for l in links if f"[recipe:{l}]" not in notes]
+    if not nuovi:
+        return notes, []
+
+    links_str = ', '.join(f'[recipe:{l}]' for l in nuovi)
+    riga_nota = f'{messaggio}: {links_str}'
+    sezione   = f'{header}\n\n{riga_nota}'
+    base      = notes.rstrip()
+    return (base + '\n' + sezione if base else sezione), nuovi
+
+
 def rimuovi_sezioni_ingr(ingr: str) -> str:
     """
     Rimuove le vecchie sezioni == Brodi/Soffritti/Creme == da ZINGREDIENTS
@@ -386,9 +408,10 @@ def rimuovi_sezioni_ingr(ingr: str) -> str:
 # ══════════════════════════════════════════════════════════════════════════════
 def apply_clusters_ingr(nome: str, ingr: str, full_text: str, protein: str) -> tuple:
     # Prima pulisci le vecchie sezioni (migrate a inline)
-    new_ingr = rimuovi_sezioni_ingr(ingr or '')
-    logs     = []
-    nome_n   = norm(nome)
+    new_ingr       = rimuovi_sezioni_ingr(ingr or '')
+    logs           = []
+    notes_fallback = []   # suggerimenti da aggiungere a ZNOTES se trigger non in ingredienti
+    nome_n         = norm(nome)
     full_n   = norm(full_text)
 
     # ── Brodo ────────────────────────────────────────────────────────────────
@@ -397,10 +420,12 @@ def apply_clusters_ingr(nome: str, ingr: str, full_text: str, protein: str) -> t
         if BRODO_TRIGGER in full_n:
             suggeriti = BRODO_BY_PROTEIN.get(protein, BRODO_BY_PROTEIN['neutro'])
             new_ingr, aggiunti, trovata = aggiungi_link_inline(new_ingr, 'brodo', suggeriti)
-            if not trovata:  # brodo citato solo nel procedimento: fallback sezione
-                new_ingr, aggiunti = aggiungi_sezione(new_ingr, '== 🍲 Brodi ==', suggeriti)
             if aggiunti:
-                logs.append(f"   [brodo/{protein}] {'inline' if trovata else 'sezione'} → {aggiunti}")
+                logs.append(f"   [brodo/{protein}] inline → {aggiunti}")
+            elif not trovata:  # brodo solo nel procedimento → nota
+                notes_fallback.append(('🍲 Brodi',
+                    'Per la ricetta occorre anche un brodo, valuta tu la quantità necessaria',
+                    suggeriti))
 
     # ── Soffritto ────────────────────────────────────────────────────────────
     if nome_n not in {norm(s) for s in SOFFRITTO_RICETTE}:
@@ -409,22 +434,26 @@ def apply_clusters_ingr(nome: str, ingr: str, full_text: str, protein: str) -> t
             if protein in SOFFRITTO_CARNE_PROTEINS:
                 base.append(SOFFRITTO_PANCETTA)
             new_ingr, aggiunti, trovata = aggiungi_link_inline(new_ingr, 'soffritto', base)
-            if not trovata:
-                new_ingr, aggiunti = aggiungi_sezione(new_ingr, '== 🧅 Soffritti ==', base)
             if aggiunti:
-                logs.append(f"   [soffritto/{protein}] {'inline' if trovata else 'sezione'} → {aggiunti}")
+                logs.append(f"   [soffritto/{protein}] inline → {aggiunti}")
+            elif not trovata:
+                notes_fallback.append(('🧅 Soffritti',
+                    'Per la ricetta occorre anche un soffritto, valuta tu la quantità necessaria',
+                    base))
 
     # ── Creme pasticcere ─────────────────────────────────────────────────────
     if nome_n not in {norm(c) for c in CREMA_RICETTE}:
         for trigger, suggestions in CREMA_CLUSTERS.items():
             if trigger in full_n:
                 new_ingr, aggiunti, trovata = aggiungi_link_inline(new_ingr, trigger, suggestions)
-                if not trovata:
-                    new_ingr, aggiunti = aggiungi_sezione(new_ingr, '== 🍮 Creme ==', suggestions)
                 if aggiunti:
-                    logs.append(f"   [crema/{trigger}] {'inline' if trovata else 'sezione'} → {aggiunti}")
+                    logs.append(f"   [crema/{trigger}] inline → {aggiunti}")
+                elif not trovata:
+                    notes_fallback.append(('🍮 Creme',
+                        f'Per la ricetta occorre anche {trigger}, valuta tu la quantità necessaria',
+                        suggestions))
 
-    return new_ingr, logs
+    return new_ingr, logs, notes_fallback
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -584,10 +613,16 @@ def main():
         protein  = detect_protein(nome, ingr_orig)
         full_txt = '\n'.join([ingr_new, dirs_new, desc_new, notes_new])
 
-        ingr_new,  logs_ingr  = apply_clusters_ingr(
+        ingr_new,  logs_ingr, notes_fallback = apply_clusters_ingr(
             nome, ingr_new, full_txt, protein)
         notes_new, logs_notes = apply_clusters_note(
             nome, notes_new, full_txt, protein, pizza_index)
+
+        # Applica i fallback: trigger non trovato in ZINGREDIENTS → nota in ZNOTES
+        for emoji_t, msg, lks in notes_fallback:
+            notes_new, aggiunti = aggiungi_nota_fallback(notes_new, emoji_t, msg, lks)
+            if aggiunti:
+                logs_notes.append(f"   [nota-fallback {emoji_t}] → {aggiunti}")
 
         # ── Verifica modifiche ──────────────────────────────────────────────
         has_changes = (
