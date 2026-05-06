@@ -4,7 +4,7 @@
 // ─── Helper: converte [recipe:Nome] → pulsante React navigabile ────────────
 function renderWithLinks(text, goFn) {
   if (!text) return null;
-  const na = s => s.replace(/['']/g, "'");
+  const na = s => s.replace(/[‘’‚‛`]/g, "'");
   const findR = n => window.RECIPES.find(r => na(r.nome) === na(n));
   const inline = (line, k) => {
     if (!line.includes('[recipe:')) return <span key={k}>{line}</span>;

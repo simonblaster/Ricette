@@ -236,7 +236,7 @@ SUGO_ARROSTO_TRIGGERS = [
 ]
 
 RAGU_SUGGESTIONS  = ['Ragù di Carne']
-SUGO_SUGGESTIONS  = ["Sugo d’arrosto", 'Sugo da Roast-Beef ultra rapido']
+SUGO_SUGGESTIONS  = ["Sugo d'arrosto", 'Sugo da Roast-Beef ultra rapido']
 RAGU_RICETTE      = set(RAGU_SUGGESTIONS) | set(SUGO_SUGGESTIONS)
 RAGU_PROTEINS_OK  = {'pollo', 'manzo', 'vitello', 'maiale', 'agnello'}
 

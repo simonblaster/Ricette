@@ -6,7 +6,7 @@
 function renderWithLinks(text, goFn) {
   if (!text) return null;
   // Normalizza apostrofi per il lookup (dritto ↔ curvo)
-  const na = s => s.replace(/['']/g, "'");
+  const na = s => s.replace(/[‘’‚‛`]/g, "'");
   const findR = n => window.RECIPES.find(r => na(r.nome) === na(n));
   // Renderizza i tag [recipe:…] inline su una riga
   const inline = (line, k) => {
