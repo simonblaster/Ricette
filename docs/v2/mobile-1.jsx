@@ -4,26 +4,48 @@
 
 // ─── Helper: converte [recipe:Nome] → pulsante React navigabile ────────────
 function renderWithLinks(text, goFn) {
-  if (!text || !text.includes('[recipe:')) return text;
-  const parts = text.split(/(\[recipe:[^\]]+\])/);
-  return parts.map((part, idx) => {
-    const m = part.match(/^\[recipe:(.+)\]$/);
-    if (!m) return <span key={idx}>{part}</span>;
-    const name = m[1];
-    const linked = window.RECIPES.find(r => r.nome === name);
-    if (linked) return (
-      <button key={idx}
-        onClick={e => { e.stopPropagation(); goFn(linked.id); }}
-        className="rcp-btn"
-        style={{ color: T.accent, fontStyle: 'italic', fontWeight: 600,
-          textDecoration: 'underline', textDecorationStyle: 'dotted',
-          display: 'inline', padding: 0, fontSize: 'inherit',
-          lineHeight: 'inherit', verticalAlign: 'baseline' }}>
-        {linked.nome}
-      </button>
+  if (!text) return null;
+  // Normalizza apostrofi per il lookup (dritto ↔ curvo)
+  const na = s => s.replace(/['']/g, "'");
+  const findR = n => window.RECIPES.find(r => na(r.nome) === na(n));
+  // Renderizza i tag [recipe:…] inline su una riga
+  const inline = (line, k) => {
+    if (!line.includes('[recipe:')) return <span key={k}>{line}</span>;
+    const segs = line.split(/(\[recipe:[^\]]+\])/);
+    return <span key={k}>{segs.map((s, i) => {
+      const m = s.match(/^\[recipe:(.+)\]$/);
+      if (!m) return s;
+      const linked = findR(m[1]);
+      if (linked) return (
+        <button key={i} onClick={e => { e.stopPropagation(); goFn(linked.id); }}
+          className="rcp-btn"
+          style={{ color: T.accent, fontStyle: 'italic', fontWeight: 600,
+            textDecoration: 'underline', textDecorationStyle: 'dotted',
+            display: 'inline', padding: 0, fontSize: 'inherit',
+            lineHeight: 'inherit', verticalAlign: 'baseline' }}>
+          {linked.nome}
+        </button>
+      );
+      return <em key={i} style={{ color: T.accent }}>{m[1]}</em>;
+    })}</span>;
+  };
+  // Se non ci sono header di sezione, renderizza inline (descrizione / passi)
+  if (!text.includes('== ')) {
+    if (!text.includes('[recipe:')) return text;
+    return inline(text, 0);
+  }
+  // Rendering a blocchi per le note con sezioni == Header ==
+  return text.split('\n').map((line, i) => {
+    const hm = line.match(/^== (.+) ==$/);
+    if (hm) return (
+      <div key={i} style={{ fontFamily: T.serif, fontWeight: 600, fontStyle: 'normal',
+        fontSize: 11, letterSpacing: 0.7, textTransform: 'uppercase',
+        color: T.ink, marginTop: 10, marginBottom: 2 }}>
+        {hm[1]}
+      </div>
     );
-    // Nome non trovato: mostra comunque in corsivo colorato
-    return <em key={idx} style={{ color: T.accent }}>{name}</em>;
+    if (!line.trim()) return <div key={i} style={{ height: 4 }} />;
+    return <div key={i}>{inline(line, i)}</div>;
   });
 }
 
@@ -397,11 +419,10 @@ function MobileDetail({ recipe, go, back, contextIds = [] }) {
             <div style={{ marginTop: 28, padding: '14px 16px', borderRadius: 10,
                           background: T.card, border: `1px solid ${T.ruleSoft}` }}>
               <Eyebrow style={{ marginBottom: 6 }}>Note</Eyebrow>
-              <p style={{ margin: 0, fontFamily: T.serif, fontStyle: 'italic',
-                          fontSize: 14, lineHeight: 1.65, color: T.inkSoft,
-                          whiteSpace: 'pre-wrap' }}>
+              <div style={{ margin: 0, fontFamily: T.serif, fontStyle: 'italic',
+                           fontSize: 14, lineHeight: 1.65, color: T.inkSoft }}>
                 {renderWithLinks(recipe.notes, goCtx)}
-              </p>
+              </div>
             </div>
           )}
 

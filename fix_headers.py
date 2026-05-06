@@ -33,6 +33,8 @@ for campo in ['ZINGREDIENTS', 'ZNOTES']:
             nuovo = nuovo.replace(vecchio, nuovo_h)
         # Aggiunge riga vuota dopo header se mancante
         nuovo = re.sub(r'(== [^\n]+ ==)\n([^\n])', r'\1\n\n\2', nuovo)
+        # Aggiunge riga vuota anche PRIMA degli header (tra ultimo link e header successivo)
+        nuovo = re.sub(r'([^\n])\n(== [^\n]+ ==)', r'\1\n\n\2', nuovo)
         if nuovo != testo:
             conn.execute(f'UPDATE ZRECIPE SET {campo}=? WHERE Z_PK=?', (nuovo, pk))
             n += 1
