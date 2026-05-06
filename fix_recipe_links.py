@@ -326,7 +326,8 @@ def aggiungi_sezione(testo: str, header: str, links: list) -> tuple:
 # CLUSTER – ZINGREDIENTS  (brodo, soffritto, creme)
 # ══════════════════════════════════════════════════════════════════════════════
 def apply_clusters_ingr(nome: str, ingr: str, full_text: str, protein: str) -> tuple:
-    new_ingr = ingr or ''
+    # Prima pulisci le vecchie sezioni (migrate a inline)
+    new_ingr = rimuovi_sezioni_ingr(ingr or '')
     logs     = []
     nome_n   = norm(nome)
     full_n   = norm(full_text)
@@ -336,9 +337,11 @@ def apply_clusters_ingr(nome: str, ingr: str, full_text: str, protein: str) -> t
     if 'brodo' not in nome_n and nome_n not in {norm(b) for b in BRODO_RICETTE}:
         if BRODO_TRIGGER in full_n:
             suggeriti = BRODO_BY_PROTEIN.get(protein, BRODO_BY_PROTEIN['neutro'])
-            new_ingr, aggiunti = aggiungi_sezione(new_ingr, '== 🍲 Brodi ==', suggeriti)
+            new_ingr, aggiunti, trovata = aggiungi_link_inline(new_ingr, 'brodo', suggeriti)
+            if not trovata:  # brodo citato solo nel procedimento: fallback sezione
+                new_ingr, aggiunti = aggiungi_sezione(new_ingr, '== 🍲 Brodi ==', suggeriti)
             if aggiunti:
-                logs.append(f"   [brodo/{protein}] → {aggiunti}")
+                logs.append(f"   [brodo/{protein}] {'inline' if trovata else 'sezione'} → {aggiunti}")
 
     # ── Soffritto ────────────────────────────────────────────────────────────
     if nome_n not in {norm(s) for s in SOFFRITTO_RICETTE}:
@@ -346,17 +349,21 @@ def apply_clusters_ingr(nome: str, ingr: str, full_text: str, protein: str) -> t
             base = list(SOFFRITTO_BASE)
             if protein in SOFFRITTO_CARNE_PROTEINS:
                 base.append(SOFFRITTO_PANCETTA)
-            new_ingr, aggiunti = aggiungi_sezione(new_ingr, '== 🧅 Soffritti ==', base)
+            new_ingr, aggiunti, trovata = aggiungi_link_inline(new_ingr, 'soffritto', base)
+            if not trovata:
+                new_ingr, aggiunti = aggiungi_sezione(new_ingr, '== 🧅 Soffritti ==', base)
             if aggiunti:
-                logs.append(f"   [soffritto/{protein}] → {aggiunti}")
+                logs.append(f"   [soffritto/{protein}] {'inline' if trovata else 'sezione'} → {aggiunti}")
 
     # ── Creme pasticcere ─────────────────────────────────────────────────────
     if nome_n not in {norm(c) for c in CREMA_RICETTE}:
         for trigger, suggestions in CREMA_CLUSTERS.items():
             if trigger in full_n:
-                new_ingr, aggiunti = aggiungi_sezione(new_ingr, '== 🍮 Creme ==', suggestions)
+                new_ingr, aggiunti, trovata = aggiungi_link_inline(new_ingr, trigger, suggestions)
+                if not trovata:
+                    new_ingr, aggiunti = aggiungi_sezione(new_ingr, '== 🍮 Creme ==', suggestions)
                 if aggiunti:
-                    logs.append(f"   [crema/{trigger}] → {aggiunti}")
+                    logs.append(f"   [crema/{trigger}] {'inline' if trovata else 'sezione'} → {aggiunti}")
 
     return new_ingr, logs
 

@@ -111,11 +111,26 @@
       // Bold-as-header: "**Header**"
       const bm = (it.text || '').match(/^\*\*(.+)\*\*$/);
       if (bm) return { header: true, n: bm[1] };
-      // Link a un'altra ricetta: [recipe:Nome]
+      // Link a un'altra ricetta (riga intera): [recipe:Nome]
       const rm = (it.text || '').match(/^\[recipe:(.+)\]$/);
       if (rm) {
         const linkedUid = recipeByName[rm[1].toLowerCase()];
         if (linkedUid) return { recipeLink: linkedUid, n: rm[1], q: '', u: '', qb: true };
+      }
+      // Link inline: "250 g brodo di pollo → [recipe:X], [recipe:Y]"
+      const arrowIdx = (it.text || '').indexOf(' → ');
+      if (arrowIdx >= 0) {
+        const before = it.text.substring(0, arrowIdx);
+        const after  = it.text.substring(arrowIdx + 3);
+        const relatedLinks = [];
+        const linkRe = /\[recipe:([^\]]+)\]/g;
+        let lm;
+        while ((lm = linkRe.exec(after)) !== null) {
+          const uid = recipeByName[lm[1].toLowerCase()];
+          if (uid) relatedLinks.push({ uid, n: lm[1] });
+        }
+        const base = parseIngredient(before);
+        return relatedLinks.length ? { ...base, relatedLinks } : base;
       }
       return parseIngredient(it.text);
     });

@@ -386,7 +386,28 @@ function MobileDetail({ recipe, go, back, contextIds = [] }) {
                     {checked[i] && <II.check size={11} color={T.bg} strokeWidth={2} />}
                   </span>
                   <span style={{ fontFamily: T.mono, fontSize: 11, fontVariantNumeric: 'tabular-nums', color: f.hasQty ? T.inkSoft : T.muted, fontStyle: f.hasQty ? 'normal' : 'italic' }}>{f.qty}</span>
-                  <span style={{ fontSize: 14 }}>{ing.n}</span>
+                  <span style={{ fontSize: 14, display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: '3px' }}>
+                    <span>{ing.n}</span>
+                    {ing.relatedLinks && ing.relatedLinks.length > 0 && <>
+                      <span style={{ color: T.faint, fontSize: 11, margin: '0 1px' }}>→</span>
+                      {ing.relatedLinks.map((rl, j) => {
+                        const lk = window.RECIPES.find(r => r.id === rl.uid);
+                        if (!lk) return null;
+                        return (
+                          <React.Fragment key={rl.uid}>
+                            {j > 0 && <span style={{ color: T.faint, fontSize: 11 }}>,</span>}
+                            <button onClick={e => { e.stopPropagation(); goCtx(lk.id); }}
+                              className="rcp-btn"
+                              style={{ color: T.accent, fontStyle: 'italic', fontSize: 12,
+                                textDecoration: 'underline', textDecorationStyle: 'dotted',
+                                padding: 0, lineHeight: 'inherit' }}>
+                              {lk.nome}
+                            </button>
+                          </React.Fragment>
+                        );
+                      })}
+                    </>}
+                  </span>
                 </button>
               );
             })}
