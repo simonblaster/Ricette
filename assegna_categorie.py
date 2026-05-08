@@ -61,6 +61,37 @@ NUOVE_CATEGORIE = [
     'Salse, sughi e intingoli vari',
 ]
 
+# ── Lista completa affettati/salumi (matching substring, ignora DOP/IGP/varianti) ──
+# Usata sia nelle regole che in CARNE_KW, così un solo aggiornamento vale ovunque.
+AFFETTATI_KW = [
+    # Prosciutti e cosce stagionate
+    'prosciutto', 'culatello', 'spalla cotta', 'jamón', 'jamon', 'jambon',
+    'pršut', 'prsut',
+    # Salami e insaccati (tutti i nomi regionali matchano per substring)
+    'salame', 'salami', 'salamino', 'soppressata', 'sopressa', 'sopressata',
+    'finocchiona', 'ciauscolo', 'salchichón', 'salchichon', 'kulen',
+    # 'Nduja e spalmabili di carne
+    "'nduja", 'nduja',
+    # Mortadella, pastrami, bologna americana
+    'mortadella', 'pastrami',
+    # Pancetta, guanciale, lardo
+    'pancetta', 'guanciale', 'lardo', 'rigatino', 'barbozzo',
+    # Bresaola e tagli bovini stagionati
+    'bresaola', 'carne salada',
+    # Coppa, capocollo, lonza stagionata
+    'coppa', 'capocollo', 'capicola', 'lonza', 'lonzino',
+    # Speck
+    'speck',
+    # Chorizo e salami iberici
+    'chorizo', 'salchichon',
+    # Wurstel e simili (ricette internazionali)
+    'wurstel', 'würstel', 'frankfurter', 'liverwurst',
+    # Rillettes, pâté e spalmabili di carne
+    'rillettes', 'ciccioli', 'buristo',
+    # Bacon (internazionale)
+    'bacon', 'lardons',
+]
+
 # ── Regole di assegnazione ────────────────────────────────────────────────────
 # (categoria, name_keywords, ingr_keywords, name_exclude)
 # Assegna la categoria se:
@@ -180,9 +211,9 @@ RULES = [
      ['baccalà', 'stoccafisso', 'pescestocco', 'filetto di tonno',
       'crocchette di pesce', 'ragout di pesce', 'rigatoni al ragout di pesce',
       'fondo di pesce', 'brodo di pesce', 'merluzzo in crosta',
-      'pasta con le sarde'],
+      'pasta con le sarde', 'spaghetti burro e alici', 'pasta con le alici'],
      ['pesce', 'tonno', 'baccalà', 'stoccafisso', 'merluzzo', 'salmone',
-      'sogliola', 'trota', 'alici', 'acciughe'],
+      'sogliola', 'trota'],
      ['caponata', 'focaccia messinese']),
 
     ('Frutti di mare',
@@ -210,9 +241,11 @@ RULES = [
      ['brodo di pollo']),
 
     ('Maiale',
-     ['stinco alla', 'polpettone alla messinese'],
-     ['maiale', 'pancetta', 'lardo', 'salsiccia', 'prosciutto', 'guanciale',
-      'speck', 'salame', 'lonza', 'chorizo'],
+     ['stinco alla', 'polpettone alla messinese', 'arrosto di maiale',
+      'arista', 'costine di maiale', 'spiedini di maiale', 'brasato di maiale',
+      'carrè di maiale'],
+     # Solo carne fresca di maiale — i salumi/affettati vanno in Affettati
+     ['maiale', 'salsiccia', 'costine', 'bistecche di maiale'],
      # Escludi quando la proteina principale è un'altra
      ['brodo', 'soffritto',
       'filetto di manzo', 'pollo al vino', 'teglia di pollo',
@@ -359,8 +392,40 @@ RULES = [
      []),
 
     ('Affettati',
-     ['rillettes'],
+     ['rillettes', 'tagliere', 'salumi', 'antipasto di salumi', 'antipasto misto'],
+     AFFETTATI_KW,
+     []),
+
+    # ══ CUCINE DEL MONDO ══════════════════════════════════════════════════════
+
+    ('Indiana',
+     ['tikka', 'masala', 'biryani', 'naan', 'dal ', 'daal', 'chana', 'aloo',
+      'samosa', 'raita', 'saag', 'palak', 'rogan josh', 'vindaloo', 'korma',
+      'butter chicken', 'chicken tikka', 'mango chutney', 'papadum'],
+     ['garam masala', 'curcuma', 'cardamomo', 'fenugreek', 'pasta tandoori'],
+     []),
+
+    ('Curry',
+     ['curry', 'tikka masala', 'korma', 'vindaloo', 'rogan josh', 'massaman',
+      'thai green curry', 'thai red curry', 'japanese curry'],
+     ['pasta di curry', 'polvere di curry', 'curry in polvere'],
+     []),
+
+    # ══ INSALATE ══════════════════════════════════════════════════════════════
+
+    ('Insalate',
+     ['insalata', 'salad', 'winter crunch', 'crumble niçois', 'crumble nicois',
+      'caesar', 'coleslaw', 'taboulé', 'tabbouleh', 'panzanella', 'caprese'],
      [],
+     ['pasta', 'riso', 'impasto']),
+
+    # ══ SPEZIATO ══════════════════════════════════════════════════════════════
+
+    ('Speziato',
+     ['piccante', 'speziato', 'arrabbiata', 'arrabiata', 'diavola', 'diavolo',
+      "alla 'nduja", 'pepperoni piccanti', 'al peperoncino'],
+     ["'nduja", 'peperoncino piccante', 'pepe di cayenna', 'paprika piccante',
+      'salsa piccante', 'hot honey'],
      []),
 
     ('Funghi',
@@ -404,8 +469,9 @@ CARNE_KW = [
     'cinghiale', 'coniglio', 'lepre', 'gamberi', 'gamberone', 'calamaro', 'calamari',
     'polpo', 'vongole', 'cozze', 'tonno', 'merluzzo', 'baccalà', 'stoccafisso',
     'salmone', 'pesce', 'carne', 'prosciutto', 'salsiccia', 'pancetta', 'lardo',
-    'guanciale', 'speck', 'salame', 'bresaola', 'mortadella', 'bistecca', 'braciole',
-    'chorizo', 'alici', 'acciughe', 'sogliola', 'trota', 'lonza',
+    'bistecca', 'braciole', 'sogliola', 'trota',
+    # Affettati/salumi (lista completa — tutti i tipi regionali)
+    *AFFETTATI_KW,
     'fegato', 'fegatini', 'rognone', 'carne tritata', 'carne macinata',
     # Parole nel NOME che indicano carne
     'ragù', 'ragu', 'agglassato', 'aggrassato', 'polpett',
@@ -424,6 +490,13 @@ LATTICINI_KW = [
 ]
 
 NOME_NON_VEGETARIANO = CARNE_KW
+
+# Categorie "con carne/pesce" che impediscono i tag Vegano/Vegetariano.
+# Se una ricetta riceve anche solo una di queste categorie, non può essere veg.
+NON_VEG_CATS = {
+    'Pesce', 'Frutti di mare', 'Affettati',
+    'Manzo', 'Maiale', 'Pollo', 'Selvaggina e volatili', 'Vitello',
+}
 
 
 def _match(testo, keywords):
@@ -454,11 +527,13 @@ def calcola_categorie(nome, ingr):
         if _match(n, name_kws) or _match(i_text, ingr_kws):
             cats.add(cat)
 
-    if is_vegano(n, i_text):
-        cats.add('Vegano')
-        cats.add('Vegetariano')
-    elif is_vegetariano(n, i_text) or n in VEGETARIANO_FORCE:
-        cats.add('Vegetariano')
+    # Vegano/Vegetariano solo se nessuna categoria "con carne/pesce" è stata assegnata
+    if not (cats & NON_VEG_CATS):
+        if is_vegano(n, i_text):
+            cats.add('Vegano')
+            cats.add('Vegetariano')
+        elif is_vegetariano(n, i_text) or n in VEGETARIANO_FORCE:
+            cats.add('Vegetariano')
 
     return cats
 
