@@ -89,13 +89,19 @@ function MobileHome({ go, initialCats = [] }) {
   const recents = (store?.history || []).map((id) => window.RECIPES.find((r) => r.id === id)).filter(Boolean);
   const firstName = fbUser ? (fbUser.displayName || 'chef').split(' ')[0] : 'Simone';
 
-  // Filtri categorie con logica AND — ripristina stato dai filtri precedenti
-  const [activeCats, setActiveCats] = React.useState(new Set(initialCats));
+  // Filtri categorie con logica AND
+  // window.__activeCats persiste tra le navigazioni (home ↔ detail)
+  const [activeCats, setActiveCats] = React.useState(() => new Set(window.__activeCats || []));
   const toggleCat = (c) => {
-    if (c === '__clear__') { setActiveCats(new Set()); return; }
+    if (c === '__clear__') {
+      window.__activeCats = [];
+      setActiveCats(new Set());
+      return;
+    }
     setActiveCats(prev => {
       const s = new Set(prev);
       s.has(c) ? s.delete(c) : s.add(c);
+      window.__activeCats = [...s];
       return s;
     });
   };

@@ -82,8 +82,11 @@ AFFETTATI_KW = [
     'coppa', 'capocollo', 'capicola', 'lonza', 'lonzino',
     # Speck
     'speck',
-    # Chorizo e salami iberici
+    # Chorizo, salami iberici e salami americani
     'chorizo', 'salchichon',
+    # "Pepperoni" (doppia p) = salamino piccante americano.
+    # NON corrisponde a "peperoni" (singola p) = verdura italiana.
+    'pepperoni',
     # Wurstel e simili (ricette internazionali)
     'wurstel', 'würstel', 'frankfurter', 'liverwurst',
     # Rillettes, pâté e spalmabili di carne
@@ -219,7 +222,11 @@ RULES = [
     ('Frutti di mare',
      ['calamari ripieni', 'insalata di polpo', 'niuru de sicci', 'niuru',
       'spaghetti allo scoglio', 'passatina di piselli con gamberi',
-      'crema di gamberi'],
+      'crema di gamberi',
+      # Termini generici nel nome (brodi, fondi, zuppe di mare)
+      'crostacei', 'gamberi', 'gamberone', 'gamberoni',
+      'calamaro', 'polpo', 'cozze', 'vongole', 'aragosta', 'astice',
+      'seppia', 'molluschi', 'frutti di mare'],
      ['gamberi', 'gamberone', 'gamberoni', 'calamaro', 'calamari', 'polpo',
       'cozze', 'vongole', 'scoglio', 'aragosta', 'astice', 'seppia',
       'molluschi', 'crostacei'],
@@ -463,6 +470,28 @@ VEGETARIANO_FORCE = {
     'caponata di melanzane',  # alici elencate come "aggiunte non usate"
 }
 
+# ── Note per ricette "condizionalmente" vegane ────────────────────────────────
+# Se una ricetta vegana contiene uno di questi ingredienti (che nascondono
+# prodotti animali in una sub-ricetta o come opzione), il tag Vegano resta
+# ma viene aggiunta una nota alla descrizione in Paprika.
+#
+# Formato: (keyword_da_cercare_negli_ingredienti, nota_da_aggiungere)
+# Il matching è case-insensitive e per substring.
+VEGAN_CAVEATS = [
+    ('crema inglese',
+     'Per una versione vegana, sostituisci la crema inglese con una crema a base vegetale (la ricetta originale contiene uova e latte).'),
+    ('crema pasticcera',
+     'Per una versione vegana, sostituisci la crema pasticcera con una crema a base vegetale (la ricetta originale contiene uova).'),
+    ('pangrattato condito',
+     'Per una versione vegana, ometti il formaggio dal pangrattato condito alla messinese.'),
+]
+
+# ── Categorie gestite dallo script (usato per la rimozione in FULL mode) ──────
+# In FULL mode lo script porta ogni ricetta a cats_target: aggiunge quelle mancanti
+# e rimuove quelle in CATS_MANAGED che non sono più previste dalle regole.
+# Le categorie assegnate manualmente in Paprika e NON in questa lista restano intatte.
+CATS_MANAGED = frozenset(cat for (cat, *_) in RULES) | {'Vegano', 'Vegetariano'}
+
 # ── Rilevamento Vegetariano/Vegano (basato su ingredienti) ────────────────────
 CARNE_KW = [
     'manzo', 'vitello', 'maiale', 'pollo', 'anatra', 'duck', 'tacchino', 'turkey',
@@ -470,6 +499,7 @@ CARNE_KW = [
     'polpo', 'vongole', 'cozze', 'tonno', 'merluzzo', 'baccalà', 'stoccafisso',
     'salmone', 'pesce', 'carne', 'prosciutto', 'salsiccia', 'pancetta', 'lardo',
     'bistecca', 'braciole', 'sogliola', 'trota',
+    'crostacei', 'aragosta', 'astice', 'seppia', 'molluschi', 'scoglio',
     # Affettati/salumi (lista completa — tutti i tipi regionali)
     *AFFETTATI_KW,
     'fegato', 'fegatini', 'rognone', 'carne tritata', 'carne macinata',
@@ -631,7 +661,7 @@ def main():
             if c.strip() and c.strip() not in CATS_ESCLUSE
         )
 
-        # Categorie da aggiungere secondo le regole
+        # Categorie da aggiungere secondo le regole (logica solo additiva)
         cats_target = calcola_categorie(nome, ingr)
         cats_nuove  = cats_target - cats_attuali
 
@@ -660,6 +690,84 @@ def main():
 
     if not DRY_RUN:
         con.commit()
+
+    # ── 4b-pre. Rimuovi Vegano/Vegetariano da ricette con carne/pesce ─────────
+    # Chirurgico: rimuove solo Vegano/Vegetariano, lascia intatte tutte le altre
+    # categorie (anche quelle assegnate manualmente o da run precedenti).
+    if not DRY_RUN:
+        # Trova ricette che hanno sia (Vegano o Vegetariano) che una NON_VEG_CAT
+        non_veg_placeholders = ','.join('?' * len(NON_VEG_CATS))
+        rows_conflict = cur.execute(f'''
+            SELECT DISTINCT r.Z_PK, r.ZNAME,
+                   GROUP_CONCAT(c.ZNAME, '|||') AS cats
+            FROM ZRECIPE r
+            JOIN Z_12CATEGORIES j ON j.Z_12RECIPES = r.Z_PK
+            JOIN ZRECIPECATEGORY c ON c.Z_PK = j.Z_13CATEGORIES
+            WHERE (r.ZINTRASH = 0 OR r.ZINTRASH IS NULL)
+            GROUP BY r.Z_PK
+            HAVING cats LIKE '%Vegano%' OR cats LIKE '%Vegetariano%'
+        ''').fetchall()
+        n_rimossi = 0
+        for row in rows_conflict:
+            cat_names = set(c.strip() for c in (row['cats'] or '').split('|||') if c.strip())
+            if not (cat_names & NON_VEG_CATS):
+                continue  # nessun conflitto reale
+            # Rimuovi Vegano e Vegetariano da questa ricetta
+            for tag in ('Vegano', 'Vegetariano'):
+                tag_pk = existing_cats.get(tag)
+                if tag_pk is None:
+                    continue
+                deleted = cur.execute(
+                    'DELETE FROM Z_12CATEGORIES WHERE Z_12RECIPES=? AND Z_13CATEGORIES=?',
+                    (row['Z_PK'], tag_pk)
+                ).rowcount
+                if deleted:
+                    print(f"   🗑  {row['ZNAME']}: rimosso '{tag}' (conflitto con {cat_names & NON_VEG_CATS})")
+                    n_rimossi += deleted
+        if n_rimossi:
+            con.commit()
+            print(f"   ✅ {n_rimossi} tag Vegano/Vegetariano errati rimossi")
+        else:
+            print("   ✅ Nessun conflitto Vegano/Vegetariano trovato")
+
+    # ── 4b. Note per ricette condizionalmente vegane ──────────────────────────
+    # Rielabora il DB: per ogni ricetta Vegana che contiene un ingrediente
+    # "nascostamente non-vegan" (crema inglese, pangrattato condito...) aggiunge
+    # una nota alla descrizione. Il tag Vegano rimane invariato.
+    if not DRY_RUN:
+        con2 = sqlite3.connect(str(PAPRIKA_DB))
+        con2.row_factory = sqlite3.Row
+        con2.execute('PRAGMA journal_mode=WAL')
+        cur2 = con2.cursor()
+
+        cur2.execute('''
+            SELECT r.Z_PK, r.ZNAME, r.ZINGREDIENTS, r.ZDESCRIPTIONTEXT
+            FROM ZRECIPE r
+            JOIN Z_12CATEGORIES j ON j.Z_12RECIPES = r.Z_PK
+            JOIN ZRECIPECATEGORY c ON c.Z_PK = j.Z_13CATEGORIES
+            WHERE c.ZNAME = 'Vegano'
+              AND (r.ZINTRASH = 0 OR r.ZINTRASH IS NULL)
+        ''')
+        vegan_rows = cur2.fetchall()
+        n_notes = 0
+        for vr in vegan_rows:
+            ingr_lower = (vr['ZINGREDIENTS'] or '').lower()
+            current_desc = vr['ZDESCRIPTIONTEXT'] or ''
+            updated_desc = current_desc
+            for kw, nota in VEGAN_CAVEATS:
+                if kw in ingr_lower and nota not in updated_desc:
+                    updated_desc = (updated_desc.rstrip() + '\n\n' + nota).strip()
+            if updated_desc != current_desc:
+                cur2.execute(
+                    'UPDATE ZRECIPE SET ZDESCRIPTIONTEXT = ? WHERE Z_PK = ?',
+                    (updated_desc, vr['Z_PK'])
+                )
+                n_notes += 1
+                print(f"   📝 {vr['ZNAME']} — nota vegana aggiunta")
+        if n_notes:
+            con2.commit()
+            print(f"   ✅ {n_notes} note vegane aggiunte alle descrizioni")
+        con2.close()
 
     con.close()
 
