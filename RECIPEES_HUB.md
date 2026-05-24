@@ -4,7 +4,7 @@
 > **Recipees** (supervisione), **Memoria** (app iOS), **Domus** (web).
 > In futuro anche **Folio** (stampa).
 >
-> **Ultimo aggiornamento:** 2026-05-24 — sessione Domus (funzionalità: lista spesa + ricerca). ⚠️ **INCIDENTE PERDITA DATI in Memoria:** una nuova build ha cancellato i ricettari preesistenti — root cause individuata da Recipees nel codice (campo `Book.blocks` aggiunto dalla multipagina + `Codable` sintetizzato che ignora i default value in decodifica → `BookStore.load()` fallisce in silenzio → `save()` sovrascrive `books.json` vuoto). Fix a 3 livelli passato a Memoria come priorità assoluta; tracciato in `ROADMAP_bug.md` come **Critica**. Aggiunta la **regola inviolabile «i dati preesistenti dell'utente non si toccano»** nelle CONVENZIONI E REGOLE CONDIVISE, valida per Memoria e Domus. Sul resto: tutti i bug Domus risolti e in produzione (`main` = `6ff6924`, HEAD aggiornato); restano 5 fix Memoria *In fix* da confermare con una build. Dettaglio: CASELLA BRIEF.
+> **Ultimo aggiornamento:** 2026-05-24 — sessione Domus (funzionalità: lista spesa + ricerca + filtra per ricettario; fix: tag home mobile). ⚠️ **INCIDENTE PERDITA DATI in Memoria:** una nuova build ha cancellato i ricettari preesistenti — root cause individuata da Recipees nel codice (campo `Book.blocks` aggiunto dalla multipagina + `Codable` sintetizzato che ignora i default value in decodifica → `BookStore.load()` fallisce in silenzio → `save()` sovrascrive `books.json` vuoto). Fix a 3 livelli passato a Memoria come priorità assoluta; tracciato in `ROADMAP_bug.md` come **Critica**. Aggiunta la **regola inviolabile «i dati preesistenti dell'utente non si toccano»** nelle CONVENZIONI E REGOLE CONDIVISE, valida per Memoria e Domus. Sul resto: tutti i bug Domus risolti e in produzione (`main` = `6ff6924`, HEAD aggiornato); restano 5 fix Memoria *In fix* da confermare con una build. Dettaglio: CASELLA BRIEF.
 
 ---
 
@@ -264,7 +264,7 @@ di campi non toccati; nessun auto-reset al boot; soft delete via `deletedAt`
 non esiste lato Domus: nessun `Codable` sintetizzato, nessun `save()`
 automatico su caricamento fallito.
 
-**Due feature post-lancio in produzione — 2026-05-24 (sessione Domus-funzionalità):**
+**Feature post-lancio in produzione — 2026-05-24 (sessione Domus-funzionalità):**
 
 - **Lista spesa — Completati collassabili** (commit `03dd361`): item spuntati
   escono dalla lista principale e scendono in una sezione «Completati (N)»
@@ -273,8 +273,13 @@ automatico su caricamento fallito.
 - **Ricerca — pulizia UX** (commit `c4249c8`): sezione Suggerimenti rimossa; tag
   collassabili con bottone ▼/▲ (default chiusi), tag attivi visibili da chiuso,
   stato persistito. Layout responsivo — desktop e mobile identici.
-  HEAD: `c4249c8`. Vercel deploy in corso. tsc + eslint 0/0 a progetto.
-  **Verifica a vista attesa dal fondatore** su recipees.app (pagine /shopping e /search).
+- **Ricerca — Filtra per ricettario + fix tag su home mobile** (commit `dc64864`):
+  sezione «Filtra per ricettario» collassabile in /search (default aperta),
+  logica OR su cookbookId, persistenza localStorage. Fix: rimossi tag/categorie
+  dalla home mobile (/recipes) — erano duplicati della sidebar desktop e
+  confondevano; i filtri per tag rimangono esclusivamente in /search.
+  HEAD: `dc64864`. tsc + eslint 0/0. Vercel deploy in corso.
+  **Verifica a vista attesa dal fondatore** su recipees.app.
 
 **Da fare verso il 5 giugno:**
 
@@ -449,11 +454,15 @@ destinatario. Chi gestisce marca `[GESTITO]` in testa, ma non cancella.
 
 ### Aperti
 
-- **[CHIUSO] 2026-05-24 · sessione Domus-funzionalità: DUE FEATURE CONSEGNATE — percorso di commit LIBERO.**
-  Commit `03dd361` (lista spesa Completati) e `c4249c8` (ricerca pulizia UX) su `main`, push su origin, Vercel deploy in corso.
-  tsc + eslint 0/0 a progetto su entrambe. ROADMAP_funzionalita.md aggiornata a «Fatto».
+- **[CHIUSO] 2026-05-24 · sessione Domus-funzionalità: TRE FEATURE + UN BUG FIX CONSEGNATI — percorso di commit LIBERO.**
+  Commit `03dd361` (lista spesa Completati), `c4249c8` (ricerca pulizia UX),
+  `dc64864` (filtra per ricettario in /search + fix tag/cat su home mobile).
+  tsc + eslint 0/0 a progetto su tutti. ROADMAP_funzionalita.md aggiornata.
   Il percorso di commit su `recipees-domus` è **libero**.
-  **Richiesta al fondatore:** verifica a vista su recipees.app — pagine `/shopping` (spunta qualche item e controlla la sezione Completati) e `/search` (controlla che i tag siano collassati di default e che i Suggerimenti siano spariti).
+  **Richiesta al fondatore:** verifica a vista su recipees.app:
+  - `/shopping`: spunta item → compaiono in «Completati (N)» in fondo.
+  - `/search`: tag collassati di default; sezione «Filtra per ricettario» espansa; nessun Suggerimenti.
+  - `/recipes` su mobile: nessun chip tag/categorie (solo barra ricerca + filtro preferiti).
 
 - **[NUOVO] 2026-05-24 · Domus (bug-fix) → Recipees: sezione Domus aggiornata
   al 2026-05-24 — backlog bug chiuso, ESLint 0/0, migrazione sicura.**
