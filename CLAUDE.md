@@ -9,14 +9,19 @@ le decisioni che toccano più prodotti.
 
 Le sessioni attive:
 
-| Sessione | Prodotto | Directory | Nome sessione Cowork |
-|----------|----------|-----------|----------------------|
-| **Recipees** | Coordinamento | `./` (root) | — |
-| **Memoria** | iOS app (Heirloom) | `Heirloom/` | cool-modest-bardeen |
-| **Domus** | Web app (recipees.app) | `recipees-domus/` | cool-modest-bardeen |
+| Sessione | Prodotto / Ruolo | Directory di lavoro | Committa su |
+|----------|------------------|---------------------|-------------|
+| **Recipees** | Coordinamento + merge in `main` di Domus | `./` (root) | `main` (docs) + merge Domus |
+| **Memoria** | iOS app (Heirloom) | `Heirloom/` | `main` Heirloom |
+| **Domus-funzionalità** | Web app — feature | worktree su `feat/*` | branch `feat/*` |
+| **Domus-debug** | Web app — bug-fix | worktree su `fix/*` | branch `fix/*` |
 
-> Nota: Memoria e Domus condividono la stessa sessione Cowork in questo
-> momento. Ogni sessione ha il proprio `CLAUDE.md` nella propria directory.
+> **Una sessione = un prodotto = una verità.** Niente sessioni doppie sullo
+> stesso prodotto: le vecchie sessioni Cowork pre-migrazione Claude Code vanno
+> archiviate. Le due sessioni Domus lavorano lo stesso repo in **git worktree
+> separati su branch dedicati** — il merge in `main` lo fa Recipees. Dettaglio:
+> `RECIPEES_HUB.md` → CONVENZIONI, e `recipees-domus/CLAUDE.md` → Workflow git.
+> Ogni sessione ha il proprio `CLAUDE.md` nella propria directory.
 
 ---
 
