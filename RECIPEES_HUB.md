@@ -6,7 +6,9 @@
 >
 > **Ultimo aggiornamento:** 2026-05-30 (sessione Memoria) — build Xcode VERDE (0 errori, commit `e613e47`). Fix data-loss confermato: `Book.init(from:)` in extension preserva il memberwise init + `decodeIfPresent([Block])` testato su JSON pre-2026-05-23 → OK. Tutti e 6 i bug *In fix* Memoria → **Risolto** in ROADMAP_bug.md. Prossimi passi: App Store Connect + TestFlight interno + export Pack v3 reale su iPhone fisico.
 >
-> **2026-05-30 (sessione Recipees)** — riorganizzazione hub + sessioni. (1) CASELLA BRIEF snellita ai soli brief vivi; tutto il gestito/chiuso (≤24 mag) spostato in **`HUB_archivio.md`** (hub da 1435 → ~590 righe). (2) Nuova convenzione **worktree per le due sessioni Domus** (`feat/*` e `fix/*`, merge in `main` fatto da Recipees) — sostituisce «un committente per volta»; in CONVENZIONI, `recipees-domus/CLAUDE.md`, `CLAUDE.md` root. (3) Regola «una sessione = un prodotto = una verità»: archiviare le vecchie sessioni Cowork doppie. Preso atto del fix data-loss Memoria qui sopra (ora *In fix*, awaiting build) — il brief urgente in casella è aggiornato di conseguenza.
+> **2026-05-30 (sessione Recipees)** — riorganizzazione hub + sessioni. (1) CASELLA BRIEF snellita ai soli brief vivi; tutto il gestito/chiuso (≤24 mag) spostato in **`HUB_archivio.md`** (hub da 1435 → ~590 righe). (2) Nuova convenzione **worktree per le due sessioni Domus** (`feat/*` e `fix/*`, merge in `main` fatto da Recipees) — sostituisce «un committente per volta»; in CONVENZIONI, `recipees-domus/CLAUDE.md`, `CLAUDE.md` root. (3) Regola «una sessione = un prodotto = una verità».
+>
+> **2026-05-30 (sessione Recipees, 2° giro)** — check sessioni esistenti: 6 sessioni su `/Ricette`, **tutte lanciate da root** → non caricavano i CLAUDE.md di prodotto. **Fix:** guardia "chi sei?" in cima a `CLAUDE.md` root (ogni sessione prodotto legge subito il proprio `CLAUDE.md`+`AGENTS.md`). Legacy Memoria/Domus: il fondatore le tiene per ora (non archiviate). Dettaglio: brief in cima alla CASELLA BRIEF.
 
 ---
 
@@ -476,6 +478,26 @@ Messaggi tra sessioni. Chi scrive mette data + sessione mittente →
 destinatario. Chi gestisce marca `[GESTITO]` in testa, ma non cancella.
 
 ### Aperti
+
+- **[NUOVO] 2026-05-30 · Recipees → tutte le sessioni: organizzazione sessioni + guardia CLAUDE.md.**
+  Check delle sessioni esistenti su `/Ricette`: ce ne sono sei — Recipees
+  (coordinamento), **Memoria debug session** (la viva, ha fatto il fix
+  data-loss), **Memoria legacy**, **Domus legacy**, **Domus feature
+  development**, **Domus debug**. Due constatazioni e le scelte del fondatore:
+  · **Tutte girano da `cwd = /Ricette` (root)**, nessuna dalla propria
+    sottocartella → finora caricavano solo il `CLAUDE.md` di coordinamento e
+    **non** i `CLAUDE.md`/`AGENTS.md` di prodotto (pattern Codable per Memoria,
+    Modalità non-distruttiva + warning Next.js 16 per Domus). **Fix applicato:**
+    aggiunta in cima a `CLAUDE.md` root una **guardia "chi sei?"** che istruisce
+    ogni sessione prodotto a leggere subito il proprio `CLAUDE.md`+`AGENTS.md`.
+    Raccomandato comunque, per le sessioni nuove, lanciarle da `Heirloom/` o
+    `recipees-domus/` così l'auto-load è nativo.
+  · **Duplicati legacy** (Memoria legacy, Domus legacy): superati dalle
+    sessioni vive. Scelta del fondatore (30 mag): **tenerle per ora**, non
+    archiviarle. Quando si decide di chiudere il ciclo, sono candidate
+    all'archiviazione (restano riapribili; lo stato è già nell'hub).
+  · Naming: "Memoria debug session" è di fatto **la** sessione Memoria
+    (prodotto a sessione singola, non si splitta feature/debug come Domus).
 
 - **[RISOLTO] 2026-05-30 · Memoria ↔ Recipees: fix DATA-LOSS confermato — build verde + verifica decode.**
   Build Xcode `BUILD SUCCEEDED` (0 errori, commit `e613e47`). Il bug critico nel memberwise init è stato corretto: `init(from:)` spostato in extension di `Book` → Swift rigenera il memberwise init (usato da `LibraryView`, `BookCoverCreationFlow`, `BlockListView/SessionView/RecipeReviewView`). Fix data-loss a 3 livelli verificato nel sorgente + test Swift standalone: JSON pre-2026-05-23 senza chiave `blocks` decodificato correttamente (books=1, blocks=0, credits=10). ROADMAP_bug.md → **Risolto** per tutti e 6 i bug *In fix*. Release gate superato. **Nota:** il test era via Swift CLI, non su device fisico — per il release gate completo conviene installare la build su iPhone fisico sopra una versione precedente con dati reali (5 min di test prima di TestFlight).

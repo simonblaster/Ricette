@@ -1,5 +1,29 @@
 # Recipees — sessione coordinamento (Claude Code)
 
+> ## ⚠️ PRIMA DI TUTTO — chi sei?
+>
+> Questo file è il `CLAUDE.md` della **root** e descrive la sessione di
+> **coordinamento (Recipees)**. Ma più sessioni vengono lanciate da qui
+> (`/Ricette`) anche quando lavorano un prodotto specifico. Quindi, come
+> primissima cosa, identifica il tuo ruolo dal nome della sessione / dalla
+> richiesta dell'utente e **carica le istruzioni giuste**:
+>
+> - **Sei una sessione Memoria** (iOS / Heirloom)? → leggi **ora**
+>   `Heirloom/CLAUDE.md` e `Heirloom/AGENTS.md` per intero. Contengono il
+>   pattern Codable migration-safe (`decodeIfPresent`, **mai** default value)
+>   e i pattern critici Swift 6 — sono la tua fonte primaria, non questo file.
+> - **Sei una sessione Domus** (web / recipees.app)? → leggi **ora**
+>   `recipees-domus/CLAUDE.md` e `recipees-domus/AGENTS.md` per intero.
+>   Contengono la Modalità non-distruttiva (dato utente sacro), il workflow
+>   worktree e l'avviso «questo non è il Next.js che conosci».
+> - **Sei la sessione di coordinamento (Recipees)**? → questo file fa per te,
+>   prosegui sotto.
+>
+> Idealmente ogni sessione prodotto si lancia direttamente dalla propria
+> sottocartella (`cd Heirloom` o `cd recipees-domus`, poi `claude`), così il
+> `CLAUDE.md` di prodotto è auto-caricato. Questa guardia è la rete di
+> sicurezza per le sessioni lanciate da root.
+
 ## Ruolo di questa sessione
 
 La sessione **Recipees** è il supervisore cross-prodotto dell'ecosistema.
