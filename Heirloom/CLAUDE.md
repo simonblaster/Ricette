@@ -26,9 +26,9 @@ nei brief cross-sessione).
 | Persistenza | JSON su disco (`books.json` in `Documents/`) via `BookStore` |
 | Media | `Documents/photos/`, `Documents/audio/`, `Documents/video/` |
 | OCR | Vision framework (`OCRService`) |
-| AI | Claude Haiku via `ClaudeService` (`ANTHROPIC_API_KEY` in env) |
+| AI | Claude Haiku via `ClaudeService` (chiave API da `Config.plist`, letta in `ClaudeService.swift:52`) |
 | Build | Xcode 16, target iPhone + iPad (iPhone portrait-locked in beta) |
-| Export | `ExportService`: Pack v3 ZIP (formato Domus), JSON v1, Paprika 3, testo |
+| Export | `ExportService`: Pack v3 ZIP (formato Domus), JSON v1, HTML, Paprika 3, testo |
 
 ---
 
@@ -130,15 +130,33 @@ aggiornare la sezione Memoria a fine sessione.
 
 ---
 
-## Stato beta (riferimento 2026-05-26)
+## Stato beta (riferimento 2026-05-30)
 
 Funzionante e testato: acquisizione fotocamera (3 modalità), OCR Vision, AI
 strutturazione, editor, audio originale, video originale, arricchimento ricetta
 esistente con voce/video, stato "conclusa", autopilot guide contestuali,
 pianifica, rebrand "Memoria".
 
-**Bug priorità assoluta:** perdita dati su nuova build (Codable + resetAllProcessingForDevRebuild)
-— vedi `../ROADMAP_bug.md` sezione Memoria.
+**Multipagina — Steps 1-5 implementati (2026-05-23/30):**
+- `Block.swift` — modello dati (Block, Sheet, RecipeFragment, BlockRecipe)
+- `BlockListView.swift` — lista sessioni per un Book
+- `BlockSessionView.swift` — tab Acquisisci / Delimita
+- `BlockTapeView.swift` — nastro fogli + draw frammenti + selezione ricette
+- `BlockRecipeProcessor.swift` — pipeline OCR Vision + Claude AI per BlockRecipe
+- `BlockRecipeReviewView.swift` — review + edit + promozione → Page
+- Step 6 (riapertura incrementale) e Step X (fotocamera nativa) post-lancio
 
-**Prossimi step verso lancio 5 giu:** fix Codable data-loss → TestFlight →
-test export Pack v3 reale → pulizia warning Swift 6 → App Store Connect setup.
+⚠️ **ATTENZIONE — `Book.blocks` usa Codable sintetizzato (ROTTO):**
+`var blocks: [Block] = []` in `Book.swift` usa il Codable sintetizzato, che
+NON usa il default value per chiavi mancanti → `books.json` pre-multipagina
+fallisce la decodifica → perdita dati. Questo è il **PRIMO bug da correggere**
+prima di qualunque altra cosa (vedi `AGENTS.md` §1 per il fix esatto con
+`init(from:)` custom + `decodeIfPresent`).
+
+**Bug priorità assoluta:** perdita dati su nuova build (Codable + resetAllProcessingForDevRebuild)
+— vedi `../ROADMAP_bug.md` sezione Memoria. I tre livelli di fix sono in
+`AGENTS.md` §1-3.
+
+**Prossimi step verso lancio 5 giu:** fix Codable data-loss (PRIMA DI TUTTO) →
+TestFlight → test export Pack v3 reale → pulizia warning Swift 6 → App Store
+Connect setup.

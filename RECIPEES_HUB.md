@@ -4,7 +4,7 @@
 > **Recipees** (supervisione), **Memoria** (app iOS), **Domus** (web).
 > In futuro anche **Folio** (stampa).
 >
-> **Ultimo aggiornamento:** 2026-05-30 (sera) — sessione Recipees (audit pre-lancio 6 giorni al 5 giu). HEAD recipees-domus: `9316d35` (CLAUDE.md, post-fix login `2ebb2b5`). ⚠️ **BLOCCO LANCIO Memoria ancora aperto:** bug data-loss (`Book.blocks` + Codable sintetizzato) non confermato risolto — fix a 3 livelli richiesto, awaiting build Xcode. Domus: verifica a vista login/auth (7 commit `2d004d8`→`2ebb2b5`) non risulta eseguita — brief aperto in casella. Checkpoint 2 giu: Pack v3 export reale da iPhone + 5 fix Memoria da confermare con build. Tutti gli altri bug Domus risolti. Dettaglio: CASELLA BRIEF.
+> **Ultimo aggiornamento:** 2026-05-30 (sessione Memoria) — fix data-loss applicato a 3 livelli: `Book.init(from:)` custom con `decodeIfPresent` per tutti i campi con default, `BookStore.load()` fail-safe (copia `books.corrupt.<ts>.json` + no save() su errore), `resetAllProcessingForDevRebuild()` protetto da flag `loadSucceeded`. ROADMAP_bug.md → In fix. `Heirloom/CLAUDE.md` corretto (chiave API da Config.plist, HTML aggiunto a Export). Awaiting: build Xcode di conferma + verifica a vista login Domus (brief aperto in casella).
 
 ---
 
@@ -67,9 +67,14 @@ Riferimento data odierna alla creazione del file: 2026-05-21 →
 
 ### Memoria — *(mantenuta dalla sessione Memoria)*
 
-Aggiornato 2026-05-23 dalla sessione Memoria. App iOS, deployment iOS 17,
+Aggiornato 2026-05-30 dalla sessione Memoria. App iOS, deployment iOS 17,
 Swift 6 strict concurrency, Xcode 16 sync group. Test in corso su iPhone
 fisico (iOS 26 beta).
+
+**Sessione Claude Code attiva (2026-05-30):** `Heirloom/CLAUDE.md` e
+`Heirloom/AGENTS.md` creati (commit `c329c83`) — ogni sessione si avvia con
+`claude` in `Heirloom/` e riceve automaticamente stack, workflow git, pattern
+critici Codable e puntatori ai file di coordinamento.
 
 **Funzionante e testato:**
 
