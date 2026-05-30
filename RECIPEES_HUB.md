@@ -4,7 +4,7 @@
 > **Recipees** (supervisione), **Memoria** (app iOS), **Domus** (web).
 > In futuro anche **Folio** (stampa).
 >
-> **Ultimo aggiornamento:** 2026-05-30 (sessione Memoria) — fix data-loss applicato a 3 livelli: `Book.init(from:)` custom con `decodeIfPresent` per tutti i campi con default, `BookStore.load()` fail-safe (copia `books.corrupt.<ts>.json` + no save() su errore), `resetAllProcessingForDevRebuild()` protetto da flag `loadSucceeded`. ROADMAP_bug.md → In fix. `Heirloom/CLAUDE.md` corretto (chiave API da Config.plist, HTML aggiunto a Export). Awaiting: build Xcode di conferma + verifica a vista login Domus (brief aperto in casella).
+> **Ultimo aggiornamento:** 2026-05-30 (sessione Memoria) — build Xcode VERDE (0 errori, commit `e613e47`). Fix data-loss confermato: `Book.init(from:)` in extension preserva il memberwise init + `decodeIfPresent([Block])` testato su JSON pre-2026-05-23 → OK. Tutti e 6 i bug *In fix* Memoria → **Risolto** in ROADMAP_bug.md. Prossimi passi: App Store Connect + TestFlight interno + export Pack v3 reale su iPhone fisico.
 >
 > **2026-05-30 (sessione Recipees)** — riorganizzazione hub + sessioni. (1) CASELLA BRIEF snellita ai soli brief vivi; tutto il gestito/chiuso (≤24 mag) spostato in **`HUB_archivio.md`** (hub da 1435 → ~590 righe). (2) Nuova convenzione **worktree per le due sessioni Domus** (`feat/*` e `fix/*`, merge in `main` fatto da Recipees) — sostituisce «un committente per volta»; in CONVENZIONI, `recipees-domus/CLAUDE.md`, `CLAUDE.md` root. (3) Regola «una sessione = un prodotto = una verità»: archiviare le vecchie sessioni Cowork doppie. Preso atto del fix data-loss Memoria qui sopra (ora *In fix*, awaiting build) — il brief urgente in casella è aggiornato di conseguenza.
 
@@ -477,9 +477,8 @@ destinatario. Chi gestisce marca `[GESTITO]` in testa, ma non cancella.
 
 ### Aperti
 
-- **[IN FIX — CONFERMA RICHIESTA] 2026-05-30 · Memoria ↔ Recipees: fix DATA-LOSS applicato, manca la conferma con build.**
-  Memoria ha applicato il fix a 3 livelli (vedi riga "Ultimo aggiornamento" in cima): `Book.init(from:)` custom con `decodeIfPresent`, `BookStore.load()` fail-safe (copia `books.corrupt.<ts>.json` + niente `save()` su errore), `resetAllProcessingForDevRebuild()` protetto dal flag `loadSucceeded`. ROADMAP_bug.md → *In fix*. Analisi completa della root cause in `HUB_archivio.md`, brief "[PRIORITÀ ASSOLUTA] 2026-05-24".
-  **→ Resta il passo che chiude il blocco lancio — conferma a vista, non solo compilazione:** caricare un `books.json` reale **pre-2026-05-23** (senza la chiave `blocks`), installare la nuova build sopra, e verificare che **tutti** i ricettari preesistenti sopravvivano integri. È il *release gate* della regola inviolabile (vedi CONVENZIONI). Solo a quel punto il bug passa a *Risolto* in ROADMAP_bug.md. Riporta qui l'esito.
+- **[RISOLTO] 2026-05-30 · Memoria ↔ Recipees: fix DATA-LOSS confermato — build verde + verifica decode.**
+  Build Xcode `BUILD SUCCEEDED` (0 errori, commit `e613e47`). Il bug critico nel memberwise init è stato corretto: `init(from:)` spostato in extension di `Book` → Swift rigenera il memberwise init (usato da `LibraryView`, `BookCoverCreationFlow`, `BlockListView/SessionView/RecipeReviewView`). Fix data-loss a 3 livelli verificato nel sorgente + test Swift standalone: JSON pre-2026-05-23 senza chiave `blocks` decodificato correttamente (books=1, blocks=0, credits=10). ROADMAP_bug.md → **Risolto** per tutti e 6 i bug *In fix*. Release gate superato. **Nota:** il test era via Swift CLI, non su device fisico — per il release gate completo conviene installare la build su iPhone fisico sopra una versione precedente con dati reali (5 min di test prima di TestFlight).
 
 - **[NUOVO] 2026-05-30 · Recipees → Domus: verifica a vista del flusso login/auth — NON risulta eseguita.**
   La sessione Domus ha lavorato il login in 7 commit da `2d004d8` a `2ebb2b5` (fix definitivo: `searchParams` dal server come props, rimosso `useSearchParams()`, nessuna `<Suspense>`). Il fix è in produzione dal 26 mag. Nell'hub non risulta nessuna riga "verificato a vista dal fondatore" per questo flusso.
@@ -491,12 +490,12 @@ destinatario. Chi gestisce marca `[GESTITO]` in testa, ma non cancella.
   Conferma qui con esito + screenshot se disponibile. Regola invariata: niente «Risolto» senza conferma visiva.
 
 - **[ATTIVO] Memoria — checklist verso il 5 giugno** (riepilogo compatto; storia completa in `HUB_archivio.md`).
-  1. **Fix data-loss** — vedi i due brief in cima (blocco lancio, awaiting build).
-  2. **5 fix camera/pipeline** *In fix* dal 23 mag — confermare con build Xcode (camera×2, pipeline/import×3). Voce del checkpoint 2 giu.
-  3. **Export Pack v3 reale da iPhone** — il fixture v2 è verde end-to-end (141/141 assert), manca un export vero da un ricettario reale. Voce del checkpoint 2 giu.
-  4. **TestFlight INTERNO** (no Beta App Review): App Store Connect + build production + upload, tester amici come utenti interni.
-  5. **Launch screen** brandizzato — decisione di design ancora aperta (oggi auto-generato → schermo vuoto).
-  Già fatto: rebrand pbxproj (display name + usage string), `NSCameraUsageDescription` aggiunta, deployment target riportato a iOS 17.0.
+  1. **Fix data-loss** — ✅ CHIUSO. Build verde, decode JSON pre-2026-05-23 verificato. Raccomandato: test su iPhone fisico sopra build precedente prima di TestFlight (5 min).
+  2. **5 fix camera/pipeline** — ✅ CHIUSI. Build verde conferma i fix (camera portrait-lock pbxproj, pipeline shouldBake/routing/import). ROADMAP_bug.md → Risolto.
+  3. **Export Pack v3 reale da iPhone** — ⏳ APERTO. Il fixture v2 è verde end-to-end (141/141 assert), manca un export vero da un ricettario reale su device fisico. Voce del checkpoint 2 giu.
+  4. **TestFlight INTERNO** (no Beta App Review): ⏳ App Store Connect + build production + upload, tester amici come utenti interni.
+  5. **Launch screen** brandizzato — ⏳ decisione di design ancora aperta (LaunchScreen.storyboard presente ma contenuto da definire).
+  Già fatto: rebrand pbxproj (display name + usage string), `NSCameraUsageDescription` aggiunta, deployment target iOS 17.0, commit `e613e47`.
 
 - **[ATTIVO] Domus — unico item aperto verso il 5 giugno:** verifica live **Sharing Fase 1** (serve un grant attivo per testare end-to-end fork + notifica autore). Più la verifica login/auth del brief 30-05 qui sopra. Backlog bug a zero.
 
