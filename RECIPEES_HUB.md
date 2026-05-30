@@ -4,7 +4,7 @@
 > **Recipees** (supervisione), **Memoria** (app iOS), **Domus** (web).
 > In futuro anche **Folio** (stampa).
 >
-> **Ultimo aggiornamento:** 2026-05-30 — sessione Recipees (CLAUDE.md aggiunti per tutte e tre le sessioni: `CLAUDE.md` root, `Heirloom/CLAUDE.md` + `Heirloom/AGENTS.md` — commit `c329c83`; ecosistema pronto per Claude Code). ⚠️ **INCIDENTE PERDITA DATI in Memoria:** una nuova build ha cancellato i ricettari preesistenti — root cause individuata da Recipees nel codice (campo `Book.blocks` aggiunto dalla multipagina + `Codable` sintetizzato che ignora i default value in decodifica → `BookStore.load()` fallisce in silenzio → `save()` sovrascrive `books.json` vuoto). Fix a 3 livelli passato a Memoria come priorità assoluta; tracciato in `ROADMAP_bug.md` come **Critica**. Aggiunta la **regola inviolabile «i dati preesistenti dell'utente non si toccano»** nelle CONVENZIONI E REGOLE CONDIVISE, valida per Memoria e Domus. Sul resto: tutti i bug Domus risolti e in produzione; restano 5 fix Memoria *In fix* da confermare con una build. Dettaglio: CASELLA BRIEF.
+> **Ultimo aggiornamento:** 2026-05-30 (sera) — sessione Recipees (audit pre-lancio 6 giorni al 5 giu). HEAD recipees-domus: `9316d35` (CLAUDE.md, post-fix login `2ebb2b5`). ⚠️ **BLOCCO LANCIO Memoria ancora aperto:** bug data-loss (`Book.blocks` + Codable sintetizzato) non confermato risolto — fix a 3 livelli richiesto, awaiting build Xcode. Domus: verifica a vista login/auth (7 commit `2d004d8`→`2ebb2b5`) non risulta eseguita — brief aperto in casella. Checkpoint 2 giu: Pack v3 export reale da iPhone + 5 fix Memoria da confermare con build. Tutti gli altri bug Domus risolti. Dettaglio: CASELLA BRIEF.
 
 ---
 
@@ -469,6 +469,24 @@ Messaggi tra sessioni. Chi scrive mette data + sessione mittente →
 destinatario. Chi gestisce marca `[GESTITO]` in testa, ma non cancella.
 
 ### Aperti
+
+- **[NUOVO — AZIONE URGENTE] 2026-05-30 · Recipees → Memoria: fix DATA-LOSS ancora in attesa — 6 giorni al lancio.**
+  Il bug critico di perdita dati (ROADMAP_bug.md sez. Memoria, severità Critica) è stato analizzato da Recipees il 24 mag e il fix a 3 livelli è stato richiesto nella casella (vedi brief "[NUOVO — PRIORITÀ ASSOLUTA] 2026-05-24" qui sotto). Ad oggi non risulta nessuna conferma di fix eseguito nell'hub. Questo è il **blocco del lancio del 5 giugno**.
+  **Ricorda: tre livelli, tutti necessari:**
+  (1) `Book` con `init(from:)` custom + `decodeIfPresent` per `blocks` (e revisione di ogni altro modello persistito).
+  (2) `BookStore.load()` fail-safe: se la decodifica fallisce → conserva `books.corrupt.<timestamp>.json`, blocca ogni `save()` successivo finché il load non è verde.
+  (3) `resetAllProcessingForDevRebuild()` neutralizzato: non deve girare se il load è fallito, non deve chiamare `save()` su dati reali.
+  **Conferma richiesta:** carica un `books.json` reale pre-2026-05-23 (senza la chiave `blocks`) e verifica che i ricettari sopravvivano alla nuova build — non solo a compilazione pulita.
+  Poi riporta qui l'esito e aggiorna ROADMAP_bug.md.
+
+- **[NUOVO] 2026-05-30 · Recipees → Domus: verifica a vista del flusso login/auth — NON risulta eseguita.**
+  La sessione Domus ha lavorato il login in 7 commit da `2d004d8` a `2ebb2b5` (fix definitivo: `searchParams` dal server come props, rimosso `useSearchParams()`, nessuna `<Suspense>`). Il fix è in produzione dal 26 mag. Nell'hub non risulta nessuna riga "verificato a vista dal fondatore" per questo flusso.
+  **Azione richiesta:** fai una verifica a vista su `recipees.app` — signup, login email, login Google — su desktop E su mobile (iPhone Safari, in quanto molti tester useranno il mobile). Verifica in particolare:
+  - Login Google non apre skeleton "Domus" → reindirizza correttamente
+  - Redirect post-login funziona (nessuna pagina bianca)
+  - Errori di login mostrati correttamente in cima alla card
+  - Su mobile: redirect Google (non popup) → ritorno all'app dopo auth
+  Conferma qui con esito + screenshot se disponibile. Regola invariata: niente «Risolto» senza conferma visiva.
 
 - **[CHIUSO] 2026-05-24 · sessione Domus-funzionalità: TRE FEATURE + UN BUG FIX CONSEGNATI — percorso di commit LIBERO.**
   Commit `03dd361` (lista spesa Completati), `c4249c8` (ricerca pulizia UX),
