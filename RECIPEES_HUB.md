@@ -4,7 +4,7 @@
 > **Recipees** (supervisione), **Memoria** (app iOS), **Domus** (web).
 > In futuro anche **Folio** (stampa).
 >
-> **Ultimo aggiornamento:** 2026-05-25 — sessione Domus (feature: lista spesa + ricerca + filtra per ricettario; fix: tag e ricettari home mobile — tutti confermati a vista). ⚠️ **INCIDENTE PERDITA DATI in Memoria:** una nuova build ha cancellato i ricettari preesistenti — root cause individuata da Recipees nel codice (campo `Book.blocks` aggiunto dalla multipagina + `Codable` sintetizzato che ignora i default value in decodifica → `BookStore.load()` fallisce in silenzio → `save()` sovrascrive `books.json` vuoto). Fix a 3 livelli passato a Memoria come priorità assoluta; tracciato in `ROADMAP_bug.md` come **Critica**. Aggiunta la **regola inviolabile «i dati preesistenti dell'utente non si toccano»** nelle CONVENZIONI E REGOLE CONDIVISE, valida per Memoria e Domus. Sul resto: tutti i bug Domus risolti e in produzione (`main` = `6ff6924`, HEAD aggiornato); restano 5 fix Memoria *In fix* da confermare con una build. Dettaglio: CASELLA BRIEF.
+> **Ultimo aggiornamento:** 2026-05-30 — sessione Domus (aggiornamento file coordinamento: HEAD `9316d35`, login risolto definitivo tracciato in ROADMAP_bug). ⚠️ **INCIDENTE PERDITA DATI in Memoria:** una nuova build ha cancellato i ricettari preesistenti — root cause individuata da Recipees nel codice (campo `Book.blocks` aggiunto dalla multipagina + `Codable` sintetizzato che ignora i default value in decodifica → `BookStore.load()` fallisce in silenzio → `save()` sovrascrive `books.json` vuoto). Fix a 3 livelli passato a Memoria come priorità assoluta; tracciato in `ROADMAP_bug.md` come **Critica**. Aggiunta la **regola inviolabile «i dati preesistenti dell'utente non si toccano»** nelle CONVENZIONI E REGOLE CONDIVISE, valida per Memoria e Domus. Sul resto: tutti i bug Domus risolti e in produzione; restano 5 fix Memoria *In fix* da confermare con una build. Dettaglio: CASELLA BRIEF.
 
 ---
 
@@ -159,10 +159,10 @@ bianca al primo lancio dopo rebuild (kill+relaunch); export media via
 
 ### Domus — *(mantenuta dalla sessione Domus)*
 
-Aggiornato 2026-05-24 dalla sessione Domus (funzionalità: lista spesa + ricerca). Online su `recipees.app`
+Aggiornato 2026-05-30 dalla sessione Domus. Online su `recipees.app`
 in beta amici dal 14 mag, utenti reali con ricette caricate. Firebase project
 `recipees-domus` (region Frankfurt eur3), deploy automatico Vercel su push
-a `main`. HEAD corrente: `6ff6924`.
+a `main`. HEAD corrente: `9316d35`.
 
 **Funzionante (in produzione):**
 
@@ -252,8 +252,17 @@ comuni, uova→uovo, carote→carota, funghi→fungo, 20+ voci), `PREP_DESCRIPTO
 strip in coda ("cipolla tritata" = "cipolla", esclusi termini-prodotto),
 `USAGE_QUALIFIERS` + `QTY_NON_SUMMABLE` per qualificatori d'uso (q.b.,
 per servire/guarnire — merge silenzioso se ingrediente già presente, voce
-senza qty se solo). HEAD `6ff6924`. Tutti confermati a vista dal fondatore
+senza qty se solo). Tutti confermati a vista dal fondatore
 (ce0eb32 + 5484d0f); 6ff6924 in verifica.
+
+**Fix login — RISOLTO DEFINITIVAMENTE 2026-05-26, commit `2ebb2b5`.**
+Root cause reale: `useSearchParams()` in client component dentro `<Suspense>`
+causava sospensione server-side → skeleton "Domus" al client → React non
+reidratava → tutti gli handler morti. Fix definitivo: `page.tsx` legge
+`searchParams` come `Promise` (Next.js 16 API), li passa come plain props a
+`LoginForm`. Nessun `useSearchParams()` nel client, nessuna `<Suspense>`,
+idratazione deterministica. Iter completo in ROADMAP_bug.md (7 commit,
+`2d004d8` → `2ebb2b5`). tsc + eslint 0/0.
 
 **Controllo pratiche migrazione Firestore — ESEGUITO 2026-05-24. SICURO.**
 Tutte le scritture usano `updateDoc` (nessun `setDoc` che azzera il
