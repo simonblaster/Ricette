@@ -4,7 +4,7 @@
 > **Recipees** (supervisione), **Memoria** (app iOS), **Domus** (web).
 > In futuro anche **Folio** (stampa).
 >
-> **Ultimo aggiornamento:** 2026-05-30 — sessione Domus (aggiornamento file coordinamento: HEAD `9316d35`, login risolto definitivo tracciato in ROADMAP_bug). ⚠️ **INCIDENTE PERDITA DATI in Memoria:** una nuova build ha cancellato i ricettari preesistenti — root cause individuata da Recipees nel codice (campo `Book.blocks` aggiunto dalla multipagina + `Codable` sintetizzato che ignora i default value in decodifica → `BookStore.load()` fallisce in silenzio → `save()` sovrascrive `books.json` vuoto). Fix a 3 livelli passato a Memoria come priorità assoluta; tracciato in `ROADMAP_bug.md` come **Critica**. Aggiunta la **regola inviolabile «i dati preesistenti dell'utente non si toccano»** nelle CONVENZIONI E REGOLE CONDIVISE, valida per Memoria e Domus. Sul resto: tutti i bug Domus risolti e in produzione; restano 5 fix Memoria *In fix* da confermare con una build. Dettaglio: CASELLA BRIEF.
+> **Ultimo aggiornamento:** 2026-05-30 — sessione Recipees (CLAUDE.md aggiunti per tutte e tre le sessioni: `CLAUDE.md` root, `Heirloom/CLAUDE.md` + `Heirloom/AGENTS.md` — commit `c329c83`; ecosistema pronto per Claude Code). ⚠️ **INCIDENTE PERDITA DATI in Memoria:** una nuova build ha cancellato i ricettari preesistenti — root cause individuata da Recipees nel codice (campo `Book.blocks` aggiunto dalla multipagina + `Codable` sintetizzato che ignora i default value in decodifica → `BookStore.load()` fallisce in silenzio → `save()` sovrascrive `books.json` vuoto). Fix a 3 livelli passato a Memoria come priorità assoluta; tracciato in `ROADMAP_bug.md` come **Critica**. Aggiunta la **regola inviolabile «i dati preesistenti dell'utente non si toccano»** nelle CONVENZIONI E REGOLE CONDIVISE, valida per Memoria e Domus. Sul resto: tutti i bug Domus risolti e in produzione; restano 5 fix Memoria *In fix* da confermare con una build. Dettaglio: CASELLA BRIEF.
 
 ---
 
@@ -162,7 +162,14 @@ bianca al primo lancio dopo rebuild (kill+relaunch); export media via
 Aggiornato 2026-05-30 dalla sessione Domus. Online su `recipees.app`
 in beta amici dal 14 mag, utenti reali con ricette caricate. Firebase project
 `recipees-domus` (region Frankfurt eur3), deploy automatico Vercel su push
-a `main`. HEAD corrente: `9316d35`.
+a `main`. HEAD corrente: `c329c83`.
+
+**Migrazione a Claude Code — COMPLETATA 2026-05-30.** `CLAUDE.md` +
+`AGENTS.md` aggiunti per tutte le sessioni attive (commit `c329c83`):
+`recipees-domus/CLAUDE.md` (già esistente da `9316d35`), `Heirloom/CLAUDE.md`,
+`Heirloom/AGENTS.md`, `CLAUDE.md` root. Ogni sessione ora si avvia con
+`claude` nella propria directory e riceve automaticamente stack, workflow
+git, pattern critici e puntatori ai file di coordinamento.
 
 **Funzionante (in produzione):**
 
