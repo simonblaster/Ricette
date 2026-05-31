@@ -34,9 +34,20 @@ nei brief cross-sessione).
 
 ## Workflow git
 
-Il repo è **monorepo**: `simonblaster/Ricette` su GitHub. Heirloom è in
-`Heirloom/` dentro quel repo, insieme a `recipees-domus/` e ai file di
-coordinamento.
+⚠️ **ATTENZIONE — il codice vero NON è nel monorepo.** Il sorgente Xcode
+completo di Memoria (81 file, `Heirloom.xcodeproj`) vive in un **repo git
+separato**: `~/Documents/Claude/Projects/Heirloom/` (cartella sorella di
+`Ricette/`). È lì che si lavora il codice e si committa (è dove vive il fix
+`e613e47`). Questa copia in `Ricette/Heirloom/` è un **mirror vecchio**
+(16 file, pre-multipagina, `Book.swift` senza il fix): tiene solo
+`CLAUDE.md`+`AGENTS.md` per le istruzioni, **NON usarla per il codice**.
+
+⚠️ Il repo Heirloom reale **non ha ancora un remote** (commit solo locali) →
+nessun backup off-machine. Aggiungere un remote e pushare prima del lancio.
+
+I file di **coordinamento** (`RECIPEES_HUB.md`, roadmap) stanno invece nel
+monorepo `simonblaster/Ricette` (`~/Documents/Claude/Projects/Ricette/`),
+insieme a `recipees-domus/`.
 
 ```bash
 # Prima di ogni commit — entrambi devono essere puliti

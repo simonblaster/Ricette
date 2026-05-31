@@ -9,6 +9,8 @@
 > **2026-05-30 (sessione Recipees)** — riorganizzazione hub + sessioni. (1) CASELLA BRIEF snellita ai soli brief vivi; tutto il gestito/chiuso (≤24 mag) spostato in **`HUB_archivio.md`** (hub da 1435 → ~590 righe). (2) Nuova convenzione **worktree per le due sessioni Domus** (`feat/*` e `fix/*`, merge in `main` fatto da Recipees) — sostituisce «un committente per volta»; in CONVENZIONI, `recipees-domus/CLAUDE.md`, `CLAUDE.md` root. (3) Regola «una sessione = un prodotto = una verità».
 >
 > **2026-05-30 (sessione Recipees, 2° giro)** — check sessioni esistenti: 6 sessioni su `/Ricette`, **tutte lanciate da root** → non caricavano i CLAUDE.md di prodotto. **Fix:** guardia "chi sei?" in cima a `CLAUDE.md` root (ogni sessione prodotto legge subito il proprio `CLAUDE.md`+`AGENTS.md`). Legacy Memoria/Domus: il fondatore le tiene per ora (non archiviate). Dettaglio: brief in cima alla CASELLA BRIEF.
+>
+> **2026-05-30 (sessione Recipees, 3° giro)** — due scoperte indagando l'acquisizione multilingua. (1) **Posizione del codice Memoria registrata:** il sorgente Xcode vero è in `~/Documents/Claude/Projects/Heirloom/` (repo separato, 81 file), NON nel monorepo — `Ricette/Heirloom/` è un mirror vecchio di 16 file. Non era scritto da nessuna parte: ora è in CONVENZIONI → «DOVE VIVE IL CODICE». ⚠️ Il repo reale **non ha remote** (mai pushato): backup off-machine assente, da sistemare prima del lancio. (2) **Acquisizione bloccata sull'italiano** (verificato nel codice): voce e OCR hardcoded it-IT (+EN per OCR), Apple non supporta il bulgaro. Aggiunta voce «Acquisizione multilingua» in `ROADMAP_funzionalita.md` + brief a Memoria. Dettaglio: CASELLA BRIEF.
 
 ---
 
@@ -479,6 +481,32 @@ destinatario. Chi gestisce marca `[GESTITO]` in testa, ma non cancella.
 
 ### Aperti
 
+- **[NUOVO] 2026-05-30 · Recipees → Memoria: acquisizione bloccata sull'italiano (verificato nel codice reale) + 2 follow-up.**
+  Il fondatore ha testato l'acquisizione in **bulgaro**: il parlato non veniva
+  catturato. Indagine sul sorgente vero (`~/Documents/Claude/Projects/Heirloom/`,
+  81 file): la cattura on-device è **hardcoded su italiano** in tutti i percorsi.
+  · **Voce/audio:** `SpeechTranscriber.transcribe(… locale = "it-IT")`, e i
+    chiamanti (`ClaudeService.swift:107`, `PlanIntakeView.swift:313`) passano
+    `it-IT` esplicito. Per audio non-italiano → trascrizione inutile. E `bg-BG`
+    non è un locale supportato da Apple → lancerebbe `recognizerUnavailable`.
+  · **OCR (foto):** `OCRService.swift:42` → `recognitionLanguages = ["it-IT","en-US"]`.
+    Vision non copre comunque il cirillico bulgaro.
+  · **Video:** eredita entrambi (audio via SpeechTranscriber + testo a schermo via OCR).
+  · **Claude (strutturazione):** language-agnostic — NON è il collo di bottiglia.
+  → **Memoria, follow-up:**
+  (1) **Bug-doc:** il commento in `ClaudeService.swift:72` («SFSpeechRecognizer
+  rileva automaticamente la lingua») è **falso** — il locale è fisso a it-IT.
+  Correggere il commento per non fuorviare.
+  (2) **Feature:** vedi voce «Acquisizione multilingua» in `ROADMAP_funzionalita.md`
+  (Memoria, post-lancio). Quick-win per le lingue *supportate da Apple* (FR/DE/ES/RU…):
+  passare un `locale` scelto invece di hardcodare it-IT. Per le lingue NON supportate
+  (bulgaro e altri): serve un'altra strada (STT cloud tipo Whisper per la voce;
+  Claude-vision per l'OCR foto, bypassando Apple Vision).
+  → **Memoria, rischio infra (URGENTE, indipendente dalle lingue):** il repo
+  Heirloom reale **non ha un remote** — 2 commit solo locali, mai pushato.
+  L'intera app (fix data-loss incluso) non ha backup off-machine. **Aggiungere
+  un remote e pushare prima del 5 giugno.** Vedi nota «DOVE VIVE IL CODICE» in CONVENZIONI.
+
 - **[NUOVO] 2026-05-30 · Recipees → tutte le sessioni: organizzazione sessioni + guardia CLAUDE.md.**
   Check delle sessioni esistenti su `/Ricette`: ce ne sono sei — Recipees
   (coordinamento), **Memoria debug session** (la viva, ha fatto il fix
@@ -602,6 +630,19 @@ bug Domus, deployment target e usage string Memoria. Lettura solo storica.
   giusto. Vale per ogni sessione. Regola nata il 2026-05-24 dopo due casi
   (Crea Menu, riga ingredienti) in cui un fix verificato solo a livello di
   codice non spostava il sintomo.
+- **📍 DOVE VIVE IL CODICE — fonte di verità per repo (registrato 2026-05-30).**
+  - **Coordinamento + Domus + docs:** monorepo `simonblaster/Ricette` →
+    `~/Documents/Claude/Projects/Ricette/`. Domus è in `recipees-domus/`.
+  - **Memoria (app iOS, codename Heirloom) — codice VERO:**
+    `~/Documents/Claude/Projects/Heirloom/` — **repo git separato e a sé**,
+    cartella sorella di `Ricette/` (81 file Swift, `Heirloom.xcodeproj`, è dove
+    vive il fix data-loss `e613e47` e tutto il codice voce/video/multipagina).
+  - ⚠️ **`Ricette/Heirloom/` è un MIRROR VECCHIO** (16 file, pre-multipagina,
+    `Book.swift` senza il fix): **non usarlo per il codice**, è fuorviante.
+    Contiene solo `CLAUDE.md`+`AGENTS.md` di Memoria, utili come istruzioni.
+  - ⚠️ **Il repo Heirloom reale NON HA REMOTE** (solo 2 commit locali, mai
+    pushato) → nessun backup off-machine dell'app Memoria. **Da sistemare:**
+    aggiungere un remote e pushare, prima del lancio. Vedi brief in casella.
 - **Memoria — Xcode 16 sync group:** mai aggiungere file a mano al
   `project.pbxproj`. Deployment iOS 17, Swift 6 strict concurrency.
 - **Feedback beta:** `recipees.app/feedback` traccia le segnalazioni
