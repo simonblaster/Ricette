@@ -11,6 +11,8 @@
 > **2026-05-30 (sessione Recipees, 2° giro)** — check sessioni esistenti: 6 sessioni su `/Ricette`, **tutte lanciate da root** → non caricavano i CLAUDE.md di prodotto. **Fix:** guardia "chi sei?" in cima a `CLAUDE.md` root (ogni sessione prodotto legge subito il proprio `CLAUDE.md`+`AGENTS.md`). Legacy Memoria/Domus: il fondatore le tiene per ora (non archiviate). Dettaglio: brief in cima alla CASELLA BRIEF.
 >
 > **2026-05-30 (sessione Recipees, 3° giro)** — due scoperte indagando l'acquisizione multilingua. (1) **Posizione del codice Memoria registrata:** il sorgente Xcode vero è in `~/Documents/Claude/Projects/Heirloom/` (repo separato, 81 file), NON nel monorepo — `Ricette/Heirloom/` è un mirror vecchio di 16 file. Non era scritto da nessuna parte: ora è in CONVENZIONI → «DOVE VIVE IL CODICE». ⚠️ Il repo reale **non ha remote** (mai pushato): backup off-machine assente, da sistemare prima del lancio. (2) **Acquisizione bloccata sull'italiano** (verificato nel codice): voce e OCR hardcoded it-IT (+EN per OCR), Apple non supporta il bulgaro. Aggiunta voce «Acquisizione multilingua» in `ROADMAP_funzionalita.md` + brief a Memoria. Dettaglio: CASELLA BRIEF.
+>
+> **2026-05-30 (sessione Recipees, 4° giro)** — ✅ **backup chiuso.** Creato repo **privato** `simonblaster/Heirloom` e pushato (il codice Memoria non aveva backup off-machine). Entrambi i codebase ora su GitHub. `Config.plist` resta gitignorato. Brief a Memoria per pulire i duplicati `Models/`+`Services/` a root (igiene, non urgente).
 
 ---
 
@@ -502,10 +504,19 @@ destinatario. Chi gestisce marca `[GESTITO]` in testa, ma non cancella.
   passare un `locale` scelto invece di hardcodare it-IT. Per le lingue NON supportate
   (bulgaro e altri): serve un'altra strada (STT cloud tipo Whisper per la voce;
   Claude-vision per l'OCR foto, bypassando Apple Vision).
-  → **Memoria, rischio infra (URGENTE, indipendente dalle lingue):** il repo
-  Heirloom reale **non ha un remote** — 2 commit solo locali, mai pushato.
-  L'intera app (fix data-loss incluso) non ha backup off-machine. **Aggiungere
-  un remote e pushare prima del 5 giugno.** Vedi nota «DOVE VIVE IL CODICE» in CONVENZIONI.
+  → **[RISOLTO Recipees 2026-05-30] Memoria, rischio infra:** il repo
+  Heirloom reale non aveva remote (commit solo locali, nessun backup). **Fatto:**
+  creato repo privato `simonblaster/Heirloom`, pushato `main` (incl. `e613e47`).
+  `Config.plist` gitignorato, fuori dal remote. Vedi «DOVE VIVE IL CODICE» in CONVENZIONI.
+
+- **[NUOVO] 2026-05-30 · Recipees → Memoria: pulizia duplicati a root nel repo Heirloom (igiene, non urgente).**
+  Nel repo `~/Documents/Claude/Projects/Heirloom/` ci sono `Models/` e
+  `Services/` **a livello root** che sono **duplicati vecchi** di quelli sotto
+  `Heirloom/Models|Services` (i veri, usati dal target Xcode — root ha 2/4 file,
+  `Heirloom/` ne ha 7/+ con `Block.swift` ecc.). Inclusi nel backup del 30 mag
+  per non perdere nulla, ma vanno **rimossi** per non confondere. Prima di
+  cancellarli: verifica che non contengano nulla di unico rispetto alle versioni
+  in `Heirloom/` (diff veloce). Non bloccante per il lancio.
 
 - **[NUOVO] 2026-05-30 · Recipees → tutte le sessioni: organizzazione sessioni + guardia CLAUDE.md.**
   Check delle sessioni esistenti su `/Ricette`: ce ne sono sei — Recipees
@@ -637,12 +648,14 @@ bug Domus, deployment target e usage string Memoria. Lettura solo storica.
     `~/Documents/Claude/Projects/Heirloom/` — **repo git separato e a sé**,
     cartella sorella di `Ricette/` (81 file Swift, `Heirloom.xcodeproj`, è dove
     vive il fix data-loss `e613e47` e tutto il codice voce/video/multipagina).
+    Remote: **`git@github.com:simonblaster/Heirloom.git`** (privato).
   - ⚠️ **`Ricette/Heirloom/` è un MIRROR VECCHIO** (16 file, pre-multipagina,
     `Book.swift` senza il fix): **non usarlo per il codice**, è fuorviante.
     Contiene solo `CLAUDE.md`+`AGENTS.md` di Memoria, utili come istruzioni.
-  - ⚠️ **Il repo Heirloom reale NON HA REMOTE** (solo 2 commit locali, mai
-    pushato) → nessun backup off-machine dell'app Memoria. **Da sistemare:**
-    aggiungere un remote e pushare, prima del lancio. Vedi brief in casella.
+  - ✅ **Backup remoto — RISOLTO 2026-05-30.** Il repo Heirloom reale aveva
+    solo commit locali (nessun backup off-machine). Creato il repo **privato**
+    `simonblaster/Heirloom` e pushato `main` (include `e613e47`). `Config.plist`
+    (chiave API) resta gitignorato, non è sul remote; nessuna `sk-ant-` in history.
 - **Memoria — Xcode 16 sync group:** mai aggiungere file a mano al
   `project.pbxproj`. Deployment iOS 17, Swift 6 strict concurrency.
 - **Feedback beta:** `recipees.app/feedback` traccia le segnalazioni
