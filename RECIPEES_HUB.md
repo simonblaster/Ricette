@@ -4,7 +4,7 @@
 > **Recipees** (supervisione), **Memoria** (app iOS), **Domus** (web).
 > In futuro anche **Folio** (stampa).
 >
-> **Ultimo aggiornamento:** 2026-05-30 (sessione Memoria) — build Xcode VERDE (0 errori, commit `e613e47`). Fix data-loss confermato: `Book.init(from:)` in extension preserva il memberwise init + `decodeIfPresent([Block])` testato su JSON pre-2026-05-23 → OK. Tutti e 6 i bug *In fix* Memoria → **Risolto** in ROADMAP_bug.md. Prossimi passi: App Store Connect + TestFlight interno + export Pack v3 reale su iPhone fisico.
+> **Ultimo aggiornamento:** 2026-06-03 (sessione Memoria) — build Xcode VERDE. **"Migliora lettura"**: OCR manoscritto corsivo via Claude **Sonnet 4.6** on-demand (1 credito), invia i byte grezzi dell'originale; badge "AI OCR". Rework **pagina singola** (default Libro aperto, flag persistito migration-safe, percorso allineamento→Rifinitura→OCR, orientamento upright). Navigazione: "Modifica" in RecipeView, "Prossima ricetta" riapre la sorgente di acquisizione. Tutto testato sul campo. ⚠️ Da committare nel repo `simonblaster/Heirloom` (solo locale). Dettaglio: sez. Memoria.
 >
 > **2026-05-30 (sessione Recipees)** — riorganizzazione hub + sessioni. (1) CASELLA BRIEF snellita ai soli brief vivi; tutto il gestito/chiuso (≤24 mag) spostato in **`HUB_archivio.md`** (hub da 1435 → ~590 righe). (2) Nuova convenzione **worktree per le due sessioni Domus** (`feat/*` e `fix/*`, merge in `main` fatto da Recipees) — sostituisce «un committente per volta»; in CONVENZIONI, `recipees-domus/CLAUDE.md`, `CLAUDE.md` root. (3) Regola «una sessione = un prodotto = una verità».
 >
@@ -78,6 +78,30 @@ Riferimento data odierna alla creazione del file: 2026-05-21 →
 Aggiornato 2026-05-30 dalla sessione Memoria. App iOS, deployment iOS 17,
 Swift 6 strict concurrency, Xcode 16 sync group. Test in corso su iPhone
 fisico (iOS 26 beta).
+
+**2026-06-03 (sessione Memoria) — OCR manoscritto AI + rework pagina singola.**
+Build Xcode VERDE (verificato `xcodebuild` ad ogni step). Lavoro fatto e
+testato sul campo dal fondatore:
+- **"Migliora lettura" (OCR manoscritto via Claude Vision):** nuovo bottone
+  nello step OCR. L'OCR Vision on-device resta default/gratis; on-demand
+  (1 credito, con rimborso su errore) si rilegge il corsivo con
+  **`claude-sonnet-4-6`** (Haiku era troppo debole sul corsivo → testo
+  inventato). `transcribeHandwriting(fileURL:)` invia i **byte grezzi
+  dell'originale** (`imageURL`), mai lo scan processato (che degradava
+  l'immagine → allucinazioni). Badge passa a **"AI OCR"** dopo l'uso.
+  Modello vision separato: `HeirloomConstants.claudeVisionModel`.
+- **Selettore Pagina singola / Libro aperto:** due bottoni esclusivi,
+  **default = Libro aperto**, riga rossa nascosta in pagina singola. Flag
+  **persistito** `ProcessingParams.isSinglePageManual` (opzionale →
+  migration-safe).
+- **Pagina singola:** percorso allineamento → **Rifinitura** → OCR (salta
+  Classificazione); orientamento upright (niente più dewarp landscape forzato);
+  bake dell'immagine upright/ritagliata.
+- **Navigazione:** "Indietro" nello step AI torna nel flusso (non all'export);
+  in `RecipeView` "Indietro" → **"Modifica"** (matita); schermata Export ha
+  menu **"Prossima ricetta"** (riapre l'ultima sorgente di acquisizione) e
+  **"Torna alle ricette"**.
+- ⚠️ Da committare nel repo `simonblaster/Heirloom` (modifiche solo locali).
 
 **Sessione Claude Code attiva (2026-05-30):** `Heirloom/CLAUDE.md` e
 `Heirloom/AGENTS.md` creati (commit `c329c83`) — ogni sessione si avvia con
