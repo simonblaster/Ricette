@@ -4,7 +4,7 @@
 > **Recipees** (supervisione), **Memoria** (app iOS), **Domus** (web).
 > In futuro anche **Folio** (stampa).
 >
-> **Ultimo aggiornamento:** 2026-06-03 (sessione Memoria) — build Xcode VERDE. **"Migliora lettura"**: OCR manoscritto corsivo via Claude **Sonnet 4.6** on-demand (1 credito), invia i byte grezzi dell'originale; badge "AI OCR". Rework **pagina singola** (default Libro aperto, flag persistito migration-safe, percorso allineamento→Rifinitura→OCR, orientamento upright). Navigazione: "Modifica" in RecipeView, "Prossima ricetta" riapre la sorgente di acquisizione. Tutto testato sul campo. ⚠️ Da committare nel repo `simonblaster/Heirloom` (solo locale). Dettaglio: sez. Memoria.
+> **Ultimo aggiornamento:** 2026-06-03 (sessione Memoria) — build Xcode VERDE, tutto testato sul campo e **committato/pushato** su `simonblaster/Heirloom` (`9445d26`→`4fe2c56`). **"Migliora lettura"**: OCR manoscritto via **Sonnet 4.6** on-demand (1 credito), byte grezzi originali, badge "AI OCR". Rework **pagina singola** (default Libro aperto, flag persistito, allineamento→Rifinitura→OCR, orientamento upright). Rework **navigazione ricetta**: "Salva e concludi"→griglia (no loop), barra rossa in basso [Alle ricette][Esporta][Prossima], "Prossima" riapre la sorgente con cui la ricetta fu creata (`Page.acquisitionSource`). Preservazione dati al rientro/Modifica (testo AI, crop, scelta singola; no ri-struttura AI se OCR invariato). **Da fare domani:** test E/F/G. Dettaglio: sez. Memoria.
 >
 > **2026-05-30 (sessione Recipees)** — riorganizzazione hub + sessioni. (1) CASELLA BRIEF snellita ai soli brief vivi; tutto il gestito/chiuso (≤24 mag) spostato in **`HUB_archivio.md`** (hub da 1435 → ~590 righe). (2) Nuova convenzione **worktree per le due sessioni Domus** (`feat/*` e `fix/*`, merge in `main` fatto da Recipees) — sostituisce «un committente per volta»; in CONVENZIONI, `recipees-domus/CLAUDE.md`, `CLAUDE.md` root. (3) Regola «una sessione = un prodotto = una verità».
 >
@@ -101,7 +101,17 @@ testato sul campo dal fondatore:
   in `RecipeView` "Indietro" → **"Modifica"** (matita); schermata Export ha
   menu **"Prossima ricetta"** (riapre l'ultima sorgente di acquisizione) e
   **"Torna alle ricette"**.
-- ⚠️ Da committare nel repo `simonblaster/Heirloom` (modifiche solo locali).
+- **Navigazione ricetta finale (rework):** "Salva e concludi" torna alla
+  griglia (pop affidabile, niente più sheet/dialog annidati che causavano
+  loop sulla "ricetta marrone"). `RecipeView` ha ora una **barra rossa in
+  basso** [Alle ricette] [Esporta] [Prossima] + "Scegli formato"; rimossi il
+  `NavigationStack` interno (spostava la toolbar su barra nascosta), il back
+  di sistema (ridondante) e il titolo nella barra (c'è già il titolone nel
+  contenuto). **"Prossima ricetta"** torna alla griglia e riapre la sorgente
+  con cui la ricetta fu creata: nuovo campo `Page.acquisitionSource`
+  (migration-safe), foto→picker foto, fotocamera→fotocamera, file→file.
+- Commit Heirloom: `9445d26`, `5fe199b`, `8d6c15d`, `4fe2c56` (tutti pushati).
+- Da fare domani: chiudere i test E/F/G + roll-out residui.
 
 **Sessione Claude Code attiva (2026-05-30):** `Heirloom/CLAUDE.md` e
 `Heirloom/AGENTS.md` creati (commit `c329c83`) — ogni sessione si avvia con
