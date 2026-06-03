@@ -4,7 +4,7 @@
 > **Recipees** (supervisione), **Memoria** (app iOS), **Domus** (web).
 > In futuro anche **Folio** (stampa).
 >
-> **Ultimo aggiornamento:** 2026-06-03 (sessione Memoria) — build Xcode VERDE, tutto testato sul campo e **committato/pushato** su `simonblaster/Heirloom` (`9445d26`→`4fe2c56`). **"Migliora lettura"**: OCR manoscritto via **Sonnet 4.6** on-demand (1 credito), byte grezzi originali, badge "AI OCR". Rework **pagina singola** (default Libro aperto, flag persistito, allineamento→Rifinitura→OCR, orientamento upright). Rework **navigazione ricetta**: "Salva e concludi"→griglia (no loop), barra rossa in basso [Alle ricette][Esporta][Prossima], "Prossima" riapre la sorgente con cui la ricetta fu creata (`Page.acquisitionSource`). Preservazione dati al rientro/Modifica (testo AI, crop, scelta singola; no ri-struttura AI se OCR invariato). **Da fare domani:** test E/F/G. Dettaglio: sez. Memoria.
+> **Ultimo aggiornamento:** 2026-06-03 (sessione Memoria) — build Xcode VERDE, tutto testato sul campo e **committato/pushato** su `simonblaster/Heirloom` (`9445d26`→`4fe2c56`). **"Migliora lettura"**: OCR manoscritto via **Sonnet 4.6** on-demand (1 credito), byte grezzi originali, badge "AI OCR". Rework **pagina singola** (default Libro aperto, flag persistito, allineamento→Rifinitura→OCR, orientamento upright). Rework **navigazione ricetta**: "Salva e concludi"→griglia (no loop), barra rossa in basso [Alle ricette][Esporta][Prossima], "Prossima" riapre la sorgente con cui la ricetta fu creata (`Page.acquisitionSource`). Preservazione dati al rientro/Modifica (testo AI, crop, scelta singola; no ri-struttura AI se OCR invariato). **Test:** A–G verdi; casi limite **H ✓ OK** (Prossima ricetta da fotocamera). **Da fare domattina:** test residui **I–N** (I file-picker, J/M perdita dati, K rimborso, L badge, N pagina singola). Dettaglio: sez. Memoria.
 >
 > **2026-05-30 (sessione Recipees)** — riorganizzazione hub + sessioni. (1) CASELLA BRIEF snellita ai soli brief vivi; tutto il gestito/chiuso (≤24 mag) spostato in **`HUB_archivio.md`** (hub da 1435 → ~590 righe). (2) Nuova convenzione **worktree per le due sessioni Domus** (`feat/*` e `fix/*`, merge in `main` fatto da Recipees) — sostituisce «un committente per volta»; in CONVENZIONI, `recipees-domus/CLAUDE.md`, `CLAUDE.md` root. (3) Regola «una sessione = un prodotto = una verità».
 >
@@ -111,7 +111,28 @@ testato sul campo dal fondatore:
   con cui la ricetta fu creata: nuovo campo `Page.acquisitionSource`
   (migration-safe), foto→picker foto, fotocamera→fotocamera, file→file.
 - Commit Heirloom: `9445d26`, `5fe199b`, `8d6c15d`, `4fe2c56` (tutti pushati).
-- Da fare domani: chiudere i test E/F/G + roll-out residui.
+
+**2026-06-03 (sessione Memoria, 2° giro) — test case residui.** Gruppi base
+**A–G verdi** (vedi sotto). Avviata batch casi limite H–N:
+- **H ✓ OK** — "Prossima ricetta" da ricetta creata con **fotocamera** riapre
+  la fotocamera (branch `acquisitionSource=fotocamera`; F aveva coperto solo
+  galleria).
+- **Residui da fare domattina (I–N):**
+  - **I** — "Prossima ricetta" da **file/PDF** → riapre il file picker (3° branch).
+  - **J** — migration-safe: build sopra `books.json` pre-rework (senza
+    `acquisitionSource`/`isSinglePageManual`) → libri intatti.
+  - **K** — rimborso credito su "Migliora lettura" fallita (offline/errore).
+  - **L** — badge "AI OCR" persiste dopo salva/riapri ricetta.
+  - **M** — preservazione al rientro via "Modifica" (testo AI/crop/scelta
+    singola; nessuna ri-struttura AI se OCR invariato).
+  - **N** — "Migliora lettura" nel ramo pagina singola (salta Classificazione).
+  Priorità roll-out: I (ultimo branch) + J/M (perdita dati).
+
+Stato A–G (verificati 2026-06-03):
+A Migliora lettura ✓ · B selettore pagina singola/libro aperto ✓ ·
+C pagina singola (flusso+orientamento) ✓ · D flag persistito pagina singola ✓ ·
+E navigazione AI/Export ✓ · F "Prossima ricetta" riapre sorgente (galleria) ✓ ·
+G regressione ✓.
 
 **Sessione Claude Code attiva (2026-05-30):** `Heirloom/CLAUDE.md` e
 `Heirloom/AGENTS.md` creati (commit `c329c83`) — ogni sessione si avvia con
