@@ -3,7 +3,7 @@
 > Lista viva delle nuove funzionalità dell'ecosistema Recipees, organizzata per
 > area. Si lavora a questo **in parallelo** al completamento della beta del
 > 5 giugno. I bug noti sono tracciati a parte in `ROADMAP_bug.md`.
-> Aggiornato: 2026-06-04 — sessione Memoria (aggiunta «Dettare correzioni a voce», area Memoria).
+> Aggiornato: 2026-06-04 — sessione Memoria (aggiunte «Dettare correzioni a voce» e «Tutorial video», area Memoria).
 
 **Come si lavora.** Spec e design procedono in parallelo già ora. La
 *costruzione* delle feature grosse parte **dopo il 5 giugno**, per non
@@ -20,6 +20,7 @@ Anche le idee ancora grezze vanno bene — basta segnarle come "Idea".
 
 | Funzionalità | Descrizione | Stato | Riferimento / tempistica |
 |---|---|---|---|
+| Tutorial video | Poter inserire/mostrare brevi **video tutorial** che spiegano come usare l'app (acquisizione, modalità fotocamera, voce/video, export…). Complementare al pilota automatico testuale esistente: dove una guida pop-up non basta, un video mostra il gesto. Da decidere: video embedded nell'app vs link esterni, punto d'ingresso (Impostazioni / intro primo lancio / accanto al tasto `?`), e se servono per singola schermata o come libreria unica. | Idea | Memoria · post-lancio. Si integra col sistema Autopilot (`HelpStore`/`HelpEntry`). Possibile cross-prodotto con Domus (stessi tutorial sul web). Da scrivere una mini-spec: hosting video, formati, e se l'editor testi guide in Impostazioni va esteso ai video. |
 | Dettare correzioni a voce | In fase di **modifica/review** di una ricetta, poter dettare a voce le correzioni invece di digitarle ("aggiungi 100g di burro", "il secondo passaggio va a 180°", "togli il prezzemolo"). L'AI interpreta l'istruzione vocale e applica la modifica al campo giusto della `Recipe`. Naturale per chi ha le mani in pasta o sta cucinando. Si appoggia allo speech-to-text già presente in Memoria (SFSpeech) per la cattura, più un passo AI per mappare l'istruzione in un'azione di edit. | Idea | Memoria · post-lancio. Riusa il framework Speech iOS già integrato (voce/audio). Cross con «Acquisizione multilingua» per il locale STT. Da scrivere una mini-spec: comandi liberi vs strutturati, conferma prima di applicare, undo. |
 | Pianifica 2.0 | Le intenzioni diventano una coda di lavoro con passi spuntabili e avanzamento; intake guidato e conversazionale con l'AI invece del form. | Spec pronta | `SPEC_pianifica.md` · post-lancio |
 | Acquisizione multi-pagina continua | Lavorare un intero blocco di pagine (es. 15) come un flusso unico: si procede dalla prima all'ultima delimitando le ricette via via — foto e testo, anche misti. Serve perché i confini di pagina non coincidono con quelli delle ricette (una foto può contenere 2 pagine; una ricetta può iniziare a pag. 2 e finire a pag. 3). Estende il meccanismo multi-ricetta dal singolo spread all'intero blocco. | In sviluppo | `SPEC_multipagina.md` · Memoria · post-lancio. Step 1-5 già implementati dalla sessione Memoria (23 mag), manca lo Step 6 (riapertura incrementale del blocco). Decisioni chiuse: modalità in più (non sostituisce il flusso pagina-per-pagina), blocco misto foto/testo, blocco riapribile/incrementale. Si appoggia a `PageMultiRecipeEditor`. |
