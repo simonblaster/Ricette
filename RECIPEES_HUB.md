@@ -13,6 +13,8 @@
 > **2026-05-30 (sessione Recipees, 3° giro)** — due scoperte indagando l'acquisizione multilingua. (1) **Posizione del codice Memoria registrata:** il sorgente Xcode vero è in `~/Documents/Claude/Projects/Heirloom/` (repo separato, 81 file), NON nel monorepo — `Ricette/Heirloom/` è un mirror vecchio di 16 file. Non era scritto da nessuna parte: ora è in CONVENZIONI → «DOVE VIVE IL CODICE». ⚠️ Il repo reale **non ha remote** (mai pushato): backup off-machine assente, da sistemare prima del lancio. (2) **Acquisizione bloccata sull'italiano** (verificato nel codice): voce e OCR hardcoded it-IT (+EN per OCR), Apple non supporta il bulgaro. Aggiunta voce «Acquisizione multilingua» in `ROADMAP_funzionalita.md` + brief a Memoria. Dettaglio: CASELLA BRIEF.
 >
 > **2026-05-30 (sessione Recipees, 4° giro)** — ✅ **backup chiuso.** Creato repo **privato** `simonblaster/Heirloom` e pushato (il codice Memoria non aveva backup off-machine). Entrambi i codebase ora su GitHub. `Config.plist` resta gitignorato. Brief a Memoria per pulire i duplicati `Models/`+`Services/` a root (igiene, non urgente).
+>
+> **2026-06-05 (sessione Recipees)** — brainstorming col fondatore sull'acquisizione → **`SPEC_acquisizione.md`** (motore unico `PageMultiRecipeEditor` generalizzato, 3 modalità Singola/Doppia/Multipagina, slider universale + default progressivi, seed AI a richiesta, memoria per-libro). Supera `SPEC_multipagina.md` (archiviato). Hand-off a Memoria per l'implementazione post-lancio — brief in cima alla CASELLA BRIEF. Roadmap aggiornata.
 
 ---
 
@@ -537,6 +539,30 @@ Messaggi tra sessioni. Chi scrive mette data + sessione mittente →
 destinatario. Chi gestisce marca `[GESTITO]` in testa, ma non cancella.
 
 ### Aperti
+
+- **[NUOVO — HAND-OFF] 2026-06-05 · Recipees → Memoria: SPEC acquisizione motore unico pronta da implementare (post-lancio).**
+  Brainstorming fondatore + Recipees → **`SPEC_acquisizione.md`** (supera
+  `SPEC_multipagina.md`, archiviato). Design approvato dal fondatore. Da costruire
+  **dopo il 5 giugno** (cambio profondo del flusso acquisizione, non sul percorso
+  critico del lancio). In sintesi:
+  - **Un solo delimitatore**: `PageMultiRecipeEditor` generalizzato. La delimitazione
+    isolata dei `Block*` si **ritira** (i Block* restano semmai contenitore di fogli).
+  - **3 modalità = preset su «sequenza di fogli»**: Singola (1 foglio singolo, no
+    spine), Doppia (1 spread), Multipagina (N spread, ricette a cavallo dx N → sx N+1).
+    `PageSide` → `(indice foglio, lato)`.
+  - **Slider = strumento universale** (testo + foto, N colonne anche irregolari);
+    `twoColumnsMode` rimosso; foto croppata con gli stessi slider.
+  - **Pezzo nuovo chiave**: default progressivi degli slider sull'avanzo (alto = fine
+    taglio precedente, sx = colonna appena chiusa) — §5.1 della spec.
+  - **Seed AI a richiesta** (tasto, per-spread in multipagina), sperimentale.
+  - **Memoria per-libro** della modalità; libro nuovo → chiede la prima volta.
+  - Downstream invariato (`RecipeRegion`, pipeline OCR+AI), modello dati invariato.
+  → **Memoria:** quando parti (post-lancio), leggi `SPEC_acquisizione.md` per intero,
+  poi scrivi il piano di implementazione. Lavora nel repo reale
+  `~/Documents/Claude/Projects/Heirloom/` (non il mirror in `Ricette/Heirloom/`).
+  Le 9 generalizzazioni puntuali + l'invariato sono in §9 della spec. Vale la regola
+  inviolabile dati utente (campo `Book.mode` additivo, `decodeIfPresent`) e la conferma
+  a vista su device prima di «fatto».
 
 - **[NUOVO] 2026-05-30 · Recipees → Memoria: acquisizione bloccata sull'italiano (verificato nel codice reale) + 2 follow-up.**
   Il fondatore ha testato l'acquisizione in **bulgaro**: il parlato non veniva
