@@ -3,7 +3,7 @@
 > Lista viva delle nuove funzionalità dell'ecosistema Recipees, organizzata per
 > area. Si lavora a questo **in parallelo** al completamento della beta del
 > 5 giugno. I bug noti sono tracciati a parte in `ROADMAP_bug.md`.
-> Aggiornato: 2026-06-04 — sessione Memoria (aggiunte «Dettare correzioni a voce», «Tutorial video», «Classificazione automatica delle ricette», area Memoria).
+> Aggiornato: 2026-06-20 — sessione Recipees (aggiunte «Dispensa / inventario frigo» e «Lista della spesa standalone», area Domus).
 
 **Come si lavora.** Spec e design procedono in parallelo già ora. La
 *costruzione* delle feature grosse parte **dopo il 5 giugno**, per non
